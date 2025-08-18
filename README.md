@@ -1,6 +1,6 @@
-# Living Codex — Phase 1 Complete ✅
+# Living Codex — Phase 2 Complete ✅
 
-This is a **Phase 1 complete** implementation of the Living Codex - a federated, fractal knowledge system that integrates consciousness, archetypes, and resonance through water-state metaphors and harmonic principles.
+This is a **Phase 2 complete** implementation of the Living Codex - a federated, fractal knowledge system that integrates consciousness, archetypes, and resonance through water-state metaphors and harmonic principles, now with interactive sacred geometry and resonance dynamics.
 
 ## Quickstart
 
@@ -20,23 +20,25 @@ This is a **Phase 1 complete** implementation of the Living Codex - a federated,
 4. **Federation stub (Node/Express):**
    - `node prototypes/federation/server.js`
 
-## Phase 1 Implementation Status ✅
+## Phase 2 Implementation Status ✅
 
 ### **Core Components (Complete)**
 - **`ontology/seed.json`** → Complete 12-node seed ontology with water-state mappings, archetypes, and harmonic representations
 - **`ontology/schema.json`** → Full JSON-LD schema with all node types, relationships, and metadata
 - **`prototypes/graph/loader.py`** → Enhanced Neo4j loader with all new properties and constraints
-- **`prototypes/viz/`** → Enhanced Three.js visualization with proper geometry positioning and scaling
+- **`prototypes/viz/`** → **NEW**: Interactive sacred geometry visualization with resonance dynamics
 - **`prototypes/resonance/score.py`** → Advanced resonance analysis with harmonic and water-state themes
 - **`prototypes/federation/server.js`** → ActivityPub-style federation endpoints
 
-### **Enhanced Features**
-- **Water-State Metaphors**: All 12 water states mapped to consciousness principles
-- **Harmonic Representations**: Musical intervals and ratios for each node
-- **Sacred Geometry**: Proper positioning in Flower of Life pattern
-- **Archetypal Correspondences**: Cross-cultural deity and principle mappings
-- **Vibrational Axes**: 5 primary axes with scale labels and metaphors
-- **Validation**: Phase 1 validation script to ensure compliance
+### **Phase 2 Enhanced Features**
+- **🌊 Sacred Geometry Overlays**: Flower of Life, Icositetragon Wheel, Metatron's Cube
+- **🎛️ Interactive Axis Sliders**: Real-time resonance control for all 5 vibrational axes
+- **💫 Resonance Dynamics**: Node glow = resonance amplitude, edges ripple with coherence
+- **🔍 Fractal Zoom**: Click nodes to reveal nested mandalas and deeper wisdom
+- **🌊 Water Cycle Animation**: Animate through all water states with visual transitions
+- **🎯 Attention-Based Interactions**: Mouse movement creates resonance waves and focus effects
+- **🎵 Harmonic Mapping**: Real-time harmonic theme updates based on resonance state
+- **📊 Live Resonance Feedback**: Coherence score, water state, and harmonic theme display
 
 ## Fractal Growth
 - Each module can be **re-implemented** in parallel languages (see `impls/`).
@@ -50,23 +52,23 @@ This is a **Phase 1 complete** implementation of the Living Codex - a federated,
 
 ---
 
-## Phase 1 Validation
+## Phase 2 Validation
 
-Run the validation script to ensure Phase 1 compliance:
+Run the validation script to ensure Phase 2 compliance:
 ```bash
-python scripts/validate_phase1.py
+python scripts/validate_phase2.py
 ```
 
-## Next Steps (Phase 2)
+## Next Steps (Phase 3)
 
-The repository is now ready for Phase 2 enhancements:
-- **Enhanced Visual Prototype**: Sacred geometry overlays, water-state animations
-- **Resonance Contributions**: Interactive axis sliders, community overlays
+The repository is now ready for Phase 3 enhancements:
+- **Resonance Contributions**: Community overlays, provenance of tuning acts
 - **AI Agent Integration**: Mirror-librarian prompts for node expansion
+- **Federation Features**: Enhanced ActivityPub endpoints and federated sync
 - **Multimodal Expression**: Sound engine, VR/AR exploration
 
-## Cursor Prompts for Phase 2
-- *"Add sacred geometry overlays to the visualization; implement Metatron's Cube and Icositetragon Wheel"*
-- *"Create interactive axis sliders that affect node resonance and visualization"*
-- *"Implement AI agent prompts for expanding nodes across scientific, symbolic, and water-state lenses"*
+## Cursor Prompts for Phase 3
+- *"Implement community resonance overlays showing collective tuning across users"*
+- *"Create AI agent prompts for expanding nodes with scientific, symbolic, and water-state lenses"*
 - *"Add sound engine mapping axes to musical intervals and water states to timbres"*
+- *"Enhance federation with content-addressed storage and cross-instance synchronization"*
