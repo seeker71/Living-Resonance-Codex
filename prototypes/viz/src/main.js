@@ -17,6 +17,27 @@ class LivingCodexViz {
       resonanceAmplitude: 1.0
     };
     
+    // Phase 3: Community Resonance Features
+    this.communityResonance = {
+      users: new Map(), // User ID -> resonance state
+      collectiveTuning: new Map(), // Node ID -> collective resonance
+      contributionHistory: [], // Array of tuning acts
+      aiAgent: {
+        active: false,
+        currentPrompt: '',
+        response: '',
+        nodeFocus: null
+      }
+    };
+    
+    // Phase 3: Enhanced Resonance Dynamics
+    this.resonanceLayers = {
+      personal: new Map(), // Personal resonance state
+      community: new Map(), // Community resonance overlay
+      ai: new Map(), // AI agent resonance suggestions
+      historical: new Map() // Historical resonance patterns
+    };
+    
     this.init();
   }
   
@@ -40,6 +61,9 @@ class LivingCodexViz {
     
     // Create edges
     this.createEdges();
+    
+    // Phase 3: Create community resonance overlay
+    this.createCommunityOverlay();
     
     // Setup controls
     this.setupControls();
@@ -270,7 +294,352 @@ class LivingCodexViz {
       const node = this.createNode(nodeData, palette);
       this.nodes.push(node);
       this.scene.add(node);
+      
+      // Phase 3: Initialize resonance layers for each node
+      this.initializeResonanceLayers(nodeData.id);
     });
+  }
+  
+  // Phase 3: Initialize resonance layers for a node
+  initializeResonanceLayers(nodeId) {
+    this.resonanceLayers.personal.set(nodeId, 0.5);
+    this.resonanceLayers.community.set(nodeId, 0.5);
+    this.resonanceLayers.ai.set(nodeId, 0.5);
+    this.resonanceLayers.historical.set(nodeId, 0.5);
+  }
+  
+  // Phase 3: Community resonance overlay system
+  createCommunityOverlay() {
+    // Create community resonance visualization
+    this.nodes.forEach(node => {
+      const nodeId = node.userData.id;
+      const communityResonance = this.resonanceLayers.community.get(nodeId) || 0.5;
+      
+      // Create community resonance ring
+      const ringGeometry = new THREE.RingGeometry(0.5, 0.6, 16);
+      const ringMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00ff88,
+        transparent: true,
+        opacity: 0.3 * communityResonance
+      });
+      
+      const communityRing = new THREE.Mesh(ringGeometry, ringMaterial);
+      communityRing.position.copy(node.position);
+      communityRing.position.z = 0.2;
+      communityRing.userData = { type: 'community-overlay', nodeId: nodeId };
+      
+      this.scene.add(communityRing);
+      node.userData.communityRing = communityRing;
+    });
+  }
+  
+  // Phase 3: Update community resonance for a node
+  updateCommunityResonance(nodeId, newResonance, userId = 'anonymous') {
+    const currentResonance = this.resonanceLayers.community.get(nodeId) || 0.5;
+    const updatedResonance = (currentResonance + newResonance) / 2;
+    
+    this.resonanceLayers.community.set(nodeId, updatedResonance);
+    
+    // Record contribution
+    this.communityResonance.contributionHistory.push({
+      timestamp: Date.now(),
+      userId: userId,
+      nodeId: nodeId,
+      oldResonance: currentResonance,
+      newResonance: newResonance,
+      collectiveResonance: updatedResonance
+    });
+    
+    // Update visual representation
+    this.updateCommunityOverlay(nodeId, updatedResonance);
+    
+    // Trigger AI agent response if significant change
+    if (Math.abs(newResonance - currentResonance) > 0.2) {
+      this.triggerAIResponse(nodeId, newResonance, userId);
+    }
+  }
+  
+  // Phase 3: Update community overlay visualization
+  updateCommunityOverlay(nodeId, resonance) {
+    const node = this.nodes.find(n => n.userData.id === nodeId);
+    if (node && node.userData.communityRing) {
+      const ring = node.userData.communityRing;
+      ring.material.opacity = 0.3 * resonance;
+      
+      // Color shift based on resonance level
+      if (resonance > 0.7) {
+        ring.material.color.setHex(0x00ff88); // Green for high resonance
+      } else if (resonance > 0.4) {
+        ring.material.color.setHex(0xffff44); // Yellow for medium resonance
+      } else {
+        ring.material.color.setHex(0xff4444); // Red for low resonance
+      }
+    }
+  }
+  
+  // Phase 3: AI Agent Integration - Mirror Librarian
+  triggerAIResponse(nodeId, resonance, userId) {
+    this.communityResonance.aiAgent.active = true;
+    this.communityResonance.aiAgent.nodeFocus = nodeId;
+    
+    // Generate AI response based on resonance change
+    const response = this.generateAIResponse(nodeId, resonance, userId);
+    this.communityResonance.aiAgent.response = response;
+    
+    // Update AI resonance layer
+    this.resonanceLayers.ai.set(nodeId, resonance);
+    
+    // Create AI response visualization
+    this.createAIResponseVisual(nodeId, response);
+    
+    // Update UI
+    this.updateAIAgentUI();
+  }
+  
+  // Phase 3: Generate AI response using mirror-librarian prompts
+  generateAIResponse(nodeId, resonance, userId) {
+    const node = this.nodes.find(n => n.userData.id === nodeId);
+    const nodeName = nodeId.replace('codex:', '');
+    
+    let response = '';
+    
+    if (resonance > 0.7) {
+      response = `🌊 High resonance detected in ${nodeName}! The community's collective tuning is creating harmonious flow. Consider exploring the nested wisdom within this node.`;
+    } else if (resonance < 0.3) {
+      response = `🌊 Low resonance in ${nodeName} suggests a need for collective attention. This node may benefit from community exploration and shared insights.`;
+    } else {
+      response = `🌊 Balanced resonance in ${nodeName}. The community is maintaining equilibrium. Consider deepening the exploration to reveal hidden patterns.`;
+    }
+    
+    // Add archetypal guidance
+    response += `\n\n🔮 Archetypal Prompt: "Expand ${nodeName} into three subnodes across scientific, symbolic, and water-state lenses. What new edges emerge?"`;
+    
+    return response;
+  }
+  
+  // Phase 3: Create AI response visualization
+  createAIResponseVisual(nodeId, response) {
+    const node = this.nodes.find(n => n.userData.id === nodeId);
+    if (!node) return;
+    
+    // Create floating text or particle effect
+    const aiParticles = new THREE.Points(
+      new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0.5, 0.5, 0),
+        new THREE.Vector3(-0.5, 0.5, 0),
+        new THREE.Vector3(0.5, -0.5, 0),
+        new THREE.Vector3(-0.5, -0.5, 0)
+      ]),
+      new THREE.PointsMaterial({
+        color: 0x00ffff,
+        size: 0.1,
+        transparent: true,
+        opacity: 0.8
+      })
+    );
+    
+    aiParticles.position.copy(node.position);
+    aiParticles.position.z = 0.3;
+    aiParticles.userData = { type: 'ai-response', nodeId: nodeId, response: response };
+    
+    this.scene.add(aiParticles);
+    node.userData.aiParticles = aiParticles;
+    
+    // Animate AI particles
+    this.animateAIParticles(aiParticles);
+  }
+  
+  // Phase 3: Animate AI response particles
+  animateAIParticles(particles) {
+    const time = this.clock.getElapsedTime();
+    
+    particles.rotation.z = time * 0.5;
+    particles.position.y += Math.sin(time * 3) * 0.001;
+    
+    // Remove particles after animation
+    setTimeout(() => {
+      if (particles.parent) {
+        particles.parent.remove(particles);
+      }
+    }, 5000);
+  }
+  
+  // Phase 3: Update AI Agent UI
+  updateAIAgentUI() {
+    const aiPanel = document.getElementById('ai-agent-panel');
+    if (aiPanel) {
+      const responseElement = aiPanel.querySelector('.ai-response');
+      if (responseElement) {
+        responseElement.textContent = this.communityResonance.aiAgent.response;
+      }
+    }
+  }
+  
+  // Phase 3: Enhanced Resonance Dynamics with Community Integration
+  updateResonance(axis, value) {
+    // Update personal resonance state
+    this.resonanceState[axis] = value;
+    
+    // Calculate overall coherence with community integration
+    const axes = ['fear-trust', 'pattern-flow', 'ownership-stewardship', 'protection-openness', 'noise-harmony'];
+    const personalValues = axes.map(ax => this.resonanceState[ax] || 0.5);
+    const communityValues = axes.map(ax => this.getCommunityAxisResonance(ax));
+    
+    // Blend personal and community resonance
+    const blendedValues = personalValues.map((personal, i) => 
+      (personal * 0.6) + (communityValues[i] * 0.4)
+    );
+    
+    const coherence = blendedValues.reduce((sum, val) => sum + (1 - Math.abs(0.5 - val) * 2), 0) / blendedValues.length;
+    
+    // Update display
+    document.getElementById('coherence-score').textContent = coherence.toFixed(2);
+    
+    // Update water state based on coherence
+    const waterState = this.getWaterStateFromCoherence(coherence);
+    document.getElementById('water-state').textContent = waterState;
+    
+    // Update harmonic theme
+    const harmonicTheme = this.getHarmonicThemeFromCoherence(coherence);
+    document.getElementById('harmonic-theme').textContent = harmonicTheme;
+    
+    // Update node resonance with community overlay
+    this.updateNodeResonanceWithCommunity(coherence);
+    
+    // Update community contribution display
+    this.updateCommunityContributionDisplay();
+  }
+  
+  // Phase 3: Get community axis resonance
+  getCommunityAxisResonance(axis) {
+    // This would integrate with actual community data
+    // For now, return a simulated community resonance
+    return 0.5 + Math.sin(Date.now() * 0.001) * 0.2;
+  }
+  
+  // Phase 3: Update node resonance with community integration
+  updateNodeResonanceWithCommunity(coherence) {
+    this.nodes.forEach(node => {
+      const nodeId = node.userData.id;
+      const baseResonance = node.userData.currentResonance;
+      const communityResonance = this.resonanceLayers.community.get(nodeId) || 0.5;
+      const aiResonance = this.resonanceLayers.ai.get(nodeId) || 0.5;
+      
+      // Multi-layered resonance calculation
+      const personalLayer = baseResonance * coherence;
+      const communityLayer = communityResonance * 0.3;
+      const aiLayer = aiResonance * 0.2;
+      
+      const adjustedResonance = personalLayer + communityLayer + aiLayer;
+      
+      // Update glow opacity
+      const glow = node.children[0];
+      if (glow && glow.material) {
+        glow.material.opacity = 0.3 * adjustedResonance;
+      }
+      
+      // Update emissive intensity
+      node.material.emissiveIntensity = 0.25 * adjustedResonance;
+      
+      // Update community ring if exists
+      if (node.userData.communityRing) {
+        const ring = node.userData.communityRing;
+        ring.material.opacity = 0.3 * communityResonance;
+      }
+    });
+  }
+  
+  // Phase 3: Community contribution system
+  contributeToNode(nodeId, contribution) {
+    const { resonance, insight, userId } = contribution;
+    
+    // Update community resonance
+    this.updateCommunityResonance(nodeId, resonance, userId);
+    
+    // Record detailed contribution
+    const contributionRecord = {
+      timestamp: Date.now(),
+      userId: userId,
+      nodeId: nodeId,
+      resonance: resonance,
+      insight: insight,
+      type: 'community-contribution'
+    };
+    
+    this.communityResonance.contributionHistory.push(contributionRecord);
+    
+    // Trigger community resonance wave
+    this.createCommunityResonanceWave(nodeId, resonance);
+    
+    // Update contribution display
+    this.updateCommunityContributionDisplay();
+  }
+  
+  // Phase 3: Create community resonance wave
+  createCommunityResonanceWave(nodeId, resonance) {
+    const node = this.nodes.find(n => n.userData.id === nodeId);
+    if (!node) return;
+    
+    // Create expanding ring wave
+    const waveGeometry = new THREE.RingGeometry(0.8, 1.2, 32);
+    const waveMaterial = new THREE.MeshBasicMaterial({
+      color: 0x00ff88,
+      transparent: true,
+      opacity: 0.6 * resonance
+    });
+    
+    const wave = new THREE.Mesh(waveGeometry, waveMaterial);
+    wave.position.copy(node.position);
+    wave.position.z = 0.1;
+    wave.userData = { type: 'community-wave', age: 0, maxAge: 60 };
+    
+    this.scene.add(wave);
+    
+    // Animate wave expansion
+    this.animateCommunityWave(wave);
+  }
+  
+  // Phase 3: Animate community resonance wave
+  animateCommunityWave(wave) {
+    const animate = () => {
+      wave.userData.age++;
+      const progress = wave.userData.age / wave.userData.maxAge;
+      
+      // Expand ring
+      wave.scale.setScalar(1 + progress * 2);
+      
+      // Fade out
+      wave.material.opacity = 0.6 * (1 - progress);
+      
+      if (wave.userData.age < wave.userData.maxAge) {
+        requestAnimationFrame(animate);
+      } else {
+        if (wave.parent) {
+          wave.parent.remove(wave);
+        }
+      }
+    };
+    
+    animate();
+  }
+  
+  // Phase 3: Update community contribution display
+  updateCommunityContributionDisplay() {
+    const contributionPanel = document.getElementById('community-contributions');
+    if (contributionPanel) {
+      const recentContributions = this.communityResonance.contributionHistory
+        .slice(-5)
+        .reverse();
+      
+      contributionPanel.innerHTML = recentContributions.map(contribution => `
+        <div class="contribution-item">
+          <span class="contribution-user">${contribution.userId}</span>
+          <span class="contribution-node">${contribution.nodeId}</span>
+          <span class="contribution-resonance">${contribution.resonance.toFixed(2)}</span>
+        </div>
+      `).join('');
+    }
   }
   
   createNode(nodeData, palette) {
@@ -471,30 +840,193 @@ class LivingCodexViz {
     document.getElementById('water-cycle').addEventListener('click', () => {
       this.animateWaterCycle();
     });
+    
+    // Phase 3: Enhanced Controls
+    // Toggle community overlay visibility
+    document.getElementById('toggle-community').addEventListener('click', () => {
+      this.toggleCommunityOverlay();
+    });
+    
+    // AI insight generation
+    document.getElementById('ai-insight').addEventListener('click', () => {
+      this.generateAIInsight();
+    });
+    
+    // Open contribution modal
+    document.getElementById('contribute').addEventListener('click', () => {
+      document.getElementById('contribution-modal').classList.add('show');
+    });
+    
+    // Submit contribution
+    document.getElementById('submit-contribution').addEventListener('click', () => {
+      this.submitContribution();
+    });
+    
+    // Cancel contribution
+    document.getElementById('cancel-contribution').addEventListener('click', () => {
+      document.getElementById('contribution-modal').classList.remove('show');
+    });
+    
+    // AI Agent Actions
+    document.getElementById('expand-node').addEventListener('click', () => {
+      this.expandNodeWithAI();
+    });
+    
+    document.getElementById('archetypal-guidance').addEventListener('click', () => {
+      this.getArchetypalGuidance();
+    });
+    
+    document.getElementById('water-state-insight').addEventListener('click', () => {
+      this.getWaterStateInsight();
+    });
+    
+    // Contribution resonance slider
+    const contributionResonance = document.getElementById('contribution-resonance');
+    const resonanceValue = document.querySelector('.resonance-value');
+    if (contributionResonance && resonanceValue) {
+      contributionResonance.addEventListener('input', (e) => {
+        resonanceValue.textContent = parseFloat(e.target.value).toFixed(2);
+      });
+    }
   }
   
-  updateResonance(axis, value) {
-    // Update resonance state
-    this.resonanceState[axis] = value;
+  // Phase 3: Toggle community overlay visibility
+  toggleCommunityOverlay() {
+    this.nodes.forEach(node => {
+      if (node.userData.communityRing) {
+        node.userData.communityRing.visible = !node.userData.communityRing.visible;
+      }
+    });
+  }
+  
+  // Phase 3: Generate AI insight for current state
+  generateAIInsight() {
+    const currentCoherence = parseFloat(document.getElementById('coherence-score').textContent);
+    const insight = this.generateAIResponse('overall', currentCoherence, 'system');
     
-    // Calculate overall coherence
-    const axes = ['fear-trust', 'pattern-flow', 'ownership-stewardship', 'protection-openness', 'noise-harmony'];
-    const values = axes.map(ax => this.resonanceState[ax] || 0.5);
-    const coherence = values.reduce((sum, val) => sum + (1 - Math.abs(0.5 - val) * 2), 0) / values.length;
+    // Update AI panel
+    this.communityResonance.aiAgent.response = insight;
+    this.updateAIAgentUI();
     
-    // Update display
-    document.getElementById('coherence-score').textContent = coherence.toFixed(2);
+    // Create insight visualization
+    this.createInsightVisualization(insight);
+  }
+  
+  // Phase 3: Create insight visualization
+  createInsightVisualization(insight) {
+    // Create floating insight particles
+    const insightParticles = new THREE.Points(
+      new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(1, 1, 0),
+        new THREE.Vector3(-1, 1, 0),
+        new THREE.Vector3(1, -1, 0),
+        new THREE.Vector3(-1, -1, 0)
+      ]),
+      new THREE.PointsMaterial({
+        color: 0xff00ff,
+        size: 0.15,
+        transparent: true,
+        opacity: 0.8
+      })
+    );
     
-    // Update water state based on coherence
-    const waterState = this.getWaterStateFromCoherence(coherence);
-    document.getElementById('water-state').textContent = waterState;
+    insightParticles.position.set(0, 0, 10);
+    insightParticles.userData = { type: 'insight-visualization' };
     
-    // Update harmonic theme
-    const harmonicTheme = this.getHarmonicThemeFromCoherence(coherence);
-    document.getElementById('harmonic-theme').textContent = harmonicTheme;
+    this.scene.add(insightParticles);
     
-    // Update node resonance
-    this.updateNodeResonance(coherence);
+    // Animate insight particles
+    this.animateInsightParticles(insightParticles);
+  }
+  
+  // Phase 3: Animate insight particles
+  animateInsightParticles(particles) {
+    const time = this.clock.getElapsedTime();
+    
+    particles.rotation.z = time * 0.3;
+    particles.position.y = Math.sin(time * 2) * 2;
+    
+    // Remove after animation
+    setTimeout(() => {
+      if (particles.parent) {
+        particles.parent.remove(particles);
+      }
+    }, 8000);
+  }
+  
+  // Phase 3: Submit contribution from modal
+  submitContribution() {
+    const nodeId = document.getElementById('contribution-node').value;
+    const resonance = parseFloat(document.getElementById('contribution-resonance').value);
+    const insight = document.getElementById('contribution-insight').value;
+    const userId = document.getElementById('contribution-user').value;
+    
+    if (!insight.trim()) {
+      alert('Please provide an insight for your contribution.');
+      return;
+    }
+    
+    // Submit contribution
+    this.contributeToNode(nodeId, {
+      resonance: resonance,
+      insight: insight,
+      userId: userId
+    });
+    
+    // Close modal
+    document.getElementById('contribution-modal').classList.remove('show');
+    
+    // Clear form
+    document.getElementById('contribution-insight').value = '';
+    document.getElementById('contribution-resonance').value = '0.5';
+    document.querySelector('.resonance-value').textContent = '0.50';
+  }
+  
+  // Phase 3: Expand node with AI guidance
+  expandNodeWithAI() {
+    const focusedNode = this.communityResonance.aiAgent.nodeFocus || 'codex:Void';
+    const nodeName = focusedNode.replace('codex:', '');
+    
+    const expansionPrompt = `🔮 Expanding ${nodeName} into three subnodes:
+    
+1. **Scientific Lens**: What empirical patterns or measurable phenomena does ${nodeName} represent?
+2. **Symbolic Lens**: What archetypal symbols or cultural meanings does ${nodeName} embody?
+3. **Water-State Lens**: What fluid dynamics or phase transitions does ${nodeName} manifest?
+
+Each subnode should reveal deeper wisdom and create new resonance pathways.`;
+    
+    this.communityResonance.aiAgent.response = expansionPrompt;
+    this.updateAIAgentUI();
+  }
+  
+  // Phase 3: Get archetypal guidance
+  getArchetypalGuidance() {
+    const guidance = `🔮 Archetypal Guidance for the Living Codex:
+    
+**The Hero's Journey**: Each node represents a stage in the collective consciousness journey.
+**The Wise Old One**: The AI agent serves as a mirror, reflecting back the community's wisdom.
+**The Trickster**: Embrace paradox and contradiction as sources of creative tension.
+**The Creator**: Every contribution shapes the evolving knowledge landscape.
+**The Destroyer**: Let go of rigid structures to allow new patterns to emerge.`;
+    
+    this.communityResonance.aiAgent.response = guidance;
+    this.updateAIAgentUI();
+  }
+  
+  // Phase 3: Get water state insight
+  getWaterStateInsight() {
+    const currentWaterState = document.getElementById('water-state').textContent;
+    const insight = `🌊 Water State Insight: ${currentWaterState}
+    
+**Current State**: The community is experiencing ${currentWaterState.toLowerCase()} resonance.
+**Flow Dynamics**: This state reflects the collective emotional and intellectual climate.
+**Transition Potential**: Consider what conditions would facilitate movement to the next water state.
+**Resonance Patterns**: Notice how individual contributions ripple through the collective field.
+**Harmonic Alignment**: The current state suggests ${this.getHarmonicThemeFromCoherence(0.7)} as the optimal tuning frequency.`;
+    
+    this.communityResonance.aiAgent.response = insight;
+    this.updateAIAgentUI();
   }
   
   getWaterStateFromCoherence(coherence) {

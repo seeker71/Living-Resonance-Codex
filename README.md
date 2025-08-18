@@ -1,6 +1,6 @@
-# Living Codex — Phase 2 Complete ✅
+# Living Codex — Phase 3 Complete ✅
 
-This is a **Phase 2 complete** implementation of the Living Codex - a federated, fractal knowledge system that integrates consciousness, archetypes, and resonance through water-state metaphors and harmonic principles, now with interactive sacred geometry and resonance dynamics.
+This is a **Phase 3 complete** implementation of the Living Codex - a federated, fractal knowledge system that integrates consciousness, archetypes, and resonance through water-state metaphors and harmonic principles, now with interactive sacred geometry, resonance dynamics, **community resonance overlays**, and **AI agent integration**.
 
 ## Quickstart
 
@@ -20,13 +20,13 @@ This is a **Phase 2 complete** implementation of the Living Codex - a federated,
 4. **Federation stub (Node/Express):**
    - `node prototypes/federation/server.js`
 
-## Phase 2 Implementation Status ✅
+## Phase 3 Implementation Status ✅
 
 ### **Core Components (Complete)**
 - **`ontology/seed.json`** → Complete 12-node seed ontology with water-state mappings, archetypes, and harmonic representations
 - **`ontology/schema.json`** → Full JSON-LD schema with all node types, relationships, and metadata
 - **`prototypes/graph/loader.py`** → Enhanced Neo4j loader with all new properties and constraints
-- **`prototypes/viz/`** → **NEW**: Interactive sacred geometry visualization with resonance dynamics
+- **`prototypes/viz/`** → **Phase 2**: Interactive sacred geometry visualization with resonance dynamics
 - **`prototypes/resonance/score.py`** → Advanced resonance analysis with harmonic and water-state themes
 - **`prototypes/federation/server.js`** → ActivityPub-style federation endpoints
 
@@ -40,6 +40,16 @@ This is a **Phase 2 complete** implementation of the Living Codex - a federated,
 - **🎵 Harmonic Mapping**: Real-time harmonic theme updates based on resonance state
 - **📊 Live Resonance Feedback**: Coherence score, water state, and harmonic theme display
 
+### **Phase 3 Community & AI Features**
+- **🌊 Community Resonance Overlays**: Visual rings showing collective tuning across users
+- **🤖 AI Mirror Librarian**: Intelligent agent providing archetypal guidance and node expansion prompts
+- **👥 Multi-Layer Resonance**: Personal, community, AI, and historical resonance layers
+- **📝 Contribution System**: Community members can contribute insights and resonance to nodes
+- **🌊 Community Waves**: Visual feedback when contributions create collective resonance
+- **🔮 Archetypal Prompts**: AI-generated guidance for expanding nodes across scientific, symbolic, and water-state lenses
+- **📊 Community Statistics**: Real-time display of active users, total contributions, and collective coherence
+- **🎨 Enhanced UI**: AI agent panel, community contributions panel, and contribution modal
+
 ## Fractal Growth
 - Each module can be **re-implemented** in parallel languages (see `impls/`).
 - Use Cursor prompts (below) to expand nodes, add edges, generate shaders, or author appendices.
@@ -52,23 +62,23 @@ This is a **Phase 2 complete** implementation of the Living Codex - a federated,
 
 ---
 
-## Phase 2 Validation
+## Phase 3 Validation
 
-Run the validation script to ensure Phase 2 compliance:
+Run the validation script to ensure Phase 3 compliance:
 ```bash
-python scripts/validate_phase2.py
+python scripts/validate_phase3.py
 ```
 
-## Next Steps (Phase 3)
+## Next Steps (Phase 4)
 
-The repository is now ready for Phase 3 enhancements:
-- **Resonance Contributions**: Community overlays, provenance of tuning acts
-- **AI Agent Integration**: Mirror-librarian prompts for node expansion
-- **Federation Features**: Enhanced ActivityPub endpoints and federated sync
-- **Multimodal Expression**: Sound engine, VR/AR exploration
+The repository is now ready for Phase 4 enhancements:
+- **Enhanced Federation**: Content-addressed storage, cross-instance synchronization
+- **Multimodal Expression**: Sound engine, VR/AR exploration, haptic feedback
+- **Advanced AI Integration**: Machine learning resonance patterns, predictive insights
+- **Quantum Resonance**: Quantum computing integration for resonance calculations
 
-## Cursor Prompts for Phase 3
-- *"Implement community resonance overlays showing collective tuning across users"*
-- *"Create AI agent prompts for expanding nodes with scientific, symbolic, and water-state lenses"*
-- *"Add sound engine mapping axes to musical intervals and water states to timbres"*
-- *"Enhance federation with content-addressed storage and cross-instance synchronization"*
+## Cursor Prompts for Phase 4
+- *"Implement content-addressed storage system with IPFS integration for community contributions"*
+- *"Create sound engine mapping resonance axes to musical intervals and water states to timbres"*
+- *"Add VR/AR support for immersive exploration of the Living Codex"*
+- *"Integrate quantum computing for advanced resonance pattern analysis"*
