@@ -15,12 +15,15 @@ schema_cypher = [
 
 create_node = """
 MERGE (n:Node {id: $id})
-SET n.name=$name, n.waterState=$waterState, n.archetype=$archetype, n.layer=$layer
+SET n.name=$name, n.waterState=$waterState, n.archetype=$archetype, n.layer=$layer,
+    n.essence=$essence, n.correspondences=$correspondences, n.geometry=$geometry,
+    n.harmonicRepresentation=$harmonicRepresentation
 """
 
 create_axis = """
 MERGE (a:Axis {name: $name})
-SET a.min=$min, a.max=$max, a.default=$default
+SET a.endA=$endA, a.endB=$endB, a.min=$min, a.max=$max, a.default=$default,
+    a.scaleLabels=$scaleLabels, a.harmonicMetaphor=$harmonicMetaphor, a.waterMetaphor=$waterMetaphor
 """
 
 rel_hasPart = """
@@ -53,17 +56,38 @@ def main():
                 for stmt in schema_cypher:
                     s.run(stmt)
                 for entry in seed["@graph"]:
+                    # Flatten complex objects for Neo4j compatibility
+                    correspondences = entry.get("correspondences", {})
+                    geometry = entry.get("geometry", {})
+                    harmonic = entry.get("harmonicRepresentation", {})
+                    
                     s.run(create_node, id=entry["@id"], name=entry["name"],
                           waterState=entry.get("waterState"),
                           archetype=entry.get("archetype", []),
-                          layer=entry.get("layer", "Seed"))
+                          layer=entry.get("layer", "Seed"),
+                          essence=entry.get("essence", ""),
+                          correspondences=json.dumps(correspondences),
+                          geometry=json.dumps(geometry),
+                          harmonicRepresentation=json.dumps(harmonic))
                     for child in entry.get("hasPart", []):
                         s.run(rel_hasPart, parent=entry["@id"], child=child)
                     if entry.get("isPartOf"):
                         s.run(rel_isPartOf, child=entry["@id"], parent=entry["isPartOf"])
+                
+                # Load axes
                 for ax in seed.get("axes", []):
-                    s.run(create_axis, **ax)
-            print("✓ Seed loaded → Neo4j")
+                    s.run(create_axis, 
+                          name=ax.get("name"),
+                          endA=ax.get("endA", ""),
+                          endB=ax.get("endB", ""),
+                          min=ax.get("min", 0),
+                          max=ax.get("max", 1),
+                          default=ax.get("default", 0.5),
+                          scaleLabels=ax.get("scaleLabels", []),
+                          harmonicMetaphor=ax.get("harmonicMetaphor", ""),
+                          waterMetaphor=ax.get("waterMetaphor", ""))
+                
+                print("✓ Seed loaded → Neo4j")
             
         except Exception as e:
             print(f"⚠ Neo4j connection failed: {e}")

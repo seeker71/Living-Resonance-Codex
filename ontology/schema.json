@@ -1,0 +1,102 @@
+{
+  "@context": {
+    "@vocab": "https://codex.example/",
+    "name": "http://schema.org/name",
+    "type": "@type",
+    "description": "http://schema.org/description",
+    "hasPart": {"@id": "http://schema.org/hasPart", "@type": "@id"},
+    "isPartOf": {"@id": "http://schema.org/isPartOf", "@type": "@id"},
+    "resonatesWith": {"@id": "https://codex.example/resonatesWith", "@type": "@id"},
+    "supports": {"@id": "https://codex.example/supports", "@type": "@id"},
+    "refines": {"@id": "https://codex.example/refines", "@type": "@id"},
+    "contrasts": {"@id": "https://codex.example/contrasts", "@type": "@id"},
+    "emergesFrom": {"@id": "https://codex.example/emergesFrom", "@type": "@id"},
+    "projectsTo": {"@id": "https://codex.example/projectsTo", "@type": "@id"},
+    "axis": "https://codex.example/axis",
+    "waterState": "https://codex.example/waterState",
+    "archetype": "https://codex.example/archetype",
+    "layer": "https://codex.example/layer",
+    "essence": "https://codex.example/essence",
+    "connections": "https://codex.example/connections",
+    "correspondences": "https://codex.example/correspondences",
+    "geometry": "https://codex.example/geometry",
+    "media": "https://codex.example/media",
+    "resonanceState": "https://codex.example/resonanceState",
+    "attribution": "https://codex.example/attribution",
+    "harmonicRepresentation": "https://codex.example/harmonicRepresentation",
+    "endA": "https://codex.example/endA",
+    "endB": "https://codex.example/endB",
+    "nodeA": "https://codex.example/nodeA",
+    "nodeB": "https://codex.example/nodeB",
+    "scaleLabels": "https://codex.example/scaleLabels",
+    "harmonicMetaphor": "https://codex.example/harmonicMetaphor",
+    "waterMetaphor": "https://codex.example/waterMetaphor",
+    "weight": "https://codex.example/weight",
+    "rationale": "https://codex.example/rationale",
+    "value": "https://codex.example/value",
+    "scope": "https://codex.example/scope",
+    "sampleCount": "https://codex.example/sampleCount",
+    "updatedAt": "https://codex.example/updatedAt",
+    "actor": "https://codex.example/actor",
+    "kind": "https://codex.example/kind",
+    "delta": "https://codex.example/delta",
+    "resonanceSnapshot": "https://codex.example/resonanceSnapshot",
+    "createdAt": "https://codex.example/createdAt",
+    "signature": "https://codex.example/signature",
+    "actorIdentifiers": "https://codex.example/actorIdentifiers",
+    "inbox": "https://codex.example/inbox",
+    "outbox": "https://codex.example/outbox",
+    "contentAddresses": "https://codex.example/contentAddresses"
+  },
+  "@type": "https://codex.example/Schema",
+  "name": "Living Codex Schema",
+  "description": "Complete schema for the Living Codex ontology including all node types, relationships, and metadata",
+  "nodeTypes": {
+    "Node": {
+      "description": "A concept, archetype, or principle in the Living Codex",
+      "required": ["@id", "name", "type", "layer", "waterState"],
+      "optional": ["essence", "archetype", "hasPart", "isPartOf", "connections", "correspondences", "geometry", "media", "resonanceState", "attribution", "harmonicRepresentation"]
+    },
+    "Axis": {
+      "description": "A vibrational spectrum between two poles",
+      "required": ["name", "endA", "endB"],
+      "optional": ["nodeA", "nodeB", "scaleLabels", "harmonicMetaphor", "waterMetaphor", "min", "max", "default"]
+    },
+    "Connection": {
+      "description": "A relational edge between nodes",
+      "required": ["subject", "predicate", "object"],
+      "optional": ["weight", "rationale"]
+    },
+    "ResonanceState": {
+      "description": "Individual or community resonance state",
+      "required": ["axis", "value", "scope"],
+      "optional": ["sampleCount", "updatedAt"]
+    },
+    "Contribution": {
+      "description": "An act of weaving or contributing to the codex",
+      "required": ["actor", "target", "kind", "delta"],
+      "optional": ["resonanceSnapshot", "createdAt", "signature"]
+    },
+    "Federation": {
+      "description": "Publication and federation metadata",
+      "required": ["actorIdentifiers"],
+      "optional": ["inbox", "outbox", "contentAddresses"]
+    }
+  },
+  "relationshipTypes": {
+    "resonatesWith": "Nodes that resonate with each other",
+    "supports": "One node supports another",
+    "refines": "One node refines or elaborates another",
+    "contrasts": "Nodes that contrast or oppose each other",
+    "emergesFrom": "One node emerges from another",
+    "projectsTo": "One node projects to or manifests as another"
+  },
+  "waterStates": [
+    "Plasma", "Vapor", "Liquid", "Ice", "Structured", "Clustered", 
+    "Supercritical", "ReflectiveSurface", "LiquidCrystalBoundary", 
+    "VaporLiquidEquilibrium", "SteamSpark", "AllStates"
+  ],
+  "contributionKinds": [
+    "create", "refine", "link", "annotate", "tune", "review", "attend"
+  ]
+}

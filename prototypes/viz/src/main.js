@@ -24,7 +24,7 @@ const palette = {
   AllStates: 0xffffff
 };
 
-// Simple Flower of Life points
+// Enhanced Flower of Life points with proper positioning
 function flowerPoints(radius=3, rings=2){
   const pts=[new THREE.Vector3(0,0,0)];
   for(let r=1;r<=rings;r++){
@@ -34,19 +34,27 @@ function flowerPoints(radius=3, rings=2){
   return pts;
 }
 
+// Get position from node geometry or fallback to flower pattern
+function getNodePosition(node, index, pts) {
+  if (node.geometry && node.geometry.position) {
+    return new THREE.Vector3(node.geometry.position[0], node.geometry.position[1], 0);
+  }
+  return pts[index % pts.length];
+}
+
 const nodes = [
-  { id: 'codex:Void', waterState:'Plasma' },
-  { id: 'codex:Field', waterState:'Vapor' },
-  { id: 'codex:Pattern', waterState:'Structured' },
-  { id: 'codex:Flow', waterState:'Liquid' },
-  { id: 'codex:Memory', waterState:'Ice' },
-  { id: 'codex:Resonance', waterState:'Clustered' },
-  { id: 'codex:Transformation', waterState:'Supercritical' },
-  { id: 'codex:Unity', waterState:'LiquidCrystalBoundary' },
-  { id: 'codex:Emergence', waterState:'VaporLiquidEquilibrium' },
-  { id: 'codex:Awareness', waterState:'ReflectiveSurface' },
-  { id: 'codex:Node', waterState:'SteamSpark' },
-  { id: 'codex:Codex', waterState:'AllStates' }
+  { id: 'codex:Void', waterState:'Plasma', geometry: { position: [0, 0], scale: 1.0 } },
+  { id: 'codex:Field', waterState:'Vapor', geometry: { position: [0, 3], scale: 0.8 } },
+  { id: 'codex:Pattern', waterState:'Structured', geometry: { position: [2.6, 1.5], scale: 0.8 } },
+  { id: 'codex:Flow', waterState:'Liquid', geometry: { position: [2.6, -1.5], scale: 0.8 } },
+  { id: 'codex:Memory', waterState:'Ice', geometry: { position: [0, -3], scale: 0.8 } },
+  { id: 'codex:Resonance', waterState:'Clustered', geometry: { position: [-2.6, -1.5], scale: 0.8 } },
+  { id: 'codex:Transformation', waterState:'Supercritical', geometry: { position: [-2.6, 1.5], scale: 0.8 } },
+  { id: 'codex:Unity', waterState:'LiquidCrystalBoundary', geometry: { position: [1.5, 2.6], scale: 0.6 } },
+  { id: 'codex:Emergence', waterState:'VaporLiquidEquilibrium', geometry: { position: [3, 0], scale: 0.6 } },
+  { id: 'codex:Awareness', waterState:'ReflectiveSurface', geometry: { position: [1.5, -2.6], scale: 0.6 } },
+  { id: 'codex:Node', waterState:'SteamSpark', geometry: { position: [-1.5, -2.6], scale: 0.6 } },
+  { id: 'codex:Codex', waterState:'AllStates', geometry: { position: [-3, 0], scale: 0.6 } }
 ];
 
 const pts = flowerPoints(3, 2);
@@ -54,9 +62,11 @@ const geo = new THREE.SphereGeometry(0.35, 24, 24);
 
 nodes.forEach((n,i)=>{
   const color = palette[n.waterState] || 0xffffff;
+  const scale = n.geometry?.scale || 1.0;
+  const geo = new THREE.SphereGeometry(0.35 * scale, 24, 24);
   const mat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.25, metalness: 0.1, roughness: 0.4 });
   const m = new THREE.Mesh(geo, mat);
-  const p = pts[i % pts.length];
+  const p = getNodePosition(n, i, pts);
   m.position.set(p.x, p.y, p.z);
   m.userData = n;
   scene.add(m);
