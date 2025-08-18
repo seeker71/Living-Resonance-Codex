@@ -1,0 +1,39 @@
+{
+  "@context": {
+    "name": "http://schema.org/name",
+    "type": "@type",
+    "hasPart": {"@id": "http://schema.org/hasPart", "@type": "@id"},
+    "isPartOf": {"@id": "http://schema.org/isPartOf", "@type": "@id"},
+    "resonatesWith": {"@id": "https://codex.example/resonatesWith", "@type": "@id"},
+    "axis": "https://codex.example/axis",
+    "waterState": "https://codex.example/waterState",
+    "archetype": "https://codex.example/archetype",
+    "layer": "https://codex.example/layer"
+  },
+  "@graph": [
+    {
+      "@id": "codex:Void",
+      "name": "Void",
+      "type": "Node",
+      "layer": "Seed",
+      "waterState": "Plasma",
+      "archetype": ["Aditi", "Ein Sof"],
+      "hasPart": ["codex:Field", "codex:Pattern"]
+    },
+    {"@id": "codex:Field", "name": "Field", "type": "Node", "waterState": "Vapor", "archetype": ["Ruach", "Shakti"], "isPartOf": "codex:Void"},
+    {"@id": "codex:Pattern", "name": "Pattern", "type": "Node", "waterState": "Structured", "archetype": ["Saraswati"], "isPartOf": "codex:Void"},
+    {"@id": "codex:Flow", "name": "Flow", "type": "Node", "waterState": "Liquid", "archetype": ["Ganga", "Tao"]},
+    {"@id": "codex:Memory", "name": "Memory", "type": "Node", "waterState": "Ice", "archetype": ["Mnemosyne"]},
+    {"@id": "codex:Resonance", "name": "Resonance", "type": "Node", "waterState": "Clustered", "archetype": ["Sandalphon"]},
+    {"@id": "codex:Transformation", "name": "Transformation", "type": "Node", "waterState": "Supercritical", "archetype": ["Kali", "Shiva"]},
+    {"@id": "codex:Unity", "name": "Unity", "type": "Node", "waterState": "LiquidCrystalBoundary", "archetype": ["Sophia", "KuanYin"]},
+    {"@id": "codex:Emergence", "name": "Emergence", "type": "Node", "waterState": "VaporLiquidEquilibrium", "archetype": ["Indra", "Persephone"]},
+    {"@id": "codex:Awareness", "name": "Awareness", "type": "Node", "waterState": "ReflectiveSurface", "archetype": ["Amaterasu", "Michael"]},
+    {"@id": "codex:Node", "name": "Node", "type": "Node", "waterState": "SteamSpark", "archetype": ["Hermes", "Thoth"]},
+    {"@id": "codex:Codex", "name": "Codex", "type": "Node", "waterState": "AllStates", "archetype": ["Narayana", "Pleroma"]}
+  ],
+  "axes": [
+    {"name": "Fear-Trust", "min": 0, "max": 1, "default": 0.5},
+    {"name": "Pattern-Flow", "min": 0, "max": 1, "default": 0.5}
+  ]
+}
