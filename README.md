@@ -1,6 +1,6 @@
-# Living Codex — Phase 3 Complete ✅
+# Living Codex — Phase 4 Complete ✅
 
-This is a **Phase 3 complete** implementation of the Living Codex - a federated, fractal knowledge system that integrates consciousness, archetypes, and resonance through water-state metaphors and harmonic principles, now with interactive sacred geometry, resonance dynamics, **community resonance overlays**, and **AI agent integration**.
+This is a **Phase 4 complete** implementation of the Living Codex - a federated, fractal knowledge system that integrates consciousness, archetypes, and resonance through water-state metaphors and harmonic principles, now with interactive sacred geometry, resonance dynamics, **community resonance overlays**, **AI agent integration**, and **content-addressed storage with enhanced federation**.
 
 ## Quickstart
 
@@ -20,7 +20,7 @@ This is a **Phase 3 complete** implementation of the Living Codex - a federated,
 4. **Federation stub (Node/Express):**
    - `node prototypes/federation/server.js`
 
-## Phase 3 Implementation Status ✅
+## Phase 4 Implementation Status ✅
 
 ### **Core Components (Complete)**
 - **`ontology/seed.json`** → Complete 12-node seed ontology with water-state mappings, archetypes, and harmonic representations
@@ -50,6 +50,15 @@ This is a **Phase 3 complete** implementation of the Living Codex - a federated,
 - **📊 Community Statistics**: Real-time display of active users, total contributions, and collective coherence
 - **🎨 Enhanced UI**: AI agent panel, community contributions panel, and contribution modal
 
+### **Phase 4 Federation & Storage Features**
+- **🔗 Content-Addressed Storage**: SHA-256 hashed contributions with IPFS-like addressing
+- **🌐 Enhanced Federation**: ActivityPub-compliant endpoints for cross-instance communication
+- **📊 Storage Manifest System**: Comprehensive metadata tracking for contributions, nodes, and users
+- **🔄 Cross-Instance Sync**: Export/import capabilities for federation between Living Codex instances
+- **📡 Federation Discovery**: Peer discovery and synchronization endpoints
+- **💾 Persistent Storage**: Local file-based storage with JSON manifest management
+- **🔍 Contribution Retrieval**: Hash-based lookup, node-based queries, and user-based queries
+
 ## Fractal Growth
 - Each module can be **re-implemented** in parallel languages (see `impls/`).
 - Use Cursor prompts (below) to expand nodes, add edges, generate shaders, or author appendices.
@@ -62,23 +71,23 @@ This is a **Phase 3 complete** implementation of the Living Codex - a federated,
 
 ---
 
-## Phase 3 Validation
+## Phase 4 Validation
 
-Run the validation script to ensure Phase 3 compliance:
+Run the validation script to ensure Phase 4 compliance:
 ```bash
-python scripts/validate_phase3.py
+python scripts/validate_phase4.py
 ```
 
-## Next Steps (Phase 4)
+## Next Steps (Phase 5)
 
-The repository is now ready for Phase 4 enhancements:
-- **Enhanced Federation**: Content-addressed storage, cross-instance synchronization
-- **Multimodal Expression**: Sound engine, VR/AR exploration, haptic feedback
+The repository is now ready for Phase 5 enhancements:
+- **Multi-Implementation**: Parallel implementations in different languages and frameworks
+- **Immersive Experience**: VR/AR exploration, haptic feedback, spatial computing
 - **Advanced AI Integration**: Machine learning resonance patterns, predictive insights
-- **Quantum Resonance**: Quantum computing integration for resonance calculations
+- **Quantum Resonance**: Quantum computing integration for advanced resonance calculations
 
-## Cursor Prompts for Phase 4
-- *"Implement content-addressed storage system with IPFS integration for community contributions"*
-- *"Create sound engine mapping resonance axes to musical intervals and water states to timbres"*
-- *"Add VR/AR support for immersive exploration of the Living Codex"*
-- *"Integrate quantum computing for advanced resonance pattern analysis"*
+## Cursor Prompts for Phase 5
+- *"Implement multi-language parallel versions of the Living Codex (Python, Rust, Go)"*
+- *"Create VR/AR immersive experience for spatial exploration of the Living Codex"*
+- *"Add haptic feedback and spatial audio for multi-sensory resonance experience"*
+- *"Integrate quantum computing for advanced resonance pattern analysis and quantum entanglement visualization"*

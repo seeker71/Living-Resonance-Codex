@@ -44,6 +44,7 @@
       "archetype": ["Ruach", "Shakti"],
       "essence": "Subtle connectivity and breath",
       "isPartOf": "codex:Void",
+      "hasPart": ["codex:Breath"],
       "correspondences": {
         "tradition": ["Judaism", "Hinduism"],
         "symbol": "Mist",
@@ -58,6 +59,30 @@
         "tone": "D",
         "ratio": "9:8",
         "chord": "major second"
+      }
+    },
+    {
+      "@id": "codex:Breath",
+      "name": "Breath",
+      "type": "Node",
+      "waterState": "Vapor",
+      "archetype": ["Prana", "Ruach"],
+      "essence": "Carrier of life and subtle conductivity",
+      "isPartOf": "codex:Field",
+      "correspondences": {
+        "tradition": ["Vedic", "Hebrew"],
+        "symbol": "Wind Spiral",
+        "note": "D♯ (raised second)"
+      },
+      "geometry": {
+        "layout": "third_ring",
+        "position": [4.2, 1.5],
+        "scale": 0.5
+      },
+      "harmonicRepresentation": {
+        "tone": "D#",
+        "ratio": "10:9",
+        "chord": "minor second"
       }
     },
     {

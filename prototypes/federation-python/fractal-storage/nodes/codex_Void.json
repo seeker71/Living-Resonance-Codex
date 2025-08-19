@@ -1,0 +1,161 @@
+{
+  "id": "codex:Void",
+  "name": "Void",
+  "water_state": "Plasma",
+  "archetype": [
+    "Primordial",
+    "Chaos",
+    "Potential"
+  ],
+  "resonance": 1.0,
+  "fractal_level": 1,
+  "subnodes": {
+    "codex:Void:scientific:empirical": {
+      "id": "codex:Void:scientific:empirical",
+      "name": "Void Empirical",
+      "water_state": "Structured",
+      "archetype": [
+        "Measurement",
+        "Observation",
+        "Data"
+      ],
+      "resonance": 0.8,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Void",
+      "created_at": "2025-08-18T20:08:56.000Z",
+      "updated_at": "2025-08-18T20:08:56.000Z"
+    },
+    "codex:Void:scientific:theoretical": {
+      "id": "codex:Void:scientific:theoretical",
+      "name": "Void Theoretical",
+      "water_state": "Vapor",
+      "archetype": [
+        "Hypothesis",
+        "Model",
+        "Framework"
+      ],
+      "resonance": 0.9,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Void",
+      "created_at": "2025-08-18T20:08:56.000Z",
+      "updated_at": "2025-08-18T20:08:56.000Z"
+    },
+    "codex:Void:scientific:experimental": {
+      "id": "codex:Void:scientific:experimental",
+      "name": "Void Experimental",
+      "water_state": "Liquid",
+      "archetype": [
+        "Testing",
+        "Validation",
+        "Discovery"
+      ],
+      "resonance": 0.7,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Void",
+      "created_at": "2025-08-18T20:08:56.000Z",
+      "updated_at": "2025-08-18T20:08:56.000Z"
+    },
+    "codex:Void:symbolic:archetypal": {
+      "id": "codex:Void:symbolic:archetypal",
+      "name": "Void Archetypal",
+      "water_state": "Plasma",
+      "archetype": [
+        "Myth",
+        "Symbol",
+        "Collective"
+      ],
+      "resonance": 0.9,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Void",
+      "created_at": "2025-08-18T20:08:56.000Z",
+      "updated_at": "2025-08-18T20:08:56.000Z"
+    },
+    "codex:Void:symbolic:cultural": {
+      "id": "codex:Void:symbolic:cultural",
+      "name": "Void Cultural",
+      "water_state": "Clustered",
+      "archetype": [
+        "Tradition",
+        "Society",
+        "Heritage"
+      ],
+      "resonance": 0.8,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Void",
+      "created_at": "2025-08-18T20:08:56.000Z",
+      "updated_at": "2025-08-18T20:08:56.000Z"
+    },
+    "codex:Void:symbolic:personal": {
+      "id": "codex:Void:symbolic:personal",
+      "name": "Void Personal",
+      "water_state": "ReflectiveSurface",
+      "archetype": [
+        "Individual",
+        "Subjective",
+        "Experience"
+      ],
+      "resonance": 0.7,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Void",
+      "created_at": "2025-08-18T20:08:56.000Z",
+      "updated_at": "2025-08-18T20:08:56.000Z"
+    },
+    "codex:Void:water:phase": {
+      "id": "codex:Void:water:phase",
+      "name": "Void Phase",
+      "water_state": "VaporLiquidEquilibrium",
+      "archetype": [
+        "Transition",
+        "Boundary",
+        "Change"
+      ],
+      "resonance": 0.8,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Void",
+      "created_at": "2025-08-18T20:08:56.000Z",
+      "updated_at": "2025-08-18T20:08:56.000Z"
+    },
+    "codex:Void:water:flow": {
+      "id": "codex:Void:water:flow",
+      "name": "Void Flow",
+      "water_state": "Liquid",
+      "archetype": [
+        "Movement",
+        "Direction",
+        "Current"
+      ],
+      "resonance": 0.9,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Void",
+      "created_at": "2025-08-18T20:08:56.000Z",
+      "updated_at": "2025-08-18T20:08:56.000Z"
+    },
+    "codex:Void:water:coherence": {
+      "id": "codex:Void:water:coherence",
+      "name": "Void Coherence",
+      "water_state": "LiquidCrystalBoundary",
+      "archetype": [
+        "Alignment",
+        "Harmony",
+        "Order"
+      ],
+      "resonance": 0.8,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Void",
+      "created_at": "2025-08-18T20:08:56.000Z",
+      "updated_at": "2025-08-18T20:08:56.000Z"
+    }
+  },
+  "parent_id": null,
+  "created_at": "2025-08-18T20:08:56.000Z",
+  "updated_at": "2025-08-18T20:08:56.000Z"
+}

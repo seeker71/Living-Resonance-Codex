@@ -496,6 +496,205 @@
       background: rgba(255, 68, 68, 0.3);
       border-color: rgba(255, 68, 68, 0.8);
     }
+
+    /* Phase 4: Node Details Panel Styles */
+    .node-details {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(0, 255, 255, 0.6);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      z-index: 3000;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    }
+
+    .node-details-content h3 {
+      color: #00ffff;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+      padding-bottom: 10px;
+    }
+
+    .node-details-content p {
+      color: #cccccc;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .node-details-content strong {
+      color: #00ffff;
+    }
+
+    .contributions-list {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(0, 255, 255, 0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .contributions-list h4 {
+      color: #00ffff;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    .contribution-item {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border-left: 3px solid #00ffff;
+    }
+
+    .contribution-item p {
+      margin: 5px 0;
+      font-size: 13px;
+    }
+
+    .contribution-meta {
+      color: #888888 !important;
+      font-size: 11px !important;
+      font-style: italic;
+    }
+
+    .contribute-form {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(0, 255, 255, 0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .contribute-form h4 {
+      color: #00ffff;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    .contribute-form textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 10px;
+      color: #ffffff;
+      font-size: 14px;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    .contribute-form textarea:focus {
+      outline: none;
+      border-color: rgba(0, 255, 255, 0.8);
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+
+    .resonance-slider {
+      margin-bottom: 15px;
+    }
+
+    .resonance-slider label {
+      color: #00ffff;
+      font-size: 14px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .resonance-slider input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .resonance-slider input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #00ffff;
+      background: #00ffff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    .contribute-form button {
+      background: rgba(0, 255, 255, 0.2);
+      border: 1px solid rgba(0, 255, 255, 0.5);
+      color: #00ffff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .contribute-form button:hover {
+      background: rgba(0, 255, 255, 0.3);
+      border-color: rgba(0, 255, 255, 0.8);
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    }
+
+    .close-btn {
+      background: rgba(255, 68, 68, 0.2);
+      border: 1px solid rgba(255, 68, 68, 0.5);
+      color: #ff4444;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 68, 68, 0.3);
+      border-color: rgba(255, 68, 68, 0.8);
+      box-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
+    }
+
+    /* Enhanced Community Stats */
+    .community-stats {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(0, 255, 255, 0.05);
+      border-radius: 10px;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .community-stats h3 {
+      color: #00ffff;
+      font-size: 18px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .community-stats p {
+      color: #cccccc;
+      margin-bottom: 8px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .community-stats span {
+      color: #00ffff;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -678,6 +877,7 @@
           <select id="contribution-node">
             <option value="codex:Void">Void</option>
             <option value="codex:Field">Field</option>
+            <option value="codex:Breath">Breath</option>
             <option value="codex:Pattern">Pattern</option>
             <option value="codex:Flow">Flow</option>
             <option value="codex:Memory">Memory</option>

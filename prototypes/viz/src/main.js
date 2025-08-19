@@ -17,18 +17,72 @@ class LivingCodexViz {
       resonanceAmplitude: 1.0
     };
     
-    // Phase 3: Community Resonance Features
-    this.communityResonance = {
-      users: new Map(), // User ID -> resonance state
-      collectiveTuning: new Map(), // Node ID -> collective resonance
-      contributionHistory: [], // Array of tuning acts
-      aiAgent: {
-        active: false,
-        currentPrompt: '',
-        response: '',
-        nodeFocus: null
+      // Phase 3: Community Resonance Features
+  this.communityResonance = {
+    users: new Map(), // User ID -> resonance state
+    collectiveTuning: new Map(), // Node ID -> collective resonance
+    contributionHistory: [], // Array of tuning acts
+    aiAgent: {
+      active: false,
+      currentPrompt: '',
+      response: '',
+      nodeFocus: null
+    }
+  };
+
+  // Phase 4: Federation Integration
+  this.federationClient = {
+    baseUrl: 'http://localhost:8787',
+    async fetchContributions(nodeId) {
+      try {
+        const response = await fetch(`${this.baseUrl}/contributions/node/${nodeId}`);
+        if (response.ok) {
+          return await response.json();
+        }
+        return { contributions: [], count: 0 };
+      } catch (error) {
+        console.error(`Error fetching contributions for ${nodeId}:`, error);
+        return { contributions: [], count: 0 };
       }
-    };
+    },
+    async postContribution(contribution) {
+      try {
+        const activity = {
+          type: 'Create',
+          actor: 'viz@localhost',
+          object: {
+            type: 'Contribution',
+            nodeId: contribution.nodeId,
+            content: contribution.content,
+            resonance: contribution.resonance
+          }
+        };
+        
+        const response = await fetch(`${this.baseUrl}/inbox`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/activity+json' },
+          body: JSON.stringify(activity)
+        });
+        
+        return response.ok;
+      } catch (error) {
+        console.error('Error posting contribution:', error);
+        return false;
+      }
+    },
+    async getStorageStats() {
+      try {
+        const response = await fetch(`${this.baseUrl}/storage/stats`);
+        if (response.ok) {
+          return await response.json();
+        }
+        return null;
+      } catch (error) {
+        console.error('Error fetching storage stats:', error);
+        return null;
+      }
+    }
+  };
     
     // Phase 3: Enhanced Resonance Dynamics
     this.resonanceLayers = {
@@ -62,8 +116,11 @@ class LivingCodexViz {
     // Create edges
     this.createEdges();
     
-    // Phase 3: Create community resonance overlay
-    this.createCommunityOverlay();
+      // Phase 3: Create community resonance overlay
+  this.createCommunityOverlay();
+  
+  // Phase 4: Initialize federation integration
+  this.initializeFederationIntegration();
     
     // Setup controls
     this.setupControls();
@@ -374,6 +431,161 @@ class LivingCodexViz {
       } else {
         ring.material.color.setHex(0xff4444); // Red for low resonance
       }
+    }
+  }
+
+  // Phase 4: Initialize federation integration
+  async initializeFederationIntegration() {
+    try {
+      // Fetch initial community data
+      await this.refreshCommunityData();
+      
+      // Set up periodic refresh
+      setInterval(() => this.refreshCommunityData(), 10000); // Refresh every 10 seconds
+      
+      console.log('✓ Federation integration initialized');
+    } catch (error) {
+      console.error('Error initializing federation integration:', error);
+    }
+  }
+
+  // Phase 4: Refresh community data from federation server
+  async refreshCommunityData() {
+    try {
+      // Fetch contributions for each node
+      for (const node of this.nodes) {
+        const nodeId = node.userData.id;
+        const data = await this.federationClient.fetchContributions(nodeId);
+        
+        if (data.contributions && data.contributions.length > 0) {
+          // Calculate collective resonance from contributions
+          const totalResonance = data.contributions.reduce((sum, contrib) => sum + contrib.resonance, 0);
+          const avgResonance = totalResonance / data.contributions.length;
+          
+          // Update community resonance layer
+          this.resonanceLayers.community.set(nodeId, avgResonance);
+          
+          // Update community overlay
+          this.updateCommunityOverlay(nodeId, avgResonance);
+          
+          // Store contribution count for display
+          node.userData.contributionCount = data.count;
+        }
+      }
+      
+      // Update storage stats display
+      await this.updateStorageStatsDisplay();
+      
+    } catch (error) {
+      console.error('Error refreshing community data:', error);
+    }
+  }
+
+  // Phase 4: Update storage stats display
+  async updateStorageStatsDisplay() {
+    try {
+      const stats = await this.federationClient.getStorageStats();
+      if (stats) {
+        // Update UI with storage statistics
+        this.updateCommunityStats(stats);
+      }
+    } catch (error) {
+      console.error('Error updating storage stats:', error);
+    }
+  }
+
+  // Phase 4: Update community statistics display
+  updateCommunityStats(stats) {
+    // Find or create stats display element
+    let statsElement = document.getElementById('community-stats');
+    if (!statsElement) {
+      statsElement = document.createElement('div');
+      statsElement.id = 'community-stats';
+      statsElement.className = 'community-stats';
+      statsElement.innerHTML = `
+        <h3>Community Statistics</h3>
+        <p>Total Contributions: <span id="total-contributions">${stats.totalContributions}</span></p>
+        <p>Active Nodes: <span id="total-nodes">${stats.totalNodes}</span></p>
+        <p>Active Users: <span id="total-users">${stats.totalUsers}</span></p>
+        <p>Storage Size: <span id="total-size">${(stats.totalSize / 1024).toFixed(1)} KB</span></p>
+      `;
+      
+      // Add to the community panel
+      const communityPanel = document.getElementById('community-panel');
+      if (communityPanel) {
+        communityPanel.appendChild(statsElement);
+      }
+    } else {
+      // Update existing stats
+      document.getElementById('total-contributions').textContent = stats.totalContributions;
+      document.getElementById('total-nodes').textContent = stats.totalNodes;
+      document.getElementById('total-users').textContent = stats.totalUsers;
+      document.getElementById('total-size').textContent = (stats.totalSize / 1024).toFixed(1) + ' KB';
+    }
+  }
+
+  // Phase 4: Post contribution from visualization
+  async postContribution(nodeId, content, resonance) {
+    try {
+      const success = await this.federationClient.postContribution({
+        nodeId,
+        content,
+        resonance
+      });
+      
+      if (success) {
+        // Refresh community data to show new contribution
+        await this.refreshCommunityData();
+        
+        // Create visual feedback
+        this.createContributionFeedback(nodeId, content);
+        
+        return true;
+      } else {
+        console.error('Failed to post contribution');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error posting contribution:', error);
+      return false;
+    }
+  }
+
+  // Phase 4: Create visual feedback for new contribution
+  createContributionFeedback(nodeId, content) {
+    const node = this.nodes.find(n => n.userData.id === nodeId);
+    if (node) {
+      // Create contribution particle effect
+      const particleGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+      const particleMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00ff88,
+        transparent: true,
+        opacity: 0.8
+      });
+      
+      const particle = new THREE.Mesh(particleGeometry, particleMaterial);
+      particle.position.copy(node.position);
+      particle.position.z = 0.5;
+      
+      this.scene.add(particle);
+      
+      // Animate particle
+      const startTime = Date.now();
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = elapsed / 2000; // 2 second animation
+        
+        if (progress < 1) {
+          particle.position.y += 0.02;
+          particle.material.opacity = 0.8 * (1 - progress);
+          particle.scale.setScalar(1 + progress);
+          requestAnimationFrame(animate);
+        } else {
+          this.scene.remove(particle);
+        }
+      };
+      
+      animate();
     }
   }
   
@@ -1186,11 +1398,106 @@ Each subnode should reveal deeper wisdom and create new resonance pathways.`;
     
     this.scene.add(focusRing);
     
+    // Phase 4: Show node details and contributions
+    this.showNodeDetails(node);
+    
     // Remove focus effect after delay
     setTimeout(() => {
       this.scene.remove(focusRing);
       node.material.emissiveIntensity = 0.25 * node.userData.currentResonance;
     }, 2000);
+  }
+
+  // Phase 4: Show node details and contributions
+  async showNodeDetails(node) {
+    const nodeId = node.userData.id;
+    
+    // Fetch contributions for this node
+    const data = await this.federationClient.fetchContributions(nodeId);
+    
+    // Create or update node details panel
+    let detailsPanel = document.getElementById('node-details');
+    if (!detailsPanel) {
+      detailsPanel = document.createElement('div');
+      detailsPanel.id = 'node-details';
+      detailsPanel.className = 'node-details';
+      document.body.appendChild(detailsPanel);
+    }
+    
+    // Update panel content
+    detailsPanel.innerHTML = `
+      <div class="node-details-content">
+        <h3>${node.userData.name || nodeId}</h3>
+        <p><strong>Water State:</strong> ${node.userData.waterState || 'Unknown'}</p>
+        <p><strong>Archetype:</strong> ${(node.userData.archetype || []).join(', ') || 'None'}</p>
+        <p><strong>Community Contributions:</strong> ${data.count || 0}</p>
+        <p><strong>Community Resonance:</strong> ${(this.resonanceLayers.community.get(nodeId) || 0.5).toFixed(2)}</p>
+        
+        <div class="contributions-list">
+          <h4>Recent Contributions:</h4>
+          ${data.contributions && data.contributions.length > 0 ? 
+            data.contributions.slice(0, 3).map(contrib => `
+              <div class="contribution-item">
+                <p><strong>${contrib.userId}:</strong> ${contrib.content}</p>
+                <p class="contribution-meta">Resonance: ${contrib.resonance.toFixed(2)} | ${new Date(contrib.timestamp).toLocaleString()}</p>
+              </div>
+            `).join('') : 
+            '<p>No contributions yet</p>'
+          }
+        </div>
+        
+        <div class="contribute-form">
+          <h4>Add Contribution:</h4>
+          <textarea id="contribution-content" placeholder="Share your insight about this node..." rows="3"></textarea>
+          <div class="resonance-slider">
+            <label>Resonance: <span id="resonance-value">0.5</span></label>
+            <input type="range" id="resonance-slider" min="0" max="1" step="0.01" value="0.5">
+          </div>
+          <button onclick="viz.submitContribution('${nodeId}')">Submit Contribution</button>
+        </div>
+        
+        <button class="close-btn" onclick="document.getElementById('node-details').remove()">Close</button>
+      </div>
+    `;
+    
+    // Set up resonance slider
+    const slider = document.getElementById('resonance-slider');
+    const value = document.getElementById('resonance-value');
+    if (slider && value) {
+      slider.addEventListener('input', (e) => {
+        value.textContent = e.target.value;
+      });
+    }
+    
+    // Position panel
+    detailsPanel.style.display = 'block';
+  }
+
+  // Phase 4: Submit contribution from node details
+  async submitContribution(nodeId) {
+    const content = document.getElementById('contribution-content')?.value;
+    const resonance = parseFloat(document.getElementById('resonance-slider')?.value || '0.5');
+    
+    if (!content || content.trim() === '') {
+      alert('Please enter a contribution');
+      return;
+    }
+    
+    const success = await this.postContribution(nodeId, content.trim(), resonance);
+    if (success) {
+      alert('Contribution submitted successfully!');
+      document.getElementById('contribution-content').value = '';
+      document.getElementById('resonance-slider').value = '0.5';
+      document.getElementById('resonance-value').textContent = '0.5';
+      
+      // Refresh node details
+      const node = this.nodes.find(n => n.userData.id === nodeId);
+      if (node) {
+        this.showNodeDetails(node);
+      }
+    } else {
+      alert('Failed to submit contribution. Please try again.');
+    }
   }
   
   onWindowResize() {
