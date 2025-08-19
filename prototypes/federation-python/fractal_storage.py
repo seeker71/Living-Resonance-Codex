@@ -22,6 +22,10 @@ class FractalNode(BaseModel):
     fractal_level: int = 1
     subnodes: Dict[str, 'FractalNode'] = {}
     parent_id: Optional[str] = None
+    chakra: Optional[str] = None
+    color_hex: Optional[str] = None
+    base_frequency_hz: Optional[float] = None
+    planet: Optional[str] = None
     created_at: str = Field(default_factory=lambda: time.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
     updated_at: str = Field(default_factory=lambda: time.strftime("%Y-%m-%dT%H:%M:%S.000Z"))
 
@@ -45,8 +49,67 @@ class FractalStorage:
         self.manifest_path = self.storage_path / "manifest.json"
         
         self.ensure_storage_exists()
-        self.initialize_fractal_nodes()
-        
+        # try to bootstrap from Graph API first, then fallback
+        try:
+            import requests
+            api = os.getenv("GRAPH_API_URL", "http://localhost:8000")
+            r = requests.get(f"{api}/nodes", timeout=2)
+            if r.ok:
+                nodes = {n.get("id"): n for n in r.json() if n.get("id", "").startswith("codex:")}
+                self.initialize_fractal_nodes(bootstrap=nodes)
+            else:
+                self.initialize_fractal_nodes()
+        except Exception:
+            self.initialize_fractal_nodes()
+
+    def _core_chakra_info(self) -> Dict[str, Dict[str, Any]]:
+        return {
+            "Root": {"color_hex": "#8B0000", "base_frequency_hz": 396.0},
+            "Sacral": {"color_hex": "#FF7F50", "base_frequency_hz": 417.0},
+            "SolarPlexus": {"color_hex": "#FFD700", "base_frequency_hz": 528.0},
+            "Heart": {"color_hex": "#32CD32", "base_frequency_hz": 639.0},
+            "Throat": {"color_hex": "#1E90FF", "base_frequency_hz": 741.0},
+            "ThirdEye": {"color_hex": "#8A2BE2", "base_frequency_hz": 852.0},
+            "Crown": {"color_hex": "#EE82EE", "base_frequency_hz": 963.0},
+        }
+
+    def _core_chakra_map(self) -> Dict[str, str]:
+        return {
+            "codex:Transformation": "Root",
+            "codex:Resonance": "Sacral",
+            "codex:Memory": "SolarPlexus",
+            "codex:Flow": "Heart",
+            "codex:Pattern": "Throat",
+            "codex:Field": "ThirdEye",
+            "codex:Void": "Crown",
+        }
+
+    def _core_planet_map(self) -> Dict[str, str]:
+        return {
+            "codex:Transformation": "Mars",
+            "codex:Resonance": "Venus",
+            "codex:Memory": "Saturn",
+            "codex:Flow": "Moon",
+            "codex:Pattern": "Mercury",
+            "codex:Field": "Jupiter",
+            "codex:Void": "Sun",
+        }
+
+    def _apply_core_defaults(self, node_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        chakra_map = self._core_chakra_map()
+        chakra_info = self._core_chakra_info()
+        planet_map = self._core_planet_map()
+        chakra = data.get("chakra") or chakra_map.get(node_id)
+        if chakra:
+            data["chakra"] = chakra
+            info = chakra_info.get(chakra)
+            if info:
+                data.setdefault("color_hex", info.get("color_hex"))
+                data.setdefault("base_frequency_hz", info.get("base_frequency_hz"))
+        if not data.get("planet") and node_id in planet_map:
+            data["planet"] = planet_map[node_id]
+        return data
+    
     def ensure_storage_exists(self):
         """Create storage directory structure"""
         self.storage_path.mkdir(parents=True, exist_ok=True)
@@ -75,8 +138,10 @@ class FractalStorage:
         with open(self.manifest_path, 'w') as f:
             json.dump(manifest, f, indent=2)
     
-    def initialize_fractal_nodes(self):
+    def initialize_fractal_nodes(self, bootstrap: Optional[Dict[str, Any]] = None):
         """Initialize the base nodes with fractal expansion potential"""
+        CHAKRA_INFO = self._core_chakra_info()
+
         base_nodes = {
             "codex:Void": {
                 "name": "Void",
@@ -163,12 +228,27 @@ class FractalStorage:
                 "fractal_level": 1
             }
         }
-        
+
+        # If bootstrap data present, override chakra/color/planet/frequency
+        if bootstrap:
+            for nid, meta in bootstrap.items():
+                if nid in base_nodes:
+                    base_nodes[nid]["chakra"] = meta.get("chakra")
+                    base_nodes[nid]["color_hex"] = meta.get("colorHex")
+                    base_nodes[nid]["base_frequency_hz"] = meta.get("baseFrequencyHz")
+                    base_nodes[nid]["planet"] = meta.get("planet")
+
+        # Apply defaults where missing
+        for _id in list(base_nodes.keys()):
+            base_nodes[_id] = self._apply_core_defaults(_id, base_nodes[_id])
+
         # Create base nodes
         for node_id, node_data in base_nodes.items():
+            # Ensure all defaults applied before persisting
+            node_data = self._apply_core_defaults(node_id, node_data)
             fractal_node = FractalNode(id=node_id, **node_data)
             self.store_node(fractal_node)
-            
+
             # Expand into fractal subnodes
             self.expand_node_fractally(fractal_node)
     
@@ -185,7 +265,11 @@ class FractalStorage:
                 "archetype": ["Measurement", "Observation", "Data"],
                 "resonance": base_node.resonance * 0.8,
                 "fractal_level": 2,
-                "parent_id": base_node.id
+                "parent_id": base_node.id,
+                "chakra": base_node.chakra,
+                "color_hex": base_node.color_hex,
+                "base_frequency_hz": base_node.base_frequency_hz,
+                "planet": base_node.planet
             },
             f"{base_node.id}:scientific:theoretical": {
                 "id": f"{base_node.id}:scientific:theoretical",
@@ -194,7 +278,11 @@ class FractalStorage:
                 "archetype": ["Hypothesis", "Model", "Framework"],
                 "resonance": base_node.resonance * 0.9,
                 "fractal_level": 2,
-                "parent_id": base_node.id
+                "parent_id": base_node.id,
+                "chakra": base_node.chakra,
+                "color_hex": base_node.color_hex,
+                "base_frequency_hz": base_node.base_frequency_hz,
+                "planet": base_node.planet
             },
             f"{base_node.id}:scientific:experimental": {
                 "id": f"{base_node.id}:scientific:experimental",
@@ -203,7 +291,11 @@ class FractalStorage:
                 "archetype": ["Testing", "Validation", "Discovery"],
                 "resonance": base_node.resonance * 0.7,
                 "fractal_level": 2,
-                "parent_id": base_node.id
+                "parent_id": base_node.id,
+                "chakra": base_node.chakra,
+                "color_hex": base_node.color_hex,
+                "base_frequency_hz": base_node.base_frequency_hz,
+                "planet": base_node.planet
             }
         }
         
@@ -216,7 +308,11 @@ class FractalStorage:
                 "archetype": ["Myth", "Symbol", "Collective"],
                 "resonance": base_node.resonance * 0.9,
                 "fractal_level": 2,
-                "parent_id": base_node.id
+                "parent_id": base_node.id,
+                "chakra": base_node.chakra,
+                "color_hex": base_node.color_hex,
+                "base_frequency_hz": base_node.base_frequency_hz,
+                "planet": base_node.planet
             },
             f"{base_node.id}:symbolic:cultural": {
                 "id": f"{base_node.id}:symbolic:cultural",
@@ -225,7 +321,11 @@ class FractalStorage:
                 "archetype": ["Tradition", "Society", "Heritage"],
                 "resonance": base_node.resonance * 0.8,
                 "fractal_level": 2,
-                "parent_id": base_node.id
+                "parent_id": base_node.id,
+                "chakra": base_node.chakra,
+                "color_hex": base_node.color_hex,
+                "base_frequency_hz": base_node.base_frequency_hz,
+                "planet": base_node.planet
             },
             f"{base_node.id}:symbolic:personal": {
                 "id": f"{base_node.id}:symbolic:personal",
@@ -234,7 +334,11 @@ class FractalStorage:
                 "archetype": ["Individual", "Subjective", "Experience"],
                 "resonance": base_node.resonance * 0.7,
                 "fractal_level": 2,
-                "parent_id": base_node.id
+                "parent_id": base_node.id,
+                "chakra": base_node.chakra,
+                "color_hex": base_node.color_hex,
+                "base_frequency_hz": base_node.base_frequency_hz,
+                "planet": base_node.planet
             }
         }
         
@@ -247,7 +351,11 @@ class FractalStorage:
                 "archetype": ["Transition", "Boundary", "Change"],
                 "resonance": base_node.resonance * 0.8,
                 "fractal_level": 2,
-                "parent_id": base_node.id
+                "parent_id": base_node.id,
+                "chakra": base_node.chakra,
+                "color_hex": base_node.color_hex,
+                "base_frequency_hz": base_node.base_frequency_hz,
+                "planet": base_node.planet
             },
             f"{base_node.id}:water:flow": {
                 "id": f"{base_node.id}:water:flow",
@@ -256,7 +364,11 @@ class FractalStorage:
                 "archetype": ["Movement", "Direction", "Current"],
                 "resonance": base_node.resonance * 0.9,
                 "fractal_level": 2,
-                "parent_id": base_node.id
+                "parent_id": base_node.id,
+                "chakra": base_node.chakra,
+                "color_hex": base_node.color_hex,
+                "base_frequency_hz": base_node.base_frequency_hz,
+                "planet": base_node.planet
             },
             f"{base_node.id}:water:coherence": {
                 "id": f"{base_node.id}:water:coherence",
@@ -265,7 +377,11 @@ class FractalStorage:
                 "archetype": ["Alignment", "Harmony", "Order"],
                 "resonance": base_node.resonance * 0.8,
                 "fractal_level": 2,
-                "parent_id": base_node.id
+                "parent_id": base_node.id,
+                "chakra": base_node.chakra,
+                "color_hex": base_node.color_hex,
+                "base_frequency_hz": base_node.base_frequency_hz,
+                "planet": base_node.planet
             }
         }
         
@@ -324,6 +440,8 @@ class FractalStorage:
         if node_path.exists():
             with open(node_path, 'r') as f:
                 node_data = json.load(f)
+                # Backfill any missing core defaults for robustness
+                node_data = self._apply_core_defaults(node_id, node_data)
                 return FractalNode(**node_data)
         return None
     
@@ -440,6 +558,10 @@ class FractalStorage:
             "name": node.name,
             "fractal_level": node.fractal_level,
             "parent_id": node.parent_id,
+            "chakra": node.chakra,
+            "color_hex": node.color_hex,
+            "base_frequency_hz": node.base_frequency_hz,
+            "planet": node.planet,
             "updated_at": node.updated_at
         }
         

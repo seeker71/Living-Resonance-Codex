@@ -256,20 +256,8 @@ echo.
 echo %BLUE%Installing Node.js dependencies...%RESET%
 echo.
 
-:: Federation Node.js dependencies
-if exist "prototypes\federation\package.json" (
-    echo %YELLOW%Installing federation Node.js dependencies...%RESET%
-    cd prototypes\federation
-    npm install
-    if %errorLevel% neq 0 (
-        echo %RED%Failed to install federation Node.js dependencies%RESET%
-    ) else (
-        echo %GREEN%federation Node.js dependencies installed successfully%RESET%
-    )
-    cd ..\..
-) else (
-    echo %YELLOW%federation package.json not found%RESET%
-)
+:: (Removed) Phase 4 Node federation prototype dependencies
+:: The old Node federation prototype has been removed. Viz now targets the Phase 5 Python server.
 
 :: Viz dependencies
 if exist "prototypes\viz\package.json" (

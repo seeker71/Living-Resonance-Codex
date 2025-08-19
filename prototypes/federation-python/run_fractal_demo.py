@@ -11,6 +11,7 @@ import json
 import sys
 import os
 from pathlib import Path
+import shutil
 
 class FractalDemoRunner:
     """End-to-end demo runner for the fractal federation server"""
@@ -302,7 +303,7 @@ class FractalDemoRunner:
             return False
     
     def cleanup(self):
-        """Clean up server process"""
+        """Clean up server process and storage"""
         if self.server_process:
             self.log("Stopping server...")
             try:
@@ -314,6 +315,16 @@ class FractalDemoRunner:
                 self.server_process.kill()
             except Exception as e:
                 self.log(f"⚠️  Error stopping server: {e}")
+
+        # Clean up fractal-storage directory
+        storage_path = Path("fractal-storage")
+        if storage_path.exists() and storage_path.is_dir():
+            self.log("Cleaning up fractal-storage directory...")
+            try:
+                shutil.rmtree(storage_path)
+                self.log("✅ Fractal-storage directory cleaned up")
+            except Exception as e:
+                self.log(f"⚠️  Error cleaning up fractal-storage: {e}")
 
 def main():
     """Main entry point"""

@@ -216,6 +216,16 @@ async def get_fractal_node(node_id: str):
         
         # Add fractal context information
         node_data = node.dict()
+        # Backfill any missing correspondence fields at response time
+        if not node_data.get("planet"):
+            node_data["planet"] = fractal_storage._core_planet_map().get(node_id)
+        if not node_data.get("chakra"):
+            chakra = fractal_storage._core_chakra_map().get(node_id)
+            node_data["chakra"] = chakra
+            info = fractal_storage._core_chakra_info().get(chakra or "")
+            if info:
+                node_data.setdefault("color_hex", info.get("color_hex"))
+                node_data.setdefault("base_frequency_hz", info.get("base_frequency_hz"))
         if node.fractal_level == 1:
             node_data["fractal_context"] = "base_node"
             node_data["expansion_available"] = True

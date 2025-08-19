@@ -46,7 +46,11 @@
     "actorIdentifiers": "https://codex.example/actorIdentifiers",
     "inbox": "https://codex.example/inbox",
     "outbox": "https://codex.example/outbox",
-    "contentAddresses": "https://codex.example/contentAddresses"
+    "contentAddresses": "https://codex.example/contentAddresses",
+    "chakra": "https://codex.example/chakra",
+    "colorHex": "https://codex.example/colorHex",
+    "baseFrequencyHz": "https://codex.example/baseFrequencyHz",
+    "planet": "https://codex.example/planet"
   },
   "@type": "https://codex.example/Schema",
   "name": "Living Codex Schema",
@@ -55,7 +59,11 @@
     "Node": {
       "description": "A concept, archetype, or principle in the Living Codex",
       "required": ["@id", "name", "type", "layer", "waterState"],
-      "optional": ["essence", "archetype", "hasPart", "isPartOf", "connections", "correspondences", "geometry", "media", "resonanceState", "attribution", "harmonicRepresentation"]
+      "optional": [
+        "essence", "archetype", "hasPart", "isPartOf", "connections", "correspondences",
+        "geometry", "media", "resonanceState", "attribution", "harmonicRepresentation",
+        "chakra", "colorHex", "baseFrequencyHz", "planet"
+      ]
     },
     "Axis": {
       "description": "A vibrational spectrum between two poles",
@@ -92,11 +100,20 @@
     "projectsTo": "One node projects to or manifests as another"
   },
   "waterStates": [
-    "Plasma", "Vapor", "Liquid", "Ice", "Structured", "Clustered", 
-    "Supercritical", "ReflectiveSurface", "LiquidCrystalBoundary", 
+    "Plasma", "Vapor", "Liquid", "Ice", "Structured", "Clustered",
+    "Supercritical", "ReflectiveSurface", "LiquidCrystalBoundary",
     "VaporLiquidEquilibrium", "SteamSpark", "AllStates"
   ],
   "contributionKinds": [
     "create", "refine", "link", "annotate", "tune", "review", "attend"
+  ],
+  "coreCorrespondence": [
+    {"node": "codex:Transformation", "chakra": "Root", "planet": "Mars", "colorHex": "#8B0000", "baseFrequencyHz": 396},
+    {"node": "codex:Resonance", "chakra": "Sacral", "planet": "Venus", "colorHex": "#FF7F50", "baseFrequencyHz": 417},
+    {"node": "codex:Memory", "chakra": "SolarPlexus", "planet": "Saturn", "colorHex": "#FFD700", "baseFrequencyHz": 528},
+    {"node": "codex:Flow", "chakra": "Heart", "planet": "Moon", "colorHex": "#32CD32", "baseFrequencyHz": 639},
+    {"node": "codex:Pattern", "chakra": "Throat", "planet": "Mercury", "colorHex": "#1E90FF", "baseFrequencyHz": 741},
+    {"node": "codex:Field", "chakra": "ThirdEye", "planet": "Jupiter", "colorHex": "#8A2BE2", "baseFrequencyHz": 852},
+    {"node": "codex:Void", "chakra": "Crown", "planet": "Sun", "colorHex": "#EE82EE", "baseFrequencyHz": 963}
   ]
 }

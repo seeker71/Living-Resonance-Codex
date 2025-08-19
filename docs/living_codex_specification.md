@@ -28,7 +28,7 @@ The **Living Codex** is a recursive, fractal, federated network of ideas, archet
 ## Structural Components
 
 ### Node (Concept/Archetype/Principle)
-**Attributes:** Name; Essence; Layer; hasPart/isPartOf; Axes; Connections; Correspondences (tradition/symbol/note); Geometry (layout/position/scale); Media; ResonanceState; Attribution; Water-state metaphor; Harmonic representation (tone/ratio/chord).
+**Attributes:** Name; Essence; Layer; hasPart/isPartOf; Axes; Connections; Correspondences (tradition/symbol/note); Geometry (layout/position/scale); Media; ResonanceState; Attribution; Water-state metaphor; Harmonic representation (tone/ratio/chord); Chakra; ColorHex; BaseFrequencyHz; Planet.
 
 ### Axis (Vibrational Spectrum)
 **Attributes:** name; endA/endB; nodeA/nodeB; scale labels; harmonic metaphor; water metaphor.
@@ -62,6 +62,26 @@ The **Living Codex** is a recursive, fractal, federated network of ideas, archet
 - **Awareness** — Surface/Reflective (interface mirror)
 - **Node** — Steam/Plasma Spark (radiant manifestation)
 - **Codex** — All States Interwoven (holographic exemplar)
+
+### Core Correspondence Map (Chakra • Planet • Color • Frequency)
+These correspondences ground the core layer in a consistent color–sound–cosmos mapping. Frequencies follow a Solfeggio‑style ascending assignment for interpretive sonification; colors use a chakra palette. Planets are archetypal mirrors.
+
+| Node               | Chakra        | Planet | ColorHex | BaseFrequencyHz |
+|--------------------|---------------|--------|----------|-----------------|
+| Transformation     | Root          | Mars   | #8B0000  | 396             |
+| Resonance          | Sacral        | Venus  | #FF7F50  | 417             |
+| Memory             | Solar Plexus  | Saturn | #FFD700  | 528             |
+| Flow               | Heart         | Moon   | #32CD32  | 639             |
+| Pattern            | Throat        | Mercury| #1E90FF  | 741             |
+| Field              | Third Eye     | Jupiter| #8A2BE2  | 852             |
+| Void               | Crown         | Sun    | #EE82EE  | 963             |
+| Unity              | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
+| Emergence          | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
+| Awareness          | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
+| Node               | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
+| Codex              | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
+
+Implementation note: these fields are persisted on the core fractal level and inherited by second‑level subnodes so cortexes and sonification engines can render consistent colors/tones without recomputation.
 
 ### Primary Axes (Compass)
 - **Void ↔ Field** (Silence ↔ Sound)
@@ -123,7 +143,7 @@ The **Living Codex** is a recursive, fractal, federated network of ideas, archet
 ---
 
 ## Fifth Fractal Layer — Technological Prototypes
-- **Graph Backbone:** JSON‑LD/RDF/Neo4j with recursive nodes; GraphQL endpoint.
+- **Graph Backbone:** JSON‑LD/RDF/Neo4j with recursive nodes; GraphQL endpoint. Node schema includes Chakra, ColorHex, BaseFrequencyHz, Planet.
 - **Resonance Engine:** Coherence metrics from axis distributions; chordal consonance scores.
 - **Visualization:** WebGL/Three.js/D3 sacred-geometry canvases; fractal zoom; tone-driven shaders.
 - **Storage:** IPFS/Ceramic/Holo-like content addressing for artifacts.

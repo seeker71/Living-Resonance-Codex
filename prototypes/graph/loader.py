@@ -15,9 +15,18 @@ schema_cypher = [
 
 create_node = """
 MERGE (n:Node {id: $id})
-SET n.name=$name, n.waterState=$waterState, n.archetype=$archetype, n.layer=$layer,
-    n.essence=$essence, n.correspondences=$correspondences, n.geometry=$geometry,
-    n.harmonicRepresentation=$harmonicRepresentation
+SET n.name=$name,
+    n.waterState=$waterState,
+    n.archetype=$archetype,
+    n.layer=$layer,
+    n.essence=$essence,
+    n.correspondences=$correspondences,
+    n.geometry=$geometry,
+    n.harmonicRepresentation=$harmonicRepresentation,
+    n.chakra=$chakra,
+    n.colorHex=$colorHex,
+    n.baseFrequencyHz=$baseFrequencyHz,
+    n.planet=$planet
 """
 
 create_axis = """
@@ -61,14 +70,20 @@ def main():
                     geometry = entry.get("geometry", {})
                     harmonic = entry.get("harmonicRepresentation", {})
                     
-                    s.run(create_node, id=entry["@id"], name=entry["name"],
+                    s.run(create_node,
+                          id=entry["@id"],
+                          name=entry["name"],
                           waterState=entry.get("waterState"),
                           archetype=entry.get("archetype", []),
                           layer=entry.get("layer", "Seed"),
                           essence=entry.get("essence", ""),
                           correspondences=json.dumps(correspondences),
                           geometry=json.dumps(geometry),
-                          harmonicRepresentation=json.dumps(harmonic))
+                          harmonicRepresentation=json.dumps(harmonic),
+                          chakra=entry.get("chakra"),
+                          colorHex=entry.get("colorHex"),
+                          baseFrequencyHz=entry.get("baseFrequencyHz"),
+                          planet=entry.get("planet"))
                     for child in entry.get("hasPart", []):
                         s.run(rel_hasPart, parent=entry["@id"], child=child)
                     if entry.get("isPartOf"):
