@@ -1,0 +1,57 @@
+# ============================================================================
+# ENVIRONMENT REMINDER: This is a WINDOWS POWERSHELL environment, NOT bash!
+# Use PowerShell commands: Get-ChildItem (not ls), Select-String (not grep), etc.
+# ============================================================================
+
+# Rust build artifacts
+target/
+Cargo.lock
+
+# Generated files
+*.rs.bk
+*.pdb
+
+# IDE and editor files
+.rustc_info.json
+rust-project.json
+
+# Profiling and debugging
+*.prof
+*.pgo
+*.profraw
+
+# Documentation
+doc/
+
+# Test artifacts
+tests/target/
+
+# Coverage
+coverage/
+
+# Dependencies
+vendor/
+
+# Cargo cache
+.cargo/
+.rustup/
+
+# Project-specific storage
+rust-fractal-storage/
+fractal-storage/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

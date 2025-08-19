@@ -1,9 +1,9 @@
 use axum::{
     extract::{Path, State},
-    http::{HeaderValue, Method, StatusCode},
+    http::{Method, StatusCode},
     response::Json,
     routing::{get, post},
-    Router,
+    Router, Server,
 };
 use serde_json::{json, Value};
 use std::sync::Arc;
@@ -13,7 +13,38 @@ use tracing::{info, error};
 mod models;
 mod storage;
 
-use storage::FractalStorage;
+use storage::{FractalStorage, NodeStorage, ContributionStorage, FractalExpansionStorage, StorageMetadata};
+
+// ============================================================================
+// SERVER CONFIGURATION - Flexible settings like water adapting to containers
+// ============================================================================
+
+#[derive(Debug, Clone)]
+pub struct ServerConfig {
+    pub host: String,
+    pub port: u16,
+    pub storage_path: String,
+    pub enable_cors: bool,
+    pub log_level: String,
+    pub fractal_levels: Vec<u32>,
+}
+
+impl Default for ServerConfig {
+    fn default() -> Self {
+        Self {
+            host: "0.0.0.0".to_string(),
+            port: 8789,
+            storage_path: "./rust-fractal-storage".to_string(),
+            enable_cors: true,
+            log_level: "info".to_string(),
+            fractal_levels: vec![1, 2],
+        }
+    }
+}
+
+// ============================================================================
+// MAIN SERVER - Water-like flow and adaptation
+// ============================================================================
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -23,12 +54,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     info!("Living Codex Phase 6 - Rust Fractal Federation Server");
     info!("============================================================");
     info!("Starting server on http://localhost:8789");
-    info!("Fractal levels: 1 (base nodes) + 2 (expanded subnodes)");
+    info!("Fractal levels: 1 (base nodes) + 2 (expanded contexts)");
     info!("Contexts: scientific, symbolic, water");
     info!("============================================================");
     
-    // Initialize fractal storage
-    let storage = Arc::new(FractalStorage::new("./rust-fractal-storage")?);
+    // Initialize fractal storage with default config
+    info!("Initializing fractal storage...");
+    let storage = match FractalStorage::new("./rust-fractal-storage").await {
+        Ok(storage) => {
+            info!("Storage initialized successfully");
+            Arc::new(storage)
+        },
+        Err(e) => {
+            error!("Failed to initialize storage: {}", e);
+            return Err(e.into());
+        }
+    };
+    
+    info!("Storage ready, configuring server...");
     
     // Configure CORS
     let cors = CorsLayer::new()
@@ -36,9 +79,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .allow_methods([Method::GET, Method::POST])
         .allow_headers(Any);
     
-    // Build router
+    // Build router with trait-based endpoints
     let app = Router::new()
         .route("/", get(root))
+        .route("/health", get(health_check))
         .route("/storage/stats", get(get_storage_stats))
         .route("/contributions/:content_hash", get(get_contribution))
         .route("/contributions/node/:node_id", get(get_node_contributions))
@@ -47,7 +91,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route("/outbox", get(get_outbox))
         .route("/fractal/expand/:node_id", get(get_fractal_expansion))
         .route("/fractal/nodes/:node_id", get(get_fractal_node))
-        .route("/fractal/subnodes/:node_id", get(get_fractal_subnodes))
         .route("/fractal/context/:context", get(get_fractal_context))
         .route("/fractal/levels", get(get_fractal_levels))
         .route("/.well-known/webfinger", get(webfinger))
@@ -57,21 +100,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .layer(cors)
         .with_state(storage);
     
-    // Start server
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8789").await?;
-    info!("Server listening on http://localhost:8789");
+    info!("Router configured, starting server...");
     
-    axum::serve(listener, app).await?;
-    Ok(())
+    // Start server with proper error handling
+    info!("Attempting to bind to 127.0.0.1:8789...");
+    let addr = match "127.0.0.1:8789".parse::<std::net::SocketAddr>() {
+        Ok(addr) => {
+            info!("Successfully parsed address: {}", addr);
+            addr
+        },
+        Err(e) => {
+            error!("Failed to parse address 127.0.0.1:8789: {}", e);
+            return Err(format!("Address parse error: {}", e).into());
+        }
+    };
+    
+    info!("Server listening on http://localhost:8789");
+    info!("Starting axum server...");
+    
+    // Start the server using axum 0.6 compatible syntax
+    match Server::bind(&addr).serve(app.into_make_service()).await {
+        Ok(_) => {
+            info!("Server stopped normally");
+            Ok(())
+        },
+        Err(e) => {
+            error!("Server error: {}", e);
+            Err(e.into())
+        }
+    }
 }
 
-// Root endpoint
+// ============================================================================
+// ROOT AND INFO ENDPOINTS - Server identity and capabilities
+// ============================================================================
+
 async fn root() -> Json<Value> {
     Json(json!({
         "name": "Living Codex Phase 6 - Rust Fractal Federation",
         "version": "3.0.0",
         "status": "active",
         "fractal_levels": [1, 2],
+        "architecture": "trait-based",
+        "flexibility": "water-like",
         "endpoints": {
             "current_level": [
                 "/storage/stats",
@@ -84,7 +155,6 @@ async fn root() -> Json<Value> {
             "next_fractal_level": [
                 "/fractal/expand/{node_id}",
                 "/fractal/nodes/{node_id}",
-                "/fractal/subnodes/{node_id}",
                 "/fractal/context/{context}",
                 "/fractal/levels"
             ]
@@ -92,13 +162,15 @@ async fn root() -> Json<Value> {
     }))
 }
 
-// Storage stats endpoint
+// ============================================================================
+// STORAGE ENDPOINTS - Data management through traits
+// ============================================================================
+
 async fn get_storage_stats(State(storage): State<Arc<FractalStorage>>) -> Json<Value> {
     let stats = storage.get_storage_stats().await;
     Json(json!(stats))
 }
 
-// Get contribution by hash
 async fn get_contribution(
     State(storage): State<Arc<FractalStorage>>,
     Path(content_hash): Path<String>,
@@ -110,7 +182,6 @@ async fn get_contribution(
     }
 }
 
-// Get node contributions
 async fn get_node_contributions(
     State(storage): State<Arc<FractalStorage>>,
     Path(node_id): Path<String>,
@@ -119,7 +190,6 @@ async fn get_node_contributions(
     Json(contributions)
 }
 
-// Get user contributions
 async fn get_user_contributions(
     State(storage): State<Arc<FractalStorage>>,
     Path(user_id): Path<String>,
@@ -128,7 +198,10 @@ async fn get_user_contributions(
     Json(contributions)
 }
 
-// Post to inbox (ActivityPub)
+// ============================================================================
+// ACTIVITYPUB ENDPOINTS - Federation and social features
+// ============================================================================
+
 async fn post_to_inbox(
     State(storage): State<Arc<FractalStorage>>,
     Json(payload): Json<Value>,
@@ -146,14 +219,14 @@ async fn post_to_inbox(
     let node_id = obj.get("nodeId").and_then(|v| v.as_str()).unwrap_or("");
     let content = obj.get("content").and_then(|v| v.as_str()).unwrap_or("");
     let resonance = obj.get("resonance").and_then(|v| v.as_f64()).unwrap_or(0.5);
-    let fractal_context = obj.get("fractalContext").and_then(|v| v.as_str()).map(|s| s.to_string());
     
+    // Create contribution with default context
     let contribution = models::Contribution::new(
         node_id.to_string(),
         actor.to_string(),
         content.to_string(),
         resonance,
-        fractal_context,
+        None, // Will be determined by the node's contexts
     );
     
     match storage.store_contribution(contribution).await {
@@ -165,7 +238,6 @@ async fn post_to_inbox(
     }
 }
 
-// Get outbox
 async fn get_outbox(State(storage): State<Arc<FractalStorage>>) -> Json<Value> {
     let stats = storage.get_storage_stats().await;
     
@@ -178,7 +250,10 @@ async fn get_outbox(State(storage): State<Arc<FractalStorage>>) -> Json<Value> {
     }))
 }
 
-// Get fractal expansion
+// ============================================================================
+// FRACTAL ENDPOINTS - Context-based expansion and exploration
+// ============================================================================
+
 async fn get_fractal_expansion(
     State(storage): State<Arc<FractalStorage>>,
     Path(node_id): Path<String>,
@@ -189,7 +264,6 @@ async fn get_fractal_expansion(
     }
 }
 
-// Get fractal node
 async fn get_fractal_node(
     State(storage): State<Arc<FractalStorage>>,
     Path(node_id): Path<String>,
@@ -201,9 +275,9 @@ async fn get_fractal_node(
             if n.fractal_level == 1 {
                 node_data["fractal_context"] = json!("base_node");
                 node_data["expansion_available"] = json!(true);
-                node_data["subnode_count"] = json!(n.subnodes.len());
+                node_data["context_count"] = json!(n.contexts.len());
             } else {
-                node_data["fractal_context"] = json!("subnode");
+                node_data["fractal_context"] = json!("context_node");
                 node_data["expansion_available"] = json!(false);
                 node_data["parent_context"] = json!(n.parent_id);
             }
@@ -213,26 +287,6 @@ async fn get_fractal_node(
     }
 }
 
-// Get fractal subnodes
-async fn get_fractal_subnodes(
-    State(storage): State<Arc<FractalStorage>>,
-    Path(node_id): Path<String>,
-) -> Result<Json<Value>, StatusCode> {
-    let node = storage.get_node(&node_id).await;
-    match node {
-        Some(n) => {
-            if n.fractal_level != 1 {
-                return Err(StatusCode::BAD_REQUEST);
-            }
-            
-            let expansion = storage.get_fractal_expansion(&node_id).await.unwrap();
-            Ok(Json(expansion))
-        },
-        None => Err(StatusCode::NOT_FOUND),
-    }
-}
-
-// Get fractal context
 async fn get_fractal_context(
     State(storage): State<Arc<FractalStorage>>,
     Path(context): Path<String>,
@@ -242,17 +296,21 @@ async fn get_fractal_context(
         return Err(StatusCode::BAD_REQUEST);
     }
     
-    // For now, return a simplified response
-    // In a full implementation, we'd scan all nodes for this context
+    // Get all nodes for this context
+    let all_nodes = storage.get_all_nodes().await;
+    let context_nodes = storage::group_nodes_by_context(&all_nodes);
+    
+    let context_key = context.to_string();
+    let nodes = context_nodes.get(&context_key).cloned().unwrap_or_default();
+    
     Ok(Json(json!({
         "context": context,
-        "nodes": {},
-        "count": 0,
-        "description": format!("All {} lens subnodes across the Living Codex", context)
+        "nodes": nodes,
+        "count": nodes.len(),
+        "description": format!("All {} lens nodes across the Living Codex", context)
     })))
 }
 
-// Get fractal levels
 async fn get_fractal_levels(State(storage): State<Arc<FractalStorage>>) -> Json<Value> {
     let stats = storage.get_storage_stats().await;
     
@@ -260,8 +318,8 @@ async fn get_fractal_levels(State(storage): State<Arc<FractalStorage>>) -> Json<
         "fractal_levels": [1, 2],
         "current_max_level": 2,
         "level_descriptions": {
-            1: "Base nodes - Core concepts of the Living Codex",
-            2: "Fractal subnodes - Expanded perspectives across scientific, symbolic, and water-state lenses"
+            "1": "Base nodes - Core concepts of the Living Codex",
+            "2": "Context nodes - Expanded perspectives across scientific, symbolic, and water-state lenses"
         },
         "level_statistics": {
             "level_1": {
@@ -270,7 +328,7 @@ async fn get_fractal_levels(State(storage): State<Arc<FractalStorage>>) -> Json<
                 "description": "Primary ontological concepts"
             },
             "level_2": {
-                "name": "Fractal Subnodes",
+                "name": "Context Nodes",
                 "count": stats.total_subnodes,
                 "description": "Expanded perspectives and deeper wisdom"
             }
@@ -283,7 +341,10 @@ async fn get_fractal_levels(State(storage): State<Arc<FractalStorage>>) -> Json<
     }))
 }
 
-// WebFinger endpoint
+// ============================================================================
+// FEDERATION ENDPOINTS - Inter-server communication
+// ============================================================================
+
 async fn webfinger() -> Json<Value> {
     Json(json!({
         "subject": "acct:fractal@localhost",
@@ -307,26 +368,26 @@ async fn webfinger() -> Json<Value> {
     }))
 }
 
-// Actor endpoint
 async fn get_actor() -> Json<Value> {
     Json(json!({
         "@context": "https://www.w3.org/ns/activitystreams",
         "id": "http://localhost:8789/actor",
         "type": "Person",
         "name": "Living Codex Rust Fractal Federation",
-        "summary": "Phase 6 federation server with fractal node expansion",
+        "summary": "Phase 6 federation server with trait-based architecture",
         "inbox": "http://localhost:8789/inbox",
         "outbox": "http://localhost:8789/outbox",
         "preferredUsername": "fractal",
         "fractal_capabilities": {
             "levels": [1, 2],
             "contexts": ["scientific", "symbolic", "water"],
-            "expansion": true
+            "expansion": true,
+            "architecture": "trait-based",
+            "flexibility": "water-like"
         }
     }))
 }
 
-// Federation peers
 async fn get_federation_peers() -> Json<Value> {
     Json(json!({
         "peers": [
@@ -345,19 +406,27 @@ async fn get_federation_peers() -> Json<Value> {
             {
                 "id": "rust@localhost:8789",
                 "url": "http://localhost:8789",
-                "capabilities": ["phase4", "phase5", "phase6", "federation", "fractal_expansion", "multi_implementation"],
+                "capabilities": ["phase4", "phase5", "phase6", "federation", "fractal_expansion", "trait_architecture", "water_like"],
                 "status": "active"
             }
         ]
     }))
 }
 
-// Federation sync
 async fn federation_sync() -> Json<Value> {
     Json(json!({
         "synced": true,
         "timestamp": chrono::Utc::now(),
-        "fractal_levels_synced": [1, 2]
+        "fractal_levels_synced": [1, 2],
+        "architecture": "trait-based",
+        "flexibility": "water-like"
+    }))
+}
+
+async fn health_check() -> Json<Value> {
+    Json(json!({
+        "status": "ok",
+        "message": "Server is running"
     }))
 }
 

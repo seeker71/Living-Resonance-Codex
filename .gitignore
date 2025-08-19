@@ -1,3 +1,8 @@
+# ============================================================================
+# ENVIRONMENT REMINDER: This is a WINDOWS POWERSHELL environment, NOT bash!
+# Use PowerShell commands: Get-ChildItem (not ls), Select-String (not grep), etc.
+# ============================================================================
+
 # OS
 .DS_Store
 Thumbs.db
@@ -16,3 +21,71 @@ __pycache__
 
 # Build
 /dist
+
+# ============================================================================
+# RUST - Comprehensive exclusions for Rust projects
+# ============================================================================
+
+# Rust build artifacts
+**/target/
+**/Cargo.lock
+
+# Rust generated files
+**/*.rs.bk
+**/*.pdb
+
+# Rust IDE and editor files
+**/.rustc_info.json
+**/rust-project.json
+
+# Rust profiling and debugging
+**/*.prof
+**/*.pgo
+
+# Rust documentation
+**/doc/
+
+# Rust test artifacts
+**/tests/target/
+
+# Rust coverage
+**/coverage/
+**/*.profraw
+
+# Rust dependencies (if using vendored dependencies)
+**/vendor/
+
+# Rust cache
+**/.cargo/
+**/.rustup/
+
+# Rust generated storage directories
+**/rust-fractal-storage/
+**/fractal-storage/
+
+# ============================================================================
+# LIVING CODEX SPECIFIC
+# ============================================================================
+
+# Generated storage and data files
+**/storage/
+**/data/
+**/logs/
+
+# Temporary files
+**/tmp/
+**/temp/
+**/*.tmp
+**/*.temp
+
+# IDE and editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+**/Thumbs.db
+**/.DS_Store
+**/desktop.ini
