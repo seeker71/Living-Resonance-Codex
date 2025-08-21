@@ -1,0 +1,561 @@
+{
+  "system_info": {
+    "name": "Unified Bootstrap System",
+    "version": "1.0.0",
+    "description": "Integrated bootstrap system for Living Codex",
+    "realms": [
+      "data",
+      "programming",
+      "structured"
+    ]
+  },
+  "bootstrap_nodes": {
+    "unified_system_root": {
+      "node_id": "unified_system_root",
+      "node_type": "unified_system_root",
+      "name": "Unified System Root",
+      "content": "Root node for the unified bootstrap system integrating all ontologies",
+      "realm": "structured",
+      "water_state": "structured_hexagonal",
+      "energy_level": 741.0,
+      "transformation_cost": 0.0,
+      "parent_id": null,
+      "children": [
+        "data_realm_root",
+        "programming_realm_root",
+        "structured_data_realm_root",
+        "enhanced_water_state_integration"
+      ],
+      "metadata": {
+        "water_state": "structured_hexagonal",
+        "frequency": 741.0,
+        "chakra": "crown",
+        "abstraction_level": "meta_implementation",
+        "system_domain": "unified_bootstrap_system"
+      },
+      "structure_info": {
+        "fractal_depth": 0,
+        "node_type": "root_node",
+        "parent_ontology": "unified_bootstrap_system"
+      }
+    },
+    "data_realm_root": {
+      "node_id": "data_realm_root",
+      "node_type": "data_realm_root",
+      "name": "Data Realm Root",
+      "content": "Root node for the data realm containing bootstrap data and node definitions",
+      "realm": "data",
+      "water_state": "ice",
+      "energy_level": 963.0,
+      "transformation_cost": 50.0,
+      "parent_id": "unified_system_root",
+      "children": [
+        "data_realm_ontology"
+      ],
+      "metadata": {
+        "water_state": "ice",
+        "frequency": 963.0,
+        "chakra": "crown",
+        "representation": "blueprint",
+        "realm_purpose": "bootstrap_data_storage"
+      },
+      "structure_info": {
+        "fractal_depth": 1,
+        "node_type": "realm_root",
+        "parent_ontology": "unified_system_root"
+      }
+    },
+    "programming_realm_root": {
+      "node_id": "programming_realm_root",
+      "node_type": "programming_realm_root",
+      "name": "Programming Realm Root",
+      "content": "Root node for the programming realm containing flow and bootstrapping logic",
+      "realm": "programming",
+      "water_state": "liquid",
+      "energy_level": 639.0,
+      "transformation_cost": 75.0,
+      "parent_id": "unified_system_root",
+      "children": [
+        "programming_realm_ontology"
+      ],
+      "metadata": {
+        "water_state": "liquid",
+        "frequency": 639.0,
+        "chakra": "heart",
+        "representation": "recipe",
+        "realm_purpose": "flow_and_bootstrapping"
+      },
+      "structure_info": {
+        "fractal_depth": 1,
+        "node_type": "realm_root",
+        "parent_ontology": "unified_system_root"
+      }
+    },
+    "structured_data_realm_root": {
+      "node_id": "structured_data_realm_root",
+      "node_type": "structured_data_realm_root",
+      "name": "Structured Data Realm Root",
+      "content": "Root node for the structured data realm containing documentation and system explanation",
+      "realm": "structured",
+      "water_state": "vapor",
+      "energy_level": 852.0,
+      "transformation_cost": 50.0,
+      "parent_id": "unified_system_root",
+      "children": [
+        "realm_interaction_meta",
+        "system_architecture_meta",
+        "integration_pattern_meta",
+        "structured_data_realm_ontology"
+      ],
+      "metadata": {
+        "water_state": "vapor",
+        "frequency": 852.0,
+        "chakra": "third_eye",
+        "representation": "cells",
+        "realm_purpose": "documentation_and_explanation"
+      },
+      "structure_info": {
+        "fractal_depth": 1,
+        "node_type": "realm_root",
+        "parent_ontology": "unified_system_root"
+      }
+    },
+    "enhanced_water_state_integration": {
+      "node_id": "enhanced_water_state_integration",
+      "node_type": "enhanced_water_state_integration",
+      "name": "Enhanced Water State Integration",
+      "content": "Integration point for the enhanced water state ontology",
+      "realm": "structured",
+      "water_state": "plasma",
+      "energy_level": 852.0,
+      "transformation_cost": 0.0,
+      "parent_id": "unified_system_root",
+      "children": [],
+      "metadata": {
+        "water_state": "plasma",
+        "frequency": 852.0,
+        "chakra": "third_eye",
+        "representation": "light_energy",
+        "integration_type": "water_state_ontology"
+      },
+      "structure_info": {
+        "fractal_depth": 1,
+        "node_type": "integration_node",
+        "parent_ontology": "unified_system_root"
+      }
+    }
+  },
+  "meta_nodes": {
+    "realm_interaction_meta": {
+      "node_id": "realm_interaction_meta",
+      "node_type": "meta_node",
+      "name": "Realm Interaction Meta-Node",
+      "content": "Describes how the three realms interact and exchange information",
+      "realm": "structured",
+      "water_state": "vapor",
+      "energy_level": 852.0,
+      "transformation_cost": 25.0,
+      "parent_id": "structured_data_realm_root",
+      "children": [],
+      "metadata": {
+        "water_state": "vapor",
+        "frequency": 852.0,
+        "chakra": "third_eye",
+        "representation": "cells",
+        "meta_type": "realm_interaction_definition"
+      },
+      "structure_info": {
+        "fractal_depth": 2,
+        "node_type": "meta_definition",
+        "parent_ontology": "structured_data_realm_root"
+      }
+    },
+    "system_architecture_meta": {
+      "node_id": "system_architecture_meta",
+      "node_type": "meta_node",
+      "name": "System Architecture Meta-Node",
+      "content": "Describes the overall architecture of the unified bootstrap system",
+      "realm": "structured",
+      "water_state": "vapor",
+      "energy_level": 852.0,
+      "transformation_cost": 25.0,
+      "parent_id": "structured_data_realm_root",
+      "children": [],
+      "metadata": {
+        "water_state": "vapor",
+        "frequency": 852.0,
+        "chakra": "third_eye",
+        "representation": "cells",
+        "meta_type": "system_architecture_definition"
+      },
+      "structure_info": {
+        "fractal_depth": 2,
+        "node_type": "meta_definition",
+        "parent_ontology": "structured_data_realm_root"
+      }
+    },
+    "integration_pattern_meta": {
+      "node_id": "integration_pattern_meta",
+      "node_type": "meta_node",
+      "name": "Integration Pattern Meta-Node",
+      "content": "Describes patterns for integrating different ontologies and systems",
+      "realm": "structured",
+      "water_state": "vapor",
+      "energy_level": 852.0,
+      "transformation_cost": 25.0,
+      "parent_id": "structured_data_realm_root",
+      "children": [],
+      "metadata": {
+        "water_state": "vapor",
+        "frequency": 852.0,
+        "chakra": "third_eye",
+        "representation": "cells",
+        "meta_type": "integration_pattern_definition"
+      },
+      "structure_info": {
+        "fractal_depth": 2,
+        "node_type": "meta_definition",
+        "parent_ontology": "structured_data_realm_root"
+      }
+    }
+  },
+  "realm_ontologies": {
+    "data": {
+      "root": {
+        "node_id": "data_realm_ontology",
+        "node_type": "data_realm_ontology",
+        "name": "Data Realm Ontology",
+        "content": "Complete ontological framework for the data realm",
+        "realm": "data",
+        "water_state": "ice",
+        "energy_level": 963.0,
+        "transformation_cost": 100.0,
+        "parent_id": "data_realm_root",
+        "children": [
+          "file_formats_ontology",
+          "bootstrap_data_ontology",
+          "node_definitions_ontology"
+        ],
+        "metadata": {
+          "water_state": "ice",
+          "frequency": 963.0,
+          "chakra": "crown",
+          "representation": "blueprint",
+          "realm_purpose": "bootstrap_data_storage"
+        },
+        "structure_info": {}
+      },
+      "file_formats": {
+        "node_id": "file_formats_ontology",
+        "node_type": "file_formats_ontology",
+        "name": "File Formats Ontology",
+        "content": "Represents different file formats (Python, Markdown, JSON) in the data realm",
+        "realm": "data",
+        "water_state": "ice",
+        "energy_level": 963.0,
+        "transformation_cost": 75.0,
+        "parent_id": "data_realm_ontology",
+        "children": [],
+        "metadata": {
+          "water_state": "ice",
+          "frequency": 963.0,
+          "chakra": "crown",
+          "representation": "blueprint",
+          "supported_formats": [
+            "python",
+            "markdown",
+            "json",
+            "yaml",
+            "xml"
+          ]
+        },
+        "structure_info": {}
+      },
+      "bootstrap_data": {
+        "node_id": "bootstrap_data_ontology",
+        "node_type": "bootstrap_data_ontology",
+        "name": "Bootstrap Data Ontology",
+        "content": "Represents the core bootstrap data that initializes the system",
+        "realm": "data",
+        "water_state": "ice",
+        "energy_level": 963.0,
+        "transformation_cost": 100.0,
+        "parent_id": "data_realm_ontology",
+        "children": [],
+        "metadata": {
+          "water_state": "ice",
+          "frequency": 963.0,
+          "chakra": "crown",
+          "representation": "blueprint",
+          "data_types": [
+            "nodes",
+            "relationships",
+            "metadata",
+            "configurations"
+          ]
+        },
+        "structure_info": {}
+      },
+      "node_definitions": {
+        "node_id": "node_definitions_ontology",
+        "node_type": "node_definitions_ontology",
+        "name": "Node Definitions Ontology",
+        "content": "Represents the definitions and schemas for all node types",
+        "realm": "data",
+        "water_state": "ice",
+        "energy_level": 963.0,
+        "transformation_cost": 125.0,
+        "parent_id": "data_realm_ontology",
+        "children": [],
+        "metadata": {
+          "water_state": "ice",
+          "frequency": 963.0,
+          "chakra": "crown",
+          "representation": "blueprint",
+          "definition_types": [
+            "schemas",
+            "templates",
+            "validators",
+            "defaults"
+          ]
+        },
+        "structure_info": {}
+      }
+    },
+    "programming": {
+      "root": {
+        "node_id": "programming_realm_ontology",
+        "node_type": "programming_realm_ontology",
+        "name": "Programming Realm Ontology",
+        "content": "Complete ontological framework for the programming realm",
+        "realm": "programming",
+        "water_state": "liquid",
+        "energy_level": 639.0,
+        "transformation_cost": 75.0,
+        "parent_id": "programming_realm_root",
+        "children": [
+          "flow_logic_ontology",
+          "bootstrapping_process_ontology",
+          "system_operations_ontology"
+        ],
+        "metadata": {
+          "water_state": "liquid",
+          "frequency": 639.0,
+          "chakra": "heart",
+          "representation": "recipe",
+          "realm_purpose": "flow_and_bootstrapping"
+        },
+        "structure_info": {}
+      },
+      "flow_logic": {
+        "node_id": "flow_logic_ontology",
+        "node_type": "flow_logic_ontology",
+        "name": "Flow Logic Ontology",
+        "content": "Represents the flow logic and control structures for bootstrapping",
+        "realm": "programming",
+        "water_state": "liquid",
+        "energy_level": 639.0,
+        "transformation_cost": 100.0,
+        "parent_id": "programming_realm_ontology",
+        "children": [],
+        "metadata": {
+          "water_state": "liquid",
+          "frequency": 639.0,
+          "chakra": "heart",
+          "representation": "recipe",
+          "flow_types": [
+            "sequential",
+            "parallel",
+            "conditional",
+            "iterative",
+            "recursive"
+          ]
+        },
+        "structure_info": {}
+      },
+      "bootstrapping_process": {
+        "node_id": "bootstrapping_process_ontology",
+        "node_type": "bootstrapping_process_ontology",
+        "name": "Bootstrapping Process Ontology",
+        "content": "Represents the bootstrapping process and initialization logic",
+        "realm": "programming",
+        "water_state": "liquid",
+        "energy_level": 639.0,
+        "transformation_cost": 125.0,
+        "parent_id": "programming_realm_ontology",
+        "children": [],
+        "metadata": {
+          "water_state": "liquid",
+          "frequency": 639.0,
+          "chakra": "heart",
+          "representation": "recipe",
+          "process_steps": [
+            "initialization",
+            "validation",
+            "creation",
+            "integration",
+            "verification"
+          ]
+        },
+        "structure_info": {}
+      },
+      "system_operations": {
+        "node_id": "system_operations_ontology",
+        "node_type": "system_operations_ontology",
+        "name": "System Operations Ontology",
+        "content": "Represents the core system operations and functions",
+        "realm": "programming",
+        "water_state": "liquid",
+        "energy_level": 639.0,
+        "transformation_cost": 100.0,
+        "parent_id": "programming_realm_ontology",
+        "children": [],
+        "metadata": {
+          "water_state": "liquid",
+          "frequency": 639.0,
+          "chakra": "heart",
+          "representation": "recipe",
+          "operation_types": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "query",
+            "transform"
+          ]
+        },
+        "structure_info": {}
+      }
+    },
+    "structured": {
+      "root": {
+        "node_id": "structured_data_realm_ontology",
+        "node_type": "structured_data_realm_ontology",
+        "name": "Structured Data Realm Ontology",
+        "content": "Complete ontological framework for the structured data realm",
+        "realm": "structured",
+        "water_state": "vapor",
+        "energy_level": 852.0,
+        "transformation_cost": 50.0,
+        "parent_id": "structured_data_realm_root",
+        "children": [
+          "documentation_ontology",
+          "system_explanation_ontology",
+          "knowledge_base_ontology"
+        ],
+        "metadata": {
+          "water_state": "vapor",
+          "frequency": 852.0,
+          "chakra": "third_eye",
+          "representation": "cells",
+          "realm_purpose": "documentation_and_explanation"
+        },
+        "structure_info": {}
+      },
+      "documentation": {
+        "node_id": "documentation_ontology",
+        "node_type": "documentation_ontology",
+        "name": "Documentation Ontology",
+        "content": "Represents the documentation structure and organization",
+        "realm": "structured",
+        "water_state": "vapor",
+        "energy_level": 852.0,
+        "transformation_cost": 75.0,
+        "parent_id": "structured_data_realm_ontology",
+        "children": [],
+        "metadata": {
+          "water_state": "vapor",
+          "frequency": 852.0,
+          "chakra": "third_eye",
+          "representation": "cells",
+          "doc_types": [
+            "guides",
+            "tutorials",
+            "references",
+            "examples",
+            "analyses"
+          ]
+        },
+        "structure_info": {}
+      },
+      "system_explanation": {
+        "node_id": "system_explanation_ontology",
+        "node_type": "system_explanation_ontology",
+        "name": "System Explanation Ontology",
+        "content": "Represents how the system works and how to use it",
+        "realm": "structured",
+        "water_state": "vapor",
+        "energy_level": 852.0,
+        "transformation_cost": 100.0,
+        "parent_id": "structured_data_realm_ontology",
+        "children": [],
+        "metadata": {
+          "water_state": "vapor",
+          "frequency": 852.0,
+          "chakra": "third_eye",
+          "representation": "cells",
+          "explanation_types": [
+            "concepts",
+            "principles",
+            "methods",
+            "workflows",
+            "best_practices"
+          ]
+        },
+        "structure_info": {}
+      },
+      "knowledge_base": {
+        "node_id": "knowledge_base_ontology",
+        "node_type": "knowledge_base_ontology",
+        "name": "Knowledge Base Ontology",
+        "content": "Represents the knowledge base and learning resources",
+        "realm": "structured",
+        "water_state": "vapor",
+        "energy_level": 852.0,
+        "transformation_cost": 75.0,
+        "parent_id": "structured_data_realm_ontology",
+        "children": [],
+        "metadata": {
+          "water_state": "vapor",
+          "frequency": 852.0,
+          "chakra": "third_eye",
+          "representation": "cells",
+          "knowledge_types": [
+            "concepts",
+            "examples",
+            "case_studies",
+            "troubleshooting",
+            "advanced_topics"
+          ]
+        },
+        "structure_info": {}
+      }
+    }
+  },
+  "integration_points": {
+    "data_to_programming": {
+      "description": "Data realm provides bootstrap data to programming realm",
+      "energy_cost": 75.0,
+      "process": "Bootstrap data flows from ice state to liquid state for processing",
+      "integration_type": "data_flow"
+    },
+    "programming_to_structured": {
+      "description": "Programming realm generates structured data for documentation",
+      "energy_cost": 50.0,
+      "process": "Processing results flow from liquid state to vapor state for documentation",
+      "integration_type": "result_flow"
+    },
+    "structured_to_data": {
+      "description": "Structured data realm provides metadata and schemas to data realm",
+      "energy_cost": 25.0,
+      "process": "Documentation and schemas flow from vapor state to ice state for storage",
+      "integration_type": "schema_flow"
+    },
+    "cross_realm_validation": {
+      "description": "Validation and consistency checks across all realms",
+      "energy_cost": 100.0,
+      "process": "Cross-realm validation ensures system integrity and consistency",
+      "integration_type": "validation"
+    }
+  }
+}
