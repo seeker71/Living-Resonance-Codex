@@ -91,3 +91,31 @@ The repository is now ready for Phase 5 enhancements:
 - *"Create VR/AR immersive experience for spatial exploration of the Living Codex"*
 - *"Add haptic feedback and spatial audio for multi-sensory resonance experience"*
 - *"Integrate quantum computing for advanced resonance pattern analysis and quantum entanglement visualization"*
+
+---
+
+## Run Latest System (Integrated Iteration)
+
+This repository now includes a fully integrated, living system implementation. To run the latest iteration:
+
+```bash
+cd prototypes/federation-python
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements_federated.txt
+
+# Start the Federated API (port 8001)
+python3 federated_meta_api.py
+
+# In another terminal, validate end-to-end
+python3 test_federated_system.py
+
+# Create living documents from code/docs
+python3 living_document_system.py
+
+# Integrated overview (API + Living Docs + Codex)
+python3 integrated_living_system.py
+```
+
+See:
+- `prototypes/federation-python/HISTORY_SUMMARY.md` (collapsed history)
+- `prototypes/federation-python/COMPLETE_LIVING_SYSTEM_SUMMARY.md` (final summary)
