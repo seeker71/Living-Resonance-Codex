@@ -46,7 +46,15 @@ class IntegratedRealSystemsDemo:
         # 3. Neo4j Integration System
         print("   🕸️  Initializing Neo4j Integration System...")
         try:
-            self.neo4j_system = Neo4jIntegrationSystem()
+            # Use config manager to get Neo4j credentials
+            from config_manager import ConfigManager
+            config = ConfigManager()
+            
+            self.neo4j_system = Neo4jIntegrationSystem(
+                uri=config.db_config.neo4j_uri,
+                username=config.db_config.neo4j_username,
+                password=config.db_config.neo4j_password
+            )
             self.neo4j_available = self.neo4j_system.connection_manager.is_connected()
         except Exception as e:
             print(f"   ⚠️  Neo4j not available: {e}")

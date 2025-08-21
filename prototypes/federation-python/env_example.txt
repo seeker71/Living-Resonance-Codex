@@ -1,0 +1,33 @@
+# Living Codex API Configuration
+# Copy this file to .env and fill in your actual API keys
+
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-3.5-turbo
+
+# Google Custom Search API (Optional)
+GOOGLE_API_KEY=your_google_api_key_here
+GOOGLE_CSE_ID=your_custom_search_engine_id_here
+
+# Wikipedia API (No key required, but can set rate limits)
+WIKIPEDIA_RATE_LIMIT=100
+
+# DuckDuckGo (No key required)
+DUCKDUCKGO_RATE_LIMIT=100
+
+# Neo4j Database Configuration
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USERNAME=neo4j
+NEO4J_PASSWORD=your_neo4j_password_here
+
+# PostgreSQL Database Configuration (Optional)
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DATABASE=living_codex
+POSTGRES_USERNAME=your_username
+POSTGRES_PASSWORD=your_password
+
+# System Configuration
+SYSTEM_CACHE_TTL=3600
+SYSTEM_RATE_LIMIT=100
+SYSTEM_LOG_LEVEL=INFO

@@ -86,12 +86,14 @@ class APIManagementSystem:
     def _load_api_keys(self):
         """Load API keys from environment variables"""
         self.api_keys = {
-            APISource.GOOGLE_SEARCH: os.getenv("GOOGLE_SEARCH_API_KEY"),
-            APISource.GOOGLE_SEARCH: os.getenv("GOOGLE_SEARCH_CSE_ID"),
+            APISource.GOOGLE_SEARCH: os.getenv("GOOGLE_API_KEY"),  # Use GOOGLE_API_KEY
             APISource.OPENAI: os.getenv("OPENAI_API_KEY"),
             APISource.ANTHROPIC: os.getenv("ANTHROPIC_API_KEY"),
             APISource.CUSTOM_KNOWLEDGE_BASE: os.getenv("CUSTOM_KB_API_KEY"),
         }
+        
+        # Store CSE ID separately
+        self.google_cse_id = os.getenv("GOOGLE_CSE_ID")
         
         # Log which APIs are available
         available_apis = [source.value for source, key in self.api_keys.items() if key]
@@ -112,6 +114,10 @@ class APIManagementSystem:
     def get_api_key(self, source: APISource) -> Optional[str]:
         """Get API key for a specific source"""
         return self.api_keys.get(source)
+    
+    def get_google_cse_id(self) -> Optional[str]:
+        """Get Google Custom Search Engine ID"""
+        return getattr(self, 'google_cse_id', None)
     
     def check_rate_limit(self, source: APISource) -> bool:
         """Check if we can make a request to the API"""
@@ -168,7 +174,7 @@ class WebSearchIntegration:
             )
         
         api_key = self.api_manager.get_api_key(APISource.GOOGLE_SEARCH)
-        cse_id = self.api_manager.get_api_key(APISource.GOOGLE_SEARCH)
+        cse_id = self.api_manager.get_google_cse_id()
         
         if not api_key or not cse_id:
             return APIResponse(
