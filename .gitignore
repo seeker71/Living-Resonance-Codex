@@ -69,6 +69,7 @@ __pycache__
 # ============================================================================
 
 # Generated storage and data files
+**/*.log
 **/storage/
 **/data/
 **/logs/

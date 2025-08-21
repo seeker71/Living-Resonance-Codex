@@ -195,3 +195,18 @@ def core_correspondence():
     return _schema().get("coreCorrespondence", [])
 
 
+if __name__ == "__main__":
+    import uvicorn
+    print("Living Codex Graph API Server")
+    print("=" * 40)
+    print("Starting server on http://localhost:8000")
+    print("Available endpoints:")
+    print("  /nodes - Get all nodes")
+    print("  /nodes/{node_id} - Get specific node")
+    print("  /axes - Get axes")
+    print("  /core-correspondence - Get core correspondences")
+    print("=" * 40)
+    
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+

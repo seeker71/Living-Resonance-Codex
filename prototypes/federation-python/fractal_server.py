@@ -78,7 +78,7 @@ async def get_contribution(content_hash: str):
     try:
         contribution = fractal_storage.get_contribution(content_hash)
         if contribution:
-            return contribution.dict()
+            return contribution.model_dump()
         else:
             raise HTTPException(status_code=404, detail="Contribution not found")
     except HTTPException:
@@ -215,7 +215,7 @@ async def get_fractal_node(node_id: str):
             raise HTTPException(status_code=404, detail="Node not found")
         
         # Add fractal context information
-        node_data = node.dict()
+        node_data = node.model_dump()
         # Backfill any missing correspondence fields at response time
         if not node_data.get("planet"):
             node_data["planet"] = fractal_storage._core_planet_map().get(node_id)
@@ -265,14 +265,14 @@ async def get_fractal_subnodes(node_id: str):
         
         for sub_id, subnode in node.subnodes.items():
             if ":scientific:" in sub_id:
-                grouped_subnodes["scientific"][sub_id] = subnode.dict()
+                grouped_subnodes["scientific"][sub_id] = subnode.model_dump()
             elif ":symbolic:" in sub_id:
-                grouped_subnodes["symbolic"][sub_id] = subnode.dict()
+                grouped_subnodes["symbolic"][sub_id] = subnode.model_dump()
             elif ":water:" in sub_id:
-                grouped_subnodes["water"][sub_id] = subnode.dict()
+                grouped_subnodes["water"][sub_id] = subnode.model_dump()
         
         return {
-            "base_node": node.dict(),
+            "base_node": node.model_dump(),
             "subnodes": grouped_subnodes,
             "total_subnodes": len(node.subnodes),
             "contexts": ["scientific", "symbolic", "water"]

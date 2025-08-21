@@ -403,7 +403,7 @@ class FractalStorage:
         node_path = self.nodes_path / safe_filename
         
         with open(node_path, 'w') as f:
-            json.dump(node.dict(), f, indent=2)
+            json.dump(node.model_dump(), f, indent=2)
         
         # Update manifest
         self.update_manifest_node(node)
@@ -419,7 +419,7 @@ class FractalStorage:
         contribution_path = self.contributions_path / f"{content_hash}.json"
         
         with open(contribution_path, 'w') as f:
-            json.dump(contribution.dict(), f, indent=2)
+            json.dump(contribution.model_dump(), f, indent=2)
         
         # Update manifest
         self.update_manifest_contribution(contribution, content_hash)
@@ -467,7 +467,7 @@ class FractalStorage:
             if contrib_data.get("node_id") == node_id:
                 contribution = self.get_contribution(contrib_hash)
                 if contribution:
-                    contributions.append(contribution.dict())
+                    contributions.append(contribution.model_dump())
         
         return {
             "contributions": contributions,
@@ -486,7 +486,7 @@ class FractalStorage:
             if contrib_data.get("user_id") == user_id:
                 contribution = self.get_contribution(contrib_hash)
                 if contribution:
-                    contributions.append(contribution.dict())
+                    contributions.append(contribution.model_dump())
         
         return {
             "contributions": contributions,
@@ -501,16 +501,16 @@ class FractalStorage:
         
         if node.fractal_level == 1 and node.subnodes:
             return {
-                "base_node": node.dict(),
-                "subnodes": {sub_id: sub.dict() for sub_id, sub in node.subnodes.items()},
+                "base_node": node.model_dump(),
+                "subnodes": {sub_id: sub.model_dump() for sub_id, sub in node.subnodes.items()},
                 "total_subnodes": len(node.subnodes),
                 "fractal_levels": [1, 2]
             }
         elif node.fractal_level == 2:
             parent = self.get_node(node.parent_id) if node.parent_id else None
             return {
-                "subnode": node.dict(),
-                "parent": parent.dict() if parent else None,
+                "subnode": node.model_dump(),
+                "parent": parent.model_dump() if parent else None,
                 "fractal_level": 2
             }
         else:
