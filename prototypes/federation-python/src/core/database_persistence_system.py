@@ -20,6 +20,7 @@ import logging
 
 # Import new modular components
 try:
+    # Try relative imports first (when used as package)
     from ..database.core.models import (
         DatabaseNode, DatabaseOperationResult, QueryFilter, QueryOptions,
         DatabaseType, OperationType
@@ -29,8 +30,19 @@ try:
     MODULAR_IMPORTS_AVAILABLE = True
     print("✅ Using new modular database components")
 except ImportError:
-    MODULAR_IMPORTS_AVAILABLE = False
-    print("⚠️  Modular imports not available, using legacy components")
+    try:
+        # Try absolute imports (when src is in path, e.g., CLI)
+        from database.core.models import (
+            DatabaseNode, DatabaseOperationResult, QueryFilter, QueryOptions,
+            DatabaseType, OperationType
+        )
+        from database.core.operations import DatabaseOperations
+        from database.sqlite.sqlite_manager import SQLiteManager
+        MODULAR_IMPORTS_AVAILABLE = True
+        print("✅ Using new modular database components")
+    except ImportError:
+        MODULAR_IMPORTS_AVAILABLE = False
+        print("⚠️  Modular imports not available, using legacy components")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

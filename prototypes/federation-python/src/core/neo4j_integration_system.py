@@ -20,6 +20,7 @@ import logging
 
 # Import new modular components
 try:
+    # Try relative imports first (when used as package)
     from ..graph.core.models import (
         GraphNode, GraphRelationship, GraphQueryResult,
         GraphOperationType, GraphNodeType
@@ -29,8 +30,19 @@ try:
     MODULAR_IMPORTS_AVAILABLE = True
     print("✅ Using new modular graph components")
 except ImportError:
-    MODULAR_IMPORTS_AVAILABLE = False
-    print("⚠️  Modular imports not available, using legacy components")
+    try:
+        # Try absolute imports (when src is in path, e.g., CLI)
+        from graph.core.models import (
+            GraphNode, GraphRelationship, GraphQueryResult,
+            GraphOperationType, GraphNodeType
+        )
+        from graph.neo4j.connection_manager import Neo4jConnectionManager
+        from graph.neo4j.neo4j_operations import Neo4jOperations
+        MODULAR_IMPORTS_AVAILABLE = True
+        print("✅ Using new modular graph components")
+    except ImportError:
+        MODULAR_IMPORTS_AVAILABLE = False
+        print("⚠️  Modular imports not available, using legacy components")
 
 # Neo4j imports
 try:

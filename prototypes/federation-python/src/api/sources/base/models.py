@@ -29,6 +29,18 @@ class APIRequest:
     retry_count: int = 3
 
 @dataclass
+class APISource:
+    """API source configuration"""
+    name: str
+    base_url: str
+    api_key: Optional[str] = None
+    headers: Optional[Dict[str, str]] = None
+    rate_limit: Optional[int] = None
+    timeout: int = 30
+    enabled: bool = True
+    metadata: Optional[Dict[str, Any]] = None
+
+@dataclass
 class APIResponse:
     """API response data"""
     source: str

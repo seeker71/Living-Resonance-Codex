@@ -21,14 +21,23 @@ import logging
 
 # Import new modular components
 try:
+    # Try relative imports first (when used as package)
     from ..api.management.api_manager import APIManagementSystem
     from ..api.sources.base.api_client import BaseAPIClient
     from ..api.sources.base.models import APISource, APIResponseStatus, APIResponse
     MODULAR_IMPORTS_AVAILABLE = True
     print("✅ Using new modular API components")
 except ImportError:
-    MODULAR_IMPORTS_AVAILABLE = False
-    print("⚠️  Modular imports not available, using legacy components")
+    try:
+        # Try absolute imports (when src is in path, e.g., CLI)
+        from api.management.api_manager import APIManagementSystem
+        from api.sources.base.api_client import BaseAPIClient
+        from api.sources.base.models import APISource, APIResponseStatus, APIResponse
+        MODULAR_IMPORTS_AVAILABLE = True
+        print("✅ Using new modular API components")
+    except ImportError:
+        MODULAR_IMPORTS_AVAILABLE = False
+        print("⚠️  Modular imports not available, using legacy components")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
