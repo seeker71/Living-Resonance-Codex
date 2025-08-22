@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Living Codex Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .form-container { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 15px; backdrop-filter: blur(10px); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; background: rgba(255,255,255,0.9); color: #333; }
+        input:focus { outline: none; box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
+        
+        .btn { background: #4CAF50; color: white; padding: 15px 30px; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold; transition: all 0.3s; width: 100%; }
+        .btn:hover { background: #45a049; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .discovery-note { background: rgba(76, 175, 80, 0.2); padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #4CAF50; }
+        .discovery-note h4 { color: #4CAF50; margin-bottom: 10px; }
+        
+        .nav-links { text-align: center; margin-top: 20px; }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .modules { margin-top: 30px; }
+        .modules h3 { text-align: center; color: #4CAF50; margin-bottom: 20px; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .module-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; text-align: center; border-left: 4px solid #4CAF50; }
+        .module-card h4 { color: #4CAF50; margin-bottom: 8px; }
+        .module-card p { font-size: 0.9em; opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Welcome Back</h1>
+            <p>Sign in to continue your Living Codex journey</p>
+        </div>
+        
+        <form method="POST" class="form-container">
+            <div class="discovery-note">
+                <h4>🌟 All Platform Modules Await</h4>
+                <p>After signing in, you'll have access to our unified platform with Discovery Engine, Navigation System, Contribution Manager, and User Manager!</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="user_id">User ID</label>
+                <input type="text" id="user_id" name="user_id" required placeholder="Enter your user ID">
+            </div>
+            
+            <button type="submit" class="btn">Sign In & Explore All Features</button>
+        </form>
+        
+        <div class="nav-links">
+            <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+        </div>
+        
+        <div class="modules">
+            <h3>🚀 Platform Modules You'll Access</h3>
+            <div class="module-grid">
+                <div class="module-card">
+                    <h4>🔍 Discovery Engine</h4>
+                    <p>Smart user matching, content relevance scoring, and interest-based discovery</p>
+                </div>
+                
+                <div class="module-card">
+                    <h4>🧭 Navigation System</h4>
+                    <p>Personalized exploration paths, progress tracking, and system overview</p>
+                </div>
+                
+                <div class="module-card">
+                    <h4>💡 Contribution Manager</h4>
+                    <p>Enhanced content creation, categorization, and collaboration tools</p>
+                </div>
+                
+                <div class="module-card">
+                    <h4>👥 User Manager</h4>
+                    <p>Comprehensive profiles, connections, and community building</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

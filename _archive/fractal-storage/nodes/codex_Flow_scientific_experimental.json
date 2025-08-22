@@ -1,0 +1,20 @@
+{
+  "id": "codex:Flow:scientific:experimental",
+  "name": "Flow Experimental",
+  "water_state": "Liquid",
+  "archetype": [
+    "Testing",
+    "Validation",
+    "Discovery"
+  ],
+  "resonance": 0.48999999999999994,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Flow",
+  "chakra": "Heart",
+  "color_hex": "#32CD32",
+  "base_frequency_hz": 639.0,
+  "planet": "Moon",
+  "created_at": "2025-08-21T01:49:50.000Z",
+  "updated_at": "2025-08-21T01:49:50.000Z"
+}

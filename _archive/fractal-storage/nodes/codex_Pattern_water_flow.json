@@ -1,0 +1,20 @@
+{
+  "id": "codex:Pattern:water:flow",
+  "name": "Pattern Flow",
+  "water_state": "Liquid",
+  "archetype": [
+    "Movement",
+    "Direction",
+    "Current"
+  ],
+  "resonance": 0.81,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Pattern",
+  "chakra": "Throat",
+  "color_hex": "#1E90FF",
+  "base_frequency_hz": 741.0,
+  "planet": "Mercury",
+  "created_at": "2025-08-21T01:49:50.000Z",
+  "updated_at": "2025-08-21T01:49:50.000Z"
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discovery Hub - Living Codex Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .discovery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .discovery-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); }
+        .discovery-section h2 { color: #4CAF50; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        
+        .user-card, .content-card { background: rgba(255,255,255,0.05); padding: 20px; margin: 15px 0; border-radius: 10px; border-left: 4px solid #4CAF50; }
+        .user-card h3, .content-card h3 { color: #4CAF50; margin-bottom: 10px; }
+        .similarity-score { background: #4CAF50; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em; float: right; }
+        .relevance-score { background: #FF6B6B; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.9em; float: right; }
+        
+        .btn { padding: 10px 20px; text-decoration: none; border-radius: 20px; font-weight: bold; transition: all 0.3s; display: inline-block; margin: 5px; }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn-secondary { background: transparent; color: white; border: 2px solid white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .exploration-paths { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; }
+        .path-card { background: rgba(255,255,255,0.05); padding: 20px; margin: 15px 0; border-radius: 10px; }
+        .path-card h3 { color: #4CAF50; margin-bottom: 15px; }
+        .path-steps { list-style: none; padding: 0; }
+        .path-steps li { background: rgba(255,255,255,0.1); padding: 10px; margin: 5px 0; border-radius: 8px; }
+        .path-meta { display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.9em; opacity: 0.8; }
+        
+        .nav-links { text-align: center; margin: 30px 0; }
+        .nav-links a { margin: 0 15px; color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Discovery Hub</h1>
+            <p>Find like-minded users, relevant content, and exploration paths</p>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/navigate">🧭 Navigate</a>
+            <a href="/contribute">💡 Contribute</a>
+            <a href="/profile">👤 Profile</a>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+        
+        <div class="discovery-grid">
+            <!-- Similar Users Section -->
+            <div class="discovery-section">
+                <h2>👥 People Like You</h2>
+                {% if similar_users %}
+                    {% for user_data in similar_users %}
+                    <div class="user-card">
+                        <span class="similarity-score">{{ user_data.similarity_score }}% Match</span>
+                        <h3>{{ user_data.profile.identity.name or 'Anonymous User' }}</h3>
+                        <p><strong>Location:</strong> {{ user_data.profile.location.geographic_location or 'Unknown' }}</p>
+                        <p><strong>Skills:</strong> 
+                            {% if user_data.profile.technical and user_data.profile.technical.skill_levels %}
+                                {% for skill, level in user_data.profile.technical.skill_levels.items() %}
+                                    {{ skill }}: {{ level.value }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </p>
+                        {% if user_data.common_interests %}
+                        <p><strong>Common Interests:</strong> {{ user_data.common_interests|join(', ') }}</p>
+                        {% endif %}
+                        <a href="/connect/{{ user_data.user_id }}" class="btn btn-primary">Connect</a>
+                        <a href="#" class="btn btn-secondary">View Profile</a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No similar users found yet. Start contributing to connect with others!</p>
+                {% endif %}
+            </div>
+            
+            <!-- Relevant Content Section -->
+            <div class="discovery-section">
+                <h2>💡 Content for You</h2>
+                {% if relevant_content %}
+                    {% for content_data in relevant_content %}
+                    <div class="content-card">
+                        <span class="relevance-score">{{ content_data.relevance_score }}% Relevant</span>
+                        <h3>{{ content_data.contribution.title or 'Untitled' }}</h3>
+                        <p>{{ content_data.contribution.description or 'No description available' }}</p>
+                        <p><strong>Category:</strong> {{ content_data.contribution.category or 'General' }}</p>
+                        <p><strong>Author:</strong> {{ content_data.author }}</p>
+                        <p><strong>Skill Level:</strong> {{ content_data.contribution.skill_level or 'All Levels' }}</p>
+                        <a href="#" class="btn btn-primary">View Details</a>
+                        <a href="#" class="btn btn-secondary">Contact Author</a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No relevant content found yet. Start contributing to see personalized content!</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Exploration Paths -->
+        <div class="exploration-paths">
+            <h2>🧭 Your Exploration Paths</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                {% for path in exploration_paths %}
+                <div class="path-card">
+                    <h3>{{ path.title }}</h3>
+                    <p>{{ path.description }}</p>
+                    <ol class="path-steps">
+                        {% for step in path.steps %}
+                        <li>{{ step }}</li>
+                        {% endfor %}
+                    </ol>
+                    <div class="path-meta">
+                        <span><strong>Difficulty:</strong> {{ path.difficulty }}</span>
+                        <span><strong>Time:</strong> {{ path.estimated_time }}</span>
+                    </div>
+                    <a href="#" class="btn btn-primary">Start Path</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,201 @@
+{
+  "id": "codex:Memory",
+  "name": "Memory",
+  "water_state": "Ice",
+  "archetype": [
+    "Preservation",
+    "History",
+    "Storage"
+  ],
+  "resonance": 0.6,
+  "fractal_level": 1,
+  "subnodes": {
+    "codex:Memory:scientific:empirical": {
+      "id": "codex:Memory:scientific:empirical",
+      "name": "Memory Empirical",
+      "water_state": "Structured",
+      "archetype": [
+        "Measurement",
+        "Observation",
+        "Data"
+      ],
+      "resonance": 0.48,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Memory",
+      "chakra": "SolarPlexus",
+      "color_hex": "#FFD700",
+      "base_frequency_hz": 528.0,
+      "planet": "Saturn",
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Memory:scientific:theoretical": {
+      "id": "codex:Memory:scientific:theoretical",
+      "name": "Memory Theoretical",
+      "water_state": "Vapor",
+      "archetype": [
+        "Hypothesis",
+        "Model",
+        "Framework"
+      ],
+      "resonance": 0.54,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Memory",
+      "chakra": "SolarPlexus",
+      "color_hex": "#FFD700",
+      "base_frequency_hz": 528.0,
+      "planet": "Saturn",
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Memory:scientific:experimental": {
+      "id": "codex:Memory:scientific:experimental",
+      "name": "Memory Experimental",
+      "water_state": "Liquid",
+      "archetype": [
+        "Testing",
+        "Validation",
+        "Discovery"
+      ],
+      "resonance": 0.42,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Memory",
+      "chakra": "SolarPlexus",
+      "color_hex": "#FFD700",
+      "base_frequency_hz": 528.0,
+      "planet": "Saturn",
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Memory:symbolic:archetypal": {
+      "id": "codex:Memory:symbolic:archetypal",
+      "name": "Memory Archetypal",
+      "water_state": "Plasma",
+      "archetype": [
+        "Myth",
+        "Symbol",
+        "Collective"
+      ],
+      "resonance": 0.54,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Memory",
+      "chakra": "SolarPlexus",
+      "color_hex": "#FFD700",
+      "base_frequency_hz": 528.0,
+      "planet": "Saturn",
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Memory:symbolic:cultural": {
+      "id": "codex:Memory:symbolic:cultural",
+      "name": "Memory Cultural",
+      "water_state": "Clustered",
+      "archetype": [
+        "Tradition",
+        "Society",
+        "Heritage"
+      ],
+      "resonance": 0.48,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Memory",
+      "chakra": "SolarPlexus",
+      "color_hex": "#FFD700",
+      "base_frequency_hz": 528.0,
+      "planet": "Saturn",
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Memory:symbolic:personal": {
+      "id": "codex:Memory:symbolic:personal",
+      "name": "Memory Personal",
+      "water_state": "ReflectiveSurface",
+      "archetype": [
+        "Individual",
+        "Subjective",
+        "Experience"
+      ],
+      "resonance": 0.42,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Memory",
+      "chakra": "SolarPlexus",
+      "color_hex": "#FFD700",
+      "base_frequency_hz": 528.0,
+      "planet": "Saturn",
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Memory:water:phase": {
+      "id": "codex:Memory:water:phase",
+      "name": "Memory Phase",
+      "water_state": "VaporLiquidEquilibrium",
+      "archetype": [
+        "Transition",
+        "Boundary",
+        "Change"
+      ],
+      "resonance": 0.48,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Memory",
+      "chakra": "SolarPlexus",
+      "color_hex": "#FFD700",
+      "base_frequency_hz": 528.0,
+      "planet": "Saturn",
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Memory:water:flow": {
+      "id": "codex:Memory:water:flow",
+      "name": "Memory Flow",
+      "water_state": "Liquid",
+      "archetype": [
+        "Movement",
+        "Direction",
+        "Current"
+      ],
+      "resonance": 0.54,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Memory",
+      "chakra": "SolarPlexus",
+      "color_hex": "#FFD700",
+      "base_frequency_hz": 528.0,
+      "planet": "Saturn",
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Memory:water:coherence": {
+      "id": "codex:Memory:water:coherence",
+      "name": "Memory Coherence",
+      "water_state": "LiquidCrystalBoundary",
+      "archetype": [
+        "Alignment",
+        "Harmony",
+        "Order"
+      ],
+      "resonance": 0.48,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Memory",
+      "chakra": "SolarPlexus",
+      "color_hex": "#FFD700",
+      "base_frequency_hz": 528.0,
+      "planet": "Saturn",
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    }
+  },
+  "parent_id": null,
+  "chakra": "SolarPlexus",
+  "color_hex": "#FFD700",
+  "base_frequency_hz": 528.0,
+  "planet": "Saturn",
+  "created_at": "2025-08-21T01:49:51.000Z",
+  "updated_at": "2025-08-21T01:49:51.000Z"
+}

@@ -1,0 +1,29 @@
+# Generic Fractal API System Requirements
+# Core dependencies for the generic fractal system
+
+# HTTP requests for API integration
+requests>=2.28.0
+
+# Database operations
+# SQLite3 is included with Python, no external dependency needed
+
+# Data handling and serialization
+# JSON is included with Python, no external dependency needed
+
+# Date and time handling
+# datetime is included with Python, no external dependency needed
+
+# Hash functions
+# hashlib is included with Python, no external dependency needed
+
+# Mathematical operations
+# math is included with Python, no external dependency needed
+
+# Type hints
+# typing is included with Python, no external dependency needed
+
+# Data classes
+# dataclasses is included with Python, no external dependency needed
+
+# Note: This system is designed to be lightweight and use only Python standard library
+# components where possible, with minimal external dependencies.

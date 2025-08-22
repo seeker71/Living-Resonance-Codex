@@ -1,0 +1,73 @@
+# 💧 WATER Service Pod - Stable, Operational
+FROM python:3.9-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV WATER_POD_ID=water-pod-001
+ENV WATER_POD_STATE=WATER
+    ENV WATER_POD_ROLE=web
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    git \
+    curl \
+    sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements and install Python dependencies
+COPY requirements-docker.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy Living Codex system
+COPY src/ src/
+COPY tests/ tests/
+COPY docs/ docs/
+COPY scripts/ scripts/
+
+# Create service directories
+RUN mkdir -p /app/data /app/logs /app/user_profiles /app/contributions
+
+# Create service startup script
+RUN echo '#!/bin/bash\n\
+echo "💧 WATER Pod ${WATER_POD_ID} starting..."\n\
+echo "State: ${WATER_POD_STATE}"\n\
+echo "Role: ${WATER_POD_ROLE}"\n\
+\n\
+# Initialize database and services\n\
+python src/core/minimal_ice_bootstrap.py\n\
+\n\
+# Start appropriate service based on role\n\
+case ${WATER_POD_ROLE} in\n\
+    "web")\n\
+        echo "🌐 Starting web service..."\n\
+        python src/platform/web_interface.py\n\
+        ;;\n\
+    "api")\n\
+        echo "🔌 Starting API service..."\n\
+        python src/api/api_server.py\n\
+        ;;\n\
+    "worker")\n\
+        echo "⚙️ Starting worker service..."\n\
+        python src/workers/worker_service.py\n\
+        ;;\n\
+    *)\n\
+        echo "🌐 Starting default web service..."\n\
+        python src/platform/web_interface.py\n\
+        ;;\n\
+esac' > /app/start_water.sh && chmod +x /app/start_water.sh
+
+# Expose ports
+EXPOSE 5000 5001 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Start WATER service
+CMD ["/app/start_water.sh"]

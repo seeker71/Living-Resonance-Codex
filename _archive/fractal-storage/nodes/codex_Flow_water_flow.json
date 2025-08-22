@@ -1,0 +1,20 @@
+{
+  "id": "codex:Flow:water:flow",
+  "name": "Flow Flow",
+  "water_state": "Liquid",
+  "archetype": [
+    "Movement",
+    "Direction",
+    "Current"
+  ],
+  "resonance": 0.63,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Flow",
+  "chakra": "Heart",
+  "color_hex": "#32CD32",
+  "base_frequency_hz": 639.0,
+  "planet": "Moon",
+  "created_at": "2025-08-21T01:49:51.000Z",
+  "updated_at": "2025-08-21T01:49:51.000Z"
+}

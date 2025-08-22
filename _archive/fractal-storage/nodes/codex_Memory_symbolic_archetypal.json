@@ -1,0 +1,20 @@
+{
+  "id": "codex:Memory:symbolic:archetypal",
+  "name": "Memory Archetypal",
+  "water_state": "Plasma",
+  "archetype": [
+    "Myth",
+    "Symbol",
+    "Collective"
+  ],
+  "resonance": 0.54,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Memory",
+  "chakra": "SolarPlexus",
+  "color_hex": "#FFD700",
+  "base_frequency_hz": 528.0,
+  "planet": "Saturn",
+  "created_at": "2025-08-21T01:49:51.000Z",
+  "updated_at": "2025-08-21T01:49:51.000Z"
+}

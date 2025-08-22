@@ -1,0 +1,20 @@
+{
+  "id": "codex:Field:scientific:theoretical",
+  "name": "Field Theoretical",
+  "water_state": "Vapor",
+  "archetype": [
+    "Hypothesis",
+    "Model",
+    "Framework"
+  ],
+  "resonance": 0.7200000000000001,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Field",
+  "chakra": "ThirdEye",
+  "color_hex": "#8A2BE2",
+  "base_frequency_hz": 852.0,
+  "planet": "Jupiter",
+  "created_at": "2025-08-21T01:49:50.000Z",
+  "updated_at": "2025-08-21T01:49:50.000Z"
+}

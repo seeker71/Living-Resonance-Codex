@@ -1,0 +1,201 @@
+{
+  "id": "codex:Awareness",
+  "name": "Awareness",
+  "water_state": "ReflectiveSurface",
+  "archetype": [
+    "Consciousness",
+    "Observation",
+    "Reflection"
+  ],
+  "resonance": 0.8,
+  "fractal_level": 1,
+  "subnodes": {
+    "codex:Awareness:scientific:empirical": {
+      "id": "codex:Awareness:scientific:empirical",
+      "name": "Awareness Empirical",
+      "water_state": "Structured",
+      "archetype": [
+        "Measurement",
+        "Observation",
+        "Data"
+      ],
+      "resonance": 0.6400000000000001,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Awareness",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Awareness:scientific:theoretical": {
+      "id": "codex:Awareness:scientific:theoretical",
+      "name": "Awareness Theoretical",
+      "water_state": "Vapor",
+      "archetype": [
+        "Hypothesis",
+        "Model",
+        "Framework"
+      ],
+      "resonance": 0.7200000000000001,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Awareness",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Awareness:scientific:experimental": {
+      "id": "codex:Awareness:scientific:experimental",
+      "name": "Awareness Experimental",
+      "water_state": "Liquid",
+      "archetype": [
+        "Testing",
+        "Validation",
+        "Discovery"
+      ],
+      "resonance": 0.5599999999999999,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Awareness",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Awareness:symbolic:archetypal": {
+      "id": "codex:Awareness:symbolic:archetypal",
+      "name": "Awareness Archetypal",
+      "water_state": "Plasma",
+      "archetype": [
+        "Myth",
+        "Symbol",
+        "Collective"
+      ],
+      "resonance": 0.7200000000000001,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Awareness",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Awareness:symbolic:cultural": {
+      "id": "codex:Awareness:symbolic:cultural",
+      "name": "Awareness Cultural",
+      "water_state": "Clustered",
+      "archetype": [
+        "Tradition",
+        "Society",
+        "Heritage"
+      ],
+      "resonance": 0.6400000000000001,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Awareness",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Awareness:symbolic:personal": {
+      "id": "codex:Awareness:symbolic:personal",
+      "name": "Awareness Personal",
+      "water_state": "ReflectiveSurface",
+      "archetype": [
+        "Individual",
+        "Subjective",
+        "Experience"
+      ],
+      "resonance": 0.5599999999999999,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Awareness",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Awareness:water:phase": {
+      "id": "codex:Awareness:water:phase",
+      "name": "Awareness Phase",
+      "water_state": "VaporLiquidEquilibrium",
+      "archetype": [
+        "Transition",
+        "Boundary",
+        "Change"
+      ],
+      "resonance": 0.6400000000000001,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Awareness",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Awareness:water:flow": {
+      "id": "codex:Awareness:water:flow",
+      "name": "Awareness Flow",
+      "water_state": "Liquid",
+      "archetype": [
+        "Movement",
+        "Direction",
+        "Current"
+      ],
+      "resonance": 0.7200000000000001,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Awareness",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Awareness:water:coherence": {
+      "id": "codex:Awareness:water:coherence",
+      "name": "Awareness Coherence",
+      "water_state": "LiquidCrystalBoundary",
+      "archetype": [
+        "Alignment",
+        "Harmony",
+        "Order"
+      ],
+      "resonance": 0.6400000000000001,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Awareness",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    }
+  },
+  "parent_id": null,
+  "chakra": null,
+  "color_hex": null,
+  "base_frequency_hz": null,
+  "planet": null,
+  "created_at": "2025-08-21T01:49:51.000Z",
+  "updated_at": "2025-08-21T01:49:51.000Z"
+}

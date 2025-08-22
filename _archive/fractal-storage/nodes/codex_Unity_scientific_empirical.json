@@ -1,0 +1,20 @@
+{
+  "id": "codex:Unity:scientific:empirical",
+  "name": "Unity Empirical",
+  "water_state": "Structured",
+  "archetype": [
+    "Measurement",
+    "Observation",
+    "Data"
+  ],
+  "resonance": 0.5599999999999999,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Unity",
+  "chakra": null,
+  "color_hex": null,
+  "base_frequency_hz": null,
+  "planet": null,
+  "created_at": "2025-08-21T01:49:51.000Z",
+  "updated_at": "2025-08-21T01:49:51.000Z"
+}

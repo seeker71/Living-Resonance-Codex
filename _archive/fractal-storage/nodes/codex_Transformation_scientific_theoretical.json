@@ -1,0 +1,20 @@
+{
+  "id": "codex:Transformation:scientific:theoretical",
+  "name": "Transformation Theoretical",
+  "water_state": "Vapor",
+  "archetype": [
+    "Hypothesis",
+    "Model",
+    "Framework"
+  ],
+  "resonance": 0.7200000000000001,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Transformation",
+  "chakra": "Root",
+  "color_hex": "#8B0000",
+  "base_frequency_hz": 396.0,
+  "planet": "Mars",
+  "created_at": "2025-08-21T01:49:51.000Z",
+  "updated_at": "2025-08-21T01:49:51.000Z"
+}

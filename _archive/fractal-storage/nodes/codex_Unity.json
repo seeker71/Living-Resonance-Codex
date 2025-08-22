@@ -1,0 +1,201 @@
+{
+  "id": "codex:Unity",
+  "name": "Unity",
+  "water_state": "LiquidCrystalBoundary",
+  "archetype": [
+    "Wholeness",
+    "Integration",
+    "Oneness"
+  ],
+  "resonance": 0.7,
+  "fractal_level": 1,
+  "subnodes": {
+    "codex:Unity:scientific:empirical": {
+      "id": "codex:Unity:scientific:empirical",
+      "name": "Unity Empirical",
+      "water_state": "Structured",
+      "archetype": [
+        "Measurement",
+        "Observation",
+        "Data"
+      ],
+      "resonance": 0.5599999999999999,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Unity",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Unity:scientific:theoretical": {
+      "id": "codex:Unity:scientific:theoretical",
+      "name": "Unity Theoretical",
+      "water_state": "Vapor",
+      "archetype": [
+        "Hypothesis",
+        "Model",
+        "Framework"
+      ],
+      "resonance": 0.63,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Unity",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Unity:scientific:experimental": {
+      "id": "codex:Unity:scientific:experimental",
+      "name": "Unity Experimental",
+      "water_state": "Liquid",
+      "archetype": [
+        "Testing",
+        "Validation",
+        "Discovery"
+      ],
+      "resonance": 0.48999999999999994,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Unity",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Unity:symbolic:archetypal": {
+      "id": "codex:Unity:symbolic:archetypal",
+      "name": "Unity Archetypal",
+      "water_state": "Plasma",
+      "archetype": [
+        "Myth",
+        "Symbol",
+        "Collective"
+      ],
+      "resonance": 0.63,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Unity",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Unity:symbolic:cultural": {
+      "id": "codex:Unity:symbolic:cultural",
+      "name": "Unity Cultural",
+      "water_state": "Clustered",
+      "archetype": [
+        "Tradition",
+        "Society",
+        "Heritage"
+      ],
+      "resonance": 0.5599999999999999,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Unity",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Unity:symbolic:personal": {
+      "id": "codex:Unity:symbolic:personal",
+      "name": "Unity Personal",
+      "water_state": "ReflectiveSurface",
+      "archetype": [
+        "Individual",
+        "Subjective",
+        "Experience"
+      ],
+      "resonance": 0.48999999999999994,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Unity",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Unity:water:phase": {
+      "id": "codex:Unity:water:phase",
+      "name": "Unity Phase",
+      "water_state": "VaporLiquidEquilibrium",
+      "archetype": [
+        "Transition",
+        "Boundary",
+        "Change"
+      ],
+      "resonance": 0.5599999999999999,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Unity",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Unity:water:flow": {
+      "id": "codex:Unity:water:flow",
+      "name": "Unity Flow",
+      "water_state": "Liquid",
+      "archetype": [
+        "Movement",
+        "Direction",
+        "Current"
+      ],
+      "resonance": 0.63,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Unity",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    },
+    "codex:Unity:water:coherence": {
+      "id": "codex:Unity:water:coherence",
+      "name": "Unity Coherence",
+      "water_state": "LiquidCrystalBoundary",
+      "archetype": [
+        "Alignment",
+        "Harmony",
+        "Order"
+      ],
+      "resonance": 0.5599999999999999,
+      "fractal_level": 2,
+      "subnodes": {},
+      "parent_id": "codex:Unity",
+      "chakra": null,
+      "color_hex": null,
+      "base_frequency_hz": null,
+      "planet": null,
+      "created_at": "2025-08-21T01:49:51.000Z",
+      "updated_at": "2025-08-21T01:49:51.000Z"
+    }
+  },
+  "parent_id": null,
+  "chakra": null,
+  "color_hex": null,
+  "base_frequency_hz": null,
+  "planet": null,
+  "created_at": "2025-08-21T01:49:51.000Z",
+  "updated_at": "2025-08-21T01:49:51.000Z"
+}

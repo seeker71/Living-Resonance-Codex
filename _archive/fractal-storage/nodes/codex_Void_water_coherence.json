@@ -1,0 +1,20 @@
+{
+  "id": "codex:Void:water:coherence",
+  "name": "Void Coherence",
+  "water_state": "LiquidCrystalBoundary",
+  "archetype": [
+    "Alignment",
+    "Harmony",
+    "Order"
+  ],
+  "resonance": 0.8,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Void",
+  "chakra": "Crown",
+  "color_hex": "#EE82EE",
+  "base_frequency_hz": 963.0,
+  "planet": "Sun",
+  "created_at": "2025-08-21T01:49:50.000Z",
+  "updated_at": "2025-08-21T01:49:50.000Z"
+}

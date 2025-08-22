@@ -1,0 +1,20 @@
+{
+  "id": "codex:Memory:symbolic:personal",
+  "name": "Memory Personal",
+  "water_state": "ReflectiveSurface",
+  "archetype": [
+    "Individual",
+    "Subjective",
+    "Experience"
+  ],
+  "resonance": 0.42,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Memory",
+  "chakra": "SolarPlexus",
+  "color_hex": "#FFD700",
+  "base_frequency_hz": 528.0,
+  "planet": "Saturn",
+  "created_at": "2025-08-21T01:49:51.000Z",
+  "updated_at": "2025-08-21T01:49:51.000Z"
+}

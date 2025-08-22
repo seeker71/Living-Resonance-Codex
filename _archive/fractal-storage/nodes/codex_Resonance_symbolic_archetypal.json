@@ -1,0 +1,20 @@
+{
+  "id": "codex:Resonance:symbolic:archetypal",
+  "name": "Resonance Archetypal",
+  "water_state": "Plasma",
+  "archetype": [
+    "Myth",
+    "Symbol",
+    "Collective"
+  ],
+  "resonance": 0.81,
+  "fractal_level": 2,
+  "subnodes": {},
+  "parent_id": "codex:Resonance",
+  "chakra": "Sacral",
+  "color_hex": "#FF7F50",
+  "base_frequency_hz": 417.0,
+  "planet": "Venus",
+  "created_at": "2025-08-21T01:49:51.000Z",
+  "updated_at": "2025-08-21T01:49:51.000Z"
+}
