@@ -12,8 +12,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
 try:
-    from tree_sitter import Language, Parser
-    from tree_sitter_languages import get_language, get_parser
+    from tree_sitter import Language, Parser, Query
     TREESITTER_AVAILABLE = True
 except Exception:
     TREESITTER_AVAILABLE = False
@@ -37,13 +36,49 @@ class CodeParser:
     def __init__(self):
         if not TREESITTER_AVAILABLE:
             raise RuntimeError(
-                "Tree-sitter not available. Install 'tree_sitter' and 'tree_sitter_languages'."
+                "Tree-sitter not available. Install 'tree_sitter' and language-specific packages."
             )
+        
+        # Initialize language parsers
+        self.languages = {}
+        self._load_languages()
+
+    def _load_languages(self):
+        """Load available language parsers."""
+        language_packages = {
+            'python': 'tree_sitter_python',
+            'javascript': 'tree_sitter_javascript',
+            'typescript': 'tree_sitter_typescript',
+            'html': 'tree_sitter_html',
+            'css': 'tree_sitter_css',
+            'json': 'tree_sitter_json',
+            'yaml': 'tree_sitter_yaml',
+            'rust': 'tree_sitter_rust',
+            'go': 'tree_sitter_go',
+            'java': 'tree_sitter_java',
+            'cpp': 'tree_sitter_cpp',
+            'c': 'tree_sitter_c',
+            'php': 'tree_sitter_php',
+            'ruby': 'tree_sitter_ruby',
+            'bash': 'tree_sitter_bash',
+            'lua': 'tree_sitter_lua',
+            'sql': 'tree_sitter_sql',
+        }
+        
+        for lang_name, package_name in language_packages.items():
+            try:
+                package = __import__(package_name)
+                if hasattr(package, 'language'):
+                    # Wrap the PyCapsule in a Language object
+                    from tree_sitter import Language
+                    self.languages[lang_name] = Language(package.language())
+            except ImportError:
+                continue  # Skip unavailable languages
 
     def _detect_language(self, file_path: str, language_hint: Optional[str] = None):
         """Detect Tree-sitter language from file extension or hint."""
-        if language_hint:
-            return get_language(language_hint)
+        if language_hint and language_hint in self.languages:
+            return self.languages[language_hint]
 
         ext = os.path.splitext(file_path)[1].lower().lstrip('.')
         # Common extension fallbacks
@@ -51,8 +86,8 @@ class CodeParser:
             'py': 'python',
             'js': 'javascript',
             'ts': 'typescript',
-            'jsx': 'tsx',
-            'tsx': 'tsx',
+            'jsx': 'javascript',
+            'tsx': 'typescript',
             'go': 'go',
             'rs': 'rust',
             'rb': 'ruby',
@@ -62,7 +97,7 @@ class CodeParser:
             'cpp': 'cpp',
             'hpp': 'cpp',
             'cc': 'cpp',
-            'cs': 'c_sharp',
+            'cs': 'cpp',  # C# fallback to C++
             'php': 'php',
             'html': 'html',
             'css': 'css',
@@ -70,23 +105,30 @@ class CodeParser:
             'yaml': 'yaml',
             'yml': 'yaml',
             'md': 'markdown',
-            'toml': 'toml',
+            'toml': 'json',  # TOML fallback to JSON
             'sql': 'sql',
             'sh': 'bash',
             'bash': 'bash',
             'lua': 'lua'
         }
+        
         lang = fallback.get(ext)
-        if not lang:
-            # default to plaintext-like parsing using markdown or json for structure
-            lang = 'markdown'
-        return get_language(lang)
+        if lang and lang in self.languages:
+            return self.languages[lang]
+        
+        # Default to Python if available, otherwise first available language
+        if 'python' in self.languages:
+            return self.languages['python']
+        elif self.languages:
+            return list(self.languages.values())[0]
+        else:
+            raise RuntimeError("No Tree-sitter languages available")
 
     def parse(self, code: str, file_path: str = '', language_hint: Optional[str] = None) -> Any:
         """Parse code and return a Tree-sitter tree."""
         language = self._detect_language(file_path, language_hint)
         parser = Parser()
-        parser.set_language(language)
+        parser.language = language
         tree = parser.parse(bytes(code, 'utf8'))
         return tree
 
@@ -114,43 +156,46 @@ class CodeParser:
         """Run a Tree-sitter query against code and return captures with ranges and text."""
         language = self._detect_language(file_path, language_hint)
         parser = Parser()
-        parser.set_language(language)
+        parser.language = language
         tree = parser.parse(bytes(code, 'utf8'))
 
         # Build query
-        from tree_sitter import Query
         ts_query = Query(language, query)
-        cursor = tree.walk()
-
-        # tree-sitter queries are run on nodes using QueryCursor
-        from tree_sitter import QueryCursor
-        qcur = QueryCursor()
         source_bytes = bytes(code, 'utf8')
 
+        # Execute query using the matches method
         results: List[Dict[str, Any]] = []
-        for match in qcur.exec(ts_query, tree.root_node):
+        
+        # Get matches from the root node
+        matches = ts_query.matches(tree.root_node)
+        
+        for pattern_index, captures in matches:
             captures_info = []
-            for capture in match.captures:
-                node = capture[0]
-                name = ts_query.captures[capture[1]]
-                text = source_bytes[node.start_byte:node.end_byte].decode('utf8', errors='ignore')
-                captures_info.append({
-                    'name': name,
-                    'type': node.type,
-                    'start_byte': node.start_byte,
-                    'end_byte': node.end_byte,
-                    'start_point': node.start_point,
-                    'end_point': node.end_point,
-                    'text': text,
-                })
+            for capture_name, nodes in captures.items():
+                # nodes is a list of Node objects
+                for node in nodes:
+                    text = source_bytes[node.start_byte:node.end_byte].decode('utf8', errors='ignore')
+                    captures_info.append({
+                        'name': capture_name,
+                        'type': node.type,
+                        'start_byte': node.start_byte,
+                        'end_byte': node.end_byte,
+                        'start_point': node.start_point,
+                        'end_point': node.end_point,
+                        'text': text,
+                    })
             results.append({'captures': captures_info})
         return results
+
+    def get_available_languages(self) -> List[str]:
+        """Get list of available language parsers."""
+        return list(self.languages.keys())
 
 
 def main():
     import argparse, sys
     if not TREESITTER_AVAILABLE:
-        print("❌ Tree-sitter not available. Please install 'tree_sitter' and 'tree_sitter_languages'.")
+        print("❌ Tree-sitter not available. Please install 'tree_sitter' and language-specific packages.")
         return 1
 
     parser = argparse.ArgumentParser(description='Tree-sitter Code Parser')
@@ -163,6 +208,8 @@ def main():
         code = f.read()
 
     cp = CodeParser()
+    print(f"Available languages: {', '.join(cp.get_available_languages())}")
+    
     if args.query:
         results = cp.query(code, args.query, file_path=args.path, language_hint=args.lang)
         for i, match in enumerate(results):

@@ -143,14 +143,14 @@ def demo_parsing():
                     code = f.read()
                 
                 parser = CodeParser()
-                tree = parser.to_syntax_tree(code, file_path=file_path)
+                tree = parser.parse(code, file_path=file_path)
                 
                 print(f"\n📁 {os.path.basename(file_path)}:")
-                print(f"   Root type: {tree.type}")
-                print(f"   Children: {len(tree.children)}")
+                print(f"   Root type: {tree.root_node.type}")
+                print(f"   Children: {len(tree.root_node.children)}")
                 
                 # Show first few children
-                for i, child in enumerate(tree.children[:3]):
+                for i, child in enumerate(tree.root_node.children[:3]):
                     print(f"   Child {i+1}: {child.type} ({len(child.children)} sub-children)")
                 
             except Exception as e:
