@@ -466,9 +466,12 @@ class TestRunner:
                 report = self.generate_test_report(results)
                 self.display_summary(report)
                 
-                # Save report
-                report_file = self.save_test_report(report)
-                print(f"\n📊 Test report saved to: {report_file}")
+                # Save report only if requested
+                if len(sys.argv) > 1 and ('--save-report' in sys.argv or '--verbose' in sys.argv):
+                    report_file = self.save_test_report(report)
+                    print(f"\n📊 Test report saved to: {report_file}")
+                else:
+                    print(f"\n📊 Test report generation skipped (use --save-report to enable)")
                 
                 # Return success status
                 summary = report['summary']
