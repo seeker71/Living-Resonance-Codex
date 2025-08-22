@@ -21,9 +21,9 @@ import logging
 
 # Import new modular components
 try:
-    from src.api.management.api_manager import APIManagementSystem
-    from src.api.sources.base.api_client import BaseAPIClient
-    from src.api.sources.base.models import APISource, APIResponseStatus, APIResponse
+    from ..api.management.api_manager import APIManagementSystem
+    from ..api.sources.base.api_client import BaseAPIClient
+    from ..api.sources.base.models import APISource, APIResponseStatus, APIResponse
     MODULAR_IMPORTS_AVAILABLE = True
     print("✅ Using new modular API components")
 except ImportError:

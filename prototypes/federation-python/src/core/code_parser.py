@@ -190,6 +190,13 @@ class CodeParser:
     def get_available_languages(self) -> List[str]:
         """Get list of available language parsers."""
         return list(self.languages.keys())
+    
+    def get_language_name(self, language_obj) -> str:
+        """Get the language name from a Language object by finding the key in self.languages."""
+        for name, lang_obj in self.languages.items():
+            if lang_obj == language_obj:
+                return name
+        return "unknown"
 
 
 def main():

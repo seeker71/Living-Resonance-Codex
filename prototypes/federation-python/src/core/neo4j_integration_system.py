@@ -20,12 +20,12 @@ import logging
 
 # Import new modular components
 try:
-    from src.graph.core.models import (
+    from ..graph.core.models import (
         GraphNode, GraphRelationship, GraphQueryResult,
         GraphOperationType, GraphNodeType
     )
-    from src.graph.neo4j.connection_manager import Neo4jConnectionManager
-    from src.graph.neo4j.neo4j_operations import Neo4jOperations
+    from ..graph.neo4j.connection_manager import Neo4jConnectionManager
+    from ..graph.neo4j.neo4j_operations import Neo4jOperations
     MODULAR_IMPORTS_AVAILABLE = True
     print("✅ Using new modular graph components")
 except ImportError:

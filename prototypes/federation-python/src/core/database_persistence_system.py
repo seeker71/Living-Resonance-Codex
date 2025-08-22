@@ -20,12 +20,12 @@ import logging
 
 # Import new modular components
 try:
-    from src.database.core.models import (
+    from ..database.core.models import (
         DatabaseNode, DatabaseOperationResult, QueryFilter, QueryOptions,
         DatabaseType, OperationType
     )
-    from src.database.core.operations import DatabaseOperations
-    from src.database.sqlite.sqlite_manager import SQLiteManager
+    from ..database.core.operations import DatabaseOperations
+    from ..database.sqlite.sqlite_manager import SQLiteManager
     MODULAR_IMPORTS_AVAILABLE = True
     print("✅ Using new modular database components")
 except ImportError:

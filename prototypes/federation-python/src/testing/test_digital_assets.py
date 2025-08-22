@@ -92,12 +92,8 @@ def test_asset_management():
     """Test the digital asset management system"""
     try:
         # Import the asset manager
-        import sys
-        from pathlib import Path
-        sys.path.insert(0, str(Path(__file__).parent / "src"))
-        
-        from src.core.database_persistence_system import DatabasePersistenceSystem
-        from src.core.digital_asset_manager import DigitalAssetManager, AssetType
+        from ..core.database_persistence_system import DatabasePersistenceSystem
+        from ..core.digital_asset_manager import DigitalAssetManager, AssetType
         
         print("🎨 Testing Digital Asset Management System")
         print("=" * 50)

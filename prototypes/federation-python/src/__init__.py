@@ -10,11 +10,34 @@ __description__ = "Modular Living Codex System"
 # Import main components for easy access
 from .config.manager import ConfigManager
 
-__all__ = [
-    "ConfigManager"
-]
+# Core modules
+from .core.database_persistence_system import DatabasePersistenceSystem
+from .core.digital_asset_manager import DigitalAssetManager
+from .core.code_parser import CodeParser
+from .core.code_navigation_api import CodeNavigationAPI
 
-# Additional components will be imported as they are implemented
-# from .api.integration.external_api_system import RealExternalAPISystem
-# from .database.persistence.database_system import DatabasePersistenceSystem
-# from .graph.integration.neo4j_system import Neo4jIntegrationSystem
+# Demo modules
+from .demos import (
+    AutonomousLearningSystem,
+    AutonomousDecisionDemo,
+    demo_code_navigation,
+    demo_parsing,
+    demo_queries,
+    demo_cli_integration,
+    demo_cli_commands
+)
+
+__all__ = [
+    "ConfigManager",
+    "DatabasePersistenceSystem",
+    "DigitalAssetManager", 
+    "CodeParser",
+    "CodeNavigationAPI",
+    "AutonomousLearningSystem",
+    "AutonomousDecisionDemo",
+    "demo_code_navigation",
+    "demo_parsing",
+    "demo_queries",
+    "demo_cli_integration",
+    "demo_cli_commands"
+]

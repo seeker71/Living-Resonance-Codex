@@ -125,7 +125,7 @@ def demo_parsing():
     print("=" * 50)
     
     try:
-        from src.core.code_parser import CodeParser
+        from ..core.code_parser import CodeParser
         
         # Create sample files
         print("📝 Creating sample code files...")
@@ -172,7 +172,7 @@ def demo_queries():
     print("=" * 50)
     
     try:
-        from src.core.code_parser import CodeParser
+        from ..core.code_parser import CodeParser
         
         # Test queries on Python file
         python_file = "tree_sitter_samples/sample.py"

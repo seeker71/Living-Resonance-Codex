@@ -26,6 +26,7 @@ from src.ontology.enhanced_ontology_system import EnhancedOntologySystem
 from src.ai_agents.ai_agent_system import AIAgentSystem
 from src.core.digital_asset_manager import DigitalAssetManager, AssetType
 from src.core.code_parser import CodeParser
+from src.core.code_navigation_api import CodeNavigationAPI
 
 @dataclass
 class ResonanceAnalysis:
@@ -251,6 +252,13 @@ Code Parsing:
   code-parse <file>    - Parse a source file and show root info
   code-query <file> <query> [lang] - Run Tree-sitter query on file
   
+Code Navigation:
+  code-add <file>      - Add code file to navigation system
+  code-explore <id>    - Explore code file structure and syntax tree
+  code-search <term>   - Search code files by content or metadata
+  code-stats           - Show code navigation statistics
+  code-languages       - List available programming languages
+  
 Asset Management:
   asset-add <file>     - Add a digital asset to the system
   asset-list [type]    - List digital assets (image, video, audio, document, etc.)
@@ -294,10 +302,13 @@ Type 'help <command>' for detailed help on specific commands.
             self.code_parser = CodeParser()
             self.code_parser_available = True
             self.code_parser_error = ""
+            # Initialize code navigation API
+            self.code_nav_api = CodeNavigationAPI(self.database, self.code_parser)
         except Exception as e:
             self.code_parser = None
             self.code_parser_available = False
             self.code_parser_error = str(e)
+            self.code_nav_api = None
         
         self.current_energy = 10000  # Starting energy
         self.total_energy_spent = 0
@@ -387,6 +398,229 @@ Type 'help <command>' for detailed help on specific commands.
                     print(f"  [{cap['name']}] {cap['type']} {sp}->{ep}  {snippet}")
         except Exception as e:
             print(f"❌ Query error: {e}")
+    
+    # ========== CODE NAVIGATION ==========
+    def do_code_add(self, arg):
+        """Add a code file to the navigation system
+        Usage: code-add <file_path>
+        """
+        if not self.code_nav_api:
+            print(f"❌ Code navigation API not available: {self.code_parser_error}")
+            return
+        
+        if not arg:
+            print("❌ Please specify a file path to add")
+            return
+        
+        file_path = arg.strip()
+        print(f"🔍 Adding code file to navigation system: {file_path}")
+        
+        try:
+            result = self.code_nav_api.parse_and_store_code_file(file_path)
+            
+            if result.success:
+                print(f"✅ Successfully added {file_path} to navigation system")
+                print(f"   Language: {result.metadata.get('language', 'unknown')}")
+                print(f"   Parse time: {result.execution_time:.3f}s")
+                
+                # Show energy cost
+                energy_cost = self._calculate_energy_cost("code_add", result.data.file_size)
+                self._spend_energy(energy_cost)
+                print(f"   Energy cost: {energy_cost} ⚡")
+            else:
+                print(f"❌ Failed to add file: {getattr(result, 'error_message', 'Unknown error')}")
+                
+        except Exception as e:
+            print(f"❌ Error adding code file: {e}")
+    
+    def do_code_explore(self, arg):
+        """Explore a code file's structure and syntax tree
+        Usage: code-explore <file_id>
+        """
+        if not self.code_nav_api:
+            print(f"❌ Code navigation API not available: {self.code_parser_error}")
+            return
+        
+        if not arg:
+            print("❌ Please specify a file ID to explore")
+            return
+        
+        file_id = arg.strip()
+        print(f"🔍 Exploring code file structure: {file_id}")
+        
+        try:
+            result = self.code_nav_api.get_code_file_structure(file_id)
+            
+            if result.success:
+                code_file = result.data
+                content = code_file.content
+                
+                print(f"\n📁 Code File: {content.get('file_name', 'Unknown')}")
+                print("=" * 60)
+                print(f"Path: {content.get('file_path', 'Unknown')}")
+                print(f"Language: {content.get('language', 'Unknown')}")
+                print(f"Size: {content.get('file_size', 0)} bytes")
+                print(f"Lines: {content.get('metadata', {}).get('line_count', 0)}")
+                print(f"Parse time: {content.get('parse_time', 'Unknown')}")
+                
+                if hasattr(code_file, 'syntax_nodes') and code_file.syntax_nodes:
+                    print(f"\n🌳 Syntax Tree Nodes: {len(code_file.syntax_nodes)}")
+                    print("-" * 40)
+                    
+                    # Show top-level nodes
+                    root_nodes = [n for n in code_file.syntax_nodes if not n.metadata.get('parent_id')]
+                    for i, node in enumerate(root_nodes[:5]):
+                        content_data = node.content
+                        print(f"  {i+1}. {content_data.get('node_type', 'unknown')} "
+                              f"({content_data.get('start_point', (0,0))[0]}:{content_data.get('start_point', (0,0))[1]})")
+                        if content_data.get('text'):
+                            text_preview = content_data['text'][:50].replace('\n', '\\n')
+                            print(f"     Text: '{text_preview}...'")
+                    
+                    if len(root_nodes) > 5:
+                        print(f"  ... and {len(root_nodes) - 5} more root nodes")
+                else:
+                    print("\n🌳 Syntax tree not stored for this file")
+                
+                # Show energy cost
+                energy_cost = self._calculate_energy_cost("code_explore", len(str(content)))
+                self._spend_energy(energy_cost)
+                print(f"\n   Energy cost: {energy_cost} ⚡")
+            else:
+                print(f"❌ Failed to explore file: {getattr(result, 'error_message', 'Unknown error')}")
+                
+        except Exception as e:
+            print(f"❌ Error exploring code file: {e}")
+    
+    def do_code_search(self, arg):
+        """Search code files by content or metadata
+        Usage: code-search <search_term> [language]
+        """
+        if not self.code_nav_api:
+            print(f"❌ Code navigation API not available: {self.code_parser_error}")
+            return
+        
+        if not arg:
+            print("❌ Please specify a search term")
+            return
+        
+        parts = arg.strip().split()
+        search_term = parts[0]
+        language = parts[1] if len(parts) > 1 else None
+        
+        print(f"🔍 Searching code files for: '{search_term}'")
+        if language:
+            print(f"   Language filter: {language}")
+        
+        try:
+            result = self.code_nav_api.search_code_files(search_term, language)
+            
+            if result.success and result.data:
+                code_files = result.data
+                print(f"\n📋 Found {len(code_files)} code files:")
+                print("-" * 80)
+                
+                for i, node in enumerate(code_files):
+                    content = node.content
+                    if isinstance(content, dict):
+                        print(f"{i+1}. {content.get('file_name', 'Unknown')}")
+                        print(f"   Language: {content.get('language', 'Unknown')}")
+                        print(f"   Path: {content.get('file_path', 'Unknown')}")
+                        print(f"   Size: {content.get('file_size', 0)} bytes")
+                        print(f"   Parse time: {content.get('parse_time', 'Unknown')}")
+                        print()
+                
+                # Show energy cost
+                energy_cost = self._calculate_energy_cost("code_search", len(code_files))
+                self._spend_energy(energy_cost)
+                print(f"   Energy cost: {energy_cost} ⚡")
+            else:
+                print("🔍 No code files found matching the search criteria")
+                
+        except Exception as e:
+            print(f"❌ Error searching code files: {e}")
+    
+    def do_code_stats(self, arg):
+        """Show code navigation statistics
+        Usage: code-stats
+        """
+        if not self.code_nav_api:
+            print(f"❌ Code navigation API not available: {self.code_parser_error}")
+            return
+        
+        print("📊 Code Navigation Statistics")
+        print("=" * 50)
+        
+        try:
+            stats = self.code_nav_api.get_code_file_stats()
+            
+            if "error" not in stats:
+                print(f"📁 Total Code Files: {stats.get('total_code_files', 0)}")
+                print(f"🌳 Total Syntax Nodes: {stats.get('total_syntax_nodes', 0)}")
+                print(f"🗂️  Storage Root: {stats.get('storage_root', 'Unknown')}")
+                
+                print(f"\n🔤 Available Languages: {len(stats.get('available_languages', []))}")
+                for lang in stats.get('available_languages', []):
+                    print(f"   • {lang}")
+                
+                if 'language_breakdown' in stats:
+                    print(f"\n📈 Language Breakdown:")
+                    for lang, count in stats['language_breakdown'].items():
+                        print(f"   • {lang}: {count} files")
+            else:
+                print(f"❌ Error getting stats: {stats['error']}")
+                
+        except Exception as e:
+            print(f"❌ Error getting code stats: {e}")
+    
+    def do_code_languages(self, arg):
+        """List available programming languages
+        Usage: code-languages
+        """
+        if not self.code_nav_api:
+            print(f"❌ Code navigation API not available: {self.code_parser_error}")
+            return
+        
+        print("🔤 Available Programming Languages")
+        print("=" * 50)
+        
+        try:
+            languages = self.code_nav_api.get_available_languages()
+            
+            if languages:
+                print(f"✅ {len(languages)} languages available:")
+                for i, lang in enumerate(languages, 1):
+                    print(f"   {i:2d}. {lang}")
+            else:
+                print("❌ No languages available")
+                
+        except Exception as e:
+            print(f"❌ Error getting languages: {e}")
+    
+    def _calculate_energy_cost(self, operation: str, content_size: int) -> int:
+        """Calculate energy cost for operations"""
+        base_costs = {
+            "code_add": 50,
+            "code_explore": 20,
+            "code_search": 30,
+            "code_stats": 10,
+            "code_languages": 5
+        }
+        
+        base_cost = base_costs.get(operation, 10)
+        size_factor = min(content_size // 1000, 10)  # Cap at 10x for large files
+        
+        return base_cost + size_factor
+    
+    def _spend_energy(self, amount: int):
+        """Spend energy and update totals"""
+        if amount <= self.current_energy:
+            self.current_energy -= amount
+            self.total_energy_spent += amount
+        else:
+            # If not enough energy, spend what's left
+            self.total_energy_spent += self.current_energy
+            self.current_energy = 0
     
     def do_explore(self, arg):
         """Explore a specific node by ID or name
@@ -1250,22 +1484,42 @@ Type 'help <command>' for detailed help on specific commands.
     
     # Handle hyphenated commands (cmd module uses underscores)
     def default(self, line):
-        """Handle unknown commands and hyphenated asset commands"""
-        if not line.strip():  # Handle empty lines
-            return
-        
-        # Convert hyphenated commands to underscore versions (asset-*, code-*)
-        if line.startswith('asset-') or line.startswith('code-'):
-            underscore_line = line.replace('-', '_', 1)
-            parts = underscore_line.split()
-            if parts:
-                command = parts[0]
-                args = ' '.join(parts[1:]) if len(parts) > 1 else ''
-                if hasattr(self, f'do_{command}'):
-                    return getattr(self, f'do_{command}')(args)
+        """Handle hyphenated commands by converting them to underscore format"""
+        if line.startswith('code-'):
+            # Handle code navigation commands
+            if line.startswith('code-add'):
+                return self.do_code_add(line[9:])  # Remove 'code-add '
+            elif line.startswith('code-explore'):
+                return self.do_code_explore(line[13:])  # Remove 'code-explore '
+            elif line.startswith('code-search'):
+                return self.do_code_search(line[12:])  # Remove 'code-search '
+            elif line.startswith('code-stats'):
+                return self.do_code_stats(line[11:])  # Remove 'code-stats '
+            elif line.startswith('code-languages'):
+                return self.do_code_languages(line[15:])  # Remove 'code-languages '
+            elif line.startswith('code-parse'):
+                return self.do_code_parse(line[11:])  # Remove 'code-parse '
+            elif line.startswith('code-query'):
+                return self.do_code_query(line[11:])  # Remove 'code-query '
+        elif line.startswith('asset-'):
+            # Handle asset management commands
+            if line.startswith('asset-add'):
+                return self.do_asset_add(line[10:])  # Remove 'asset-add '
+            elif line.startswith('asset-list'):
+                return self.do_asset_list(line[11:])  # Remove 'asset-list '
+            elif line.startswith('asset-search'):
+                return self.do_asset_search(line[13:])  # Remove 'asset-search '
+            elif line.startswith('asset-info'):
+                return self.do_asset_info(line[11:])  # Remove 'asset-info '
+            elif line.startswith('asset-tag'):
+                return self.do_asset_tag(line[10:])  # Remove 'asset-tag '
+            elif line.startswith('asset-delete'):
+                return self.do_asset_delete(line[13:])  # Remove 'asset-delete '
+            elif line.startswith('asset-stats'):
+                return self.do_asset_stats(line[12:])  # Remove 'asset-stats '
         
         print(f"❌ Unknown command: {line}")
-        print("Type 'help' for available commands")
+        print("💡 Type 'help' for available commands")
 
 def main():
     """Main entry point for the CLI"""
