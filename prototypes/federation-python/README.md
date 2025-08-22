@@ -43,8 +43,12 @@ api_system = RealExternalAPISystem()
 
 ## 📚 **Documentation**
 
-- **[Complete System Documentation](COMPLETE_SYSTEM_DOCUMENTATION.md)** - Comprehensive guide
-- **[Setup and Testing Guide](COMPREHENSIVE_SETUP_AND_TESTING_GUIDE.md)** - Installation and testing
+- **[📁 Complete Documentation Suite](docs/)** - Organized documentation library
+- **[🚀 Quick Start Guide](docs/development/QUICK_START.md)** - Get running in 5 minutes
+- **[🎓 Training Materials](docs/training/TRAINING_MATERIALS.md)** - Comprehensive learning path
+- **[🏗️ Architecture Guide](docs/architecture/DEVELOPER_ARCHITECTURE_GUIDE.md)** - Technical details
+- **[🔌 API Documentation](docs/api/API_DOCUMENTATION.md)** - Complete API reference
+- **[⚡ Quick Reference](docs/references/QUICK_REFERENCE.md)** - Fast lookup guide
 
 ## 🧪 **Testing**
 
