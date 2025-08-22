@@ -287,7 +287,7 @@ class ProfileManager:
         try:
             profile_file = self.storage_path / f"{profile.user_id}.json"
             profile_dict = profile.to_dict()
-            print(f"Debug: Profile dict keys: {list(profile_dict.keys())}")
+
             with open(profile_file, 'w', encoding='utf-8') as f:
                 json.dump(profile_dict, f, indent=2, ensure_ascii=False)
             return True

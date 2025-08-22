@@ -174,8 +174,9 @@ class TestRunner:
             print(f"   {status_icon} {test_path}: {status} ({duration:.2f}s)")
             
             if status != "PASSED" and self.config['verbose']:
-                print(f"      Error: {error}")
-                if result.stdout:
+                if error:
+                    print(f"      Error: {error}")
+                if result.stdout and len(result.stdout.strip()) > 0:
                     print(f"      Output: {result.stdout[:200]}...")
             
             return test_result

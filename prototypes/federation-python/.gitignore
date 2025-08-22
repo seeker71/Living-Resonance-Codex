@@ -1,0 +1,211 @@
+# Living Codex Platform - Git Ignore Configuration
+# Excludes temporary files, test artifacts, and runtime data
+
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+venv.bak/
+env.bak/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test artifacts and reports
+test_reports/
+ci_reports/
+regression_test_report*.json
+*_test_report*.json
+*.log
+
+# User data and runtime artifacts
+user_profiles/
+contributions/
+vapor_states/
+session_data/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+living_codex.db
+
+# Platform runtime files
+platform_data/
+cache/
+logs/
+tmp/
+temp/
+
+# Development and debugging
+debug/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archive and backup files
+*.bak
+*.backup
+*.orig
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*_temp*
+
+# Node modules (if any JavaScript components)
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Documentation build
+docs/_build/
+docs/.doctrees/
+
+# MacOS specific
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# JetBrains IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+.history/
+
+# Vim
+*.swp
+*.swo
+*.un~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Archives
+*.7z
+*.jar
+*.rar
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+
+# Package files
+*.dmg
+*.pkg
+*.msi
+*.exe
+
+# Large media files
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.mp3
+*.wav
+*.m4a
+
+# Large images
+*.tiff
+*.tif
+*.bmp
+*.raw
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/

@@ -383,7 +383,11 @@ class RegressionTestSuite(unittest.TestCase):
         user_data = self.test_data.create_test_user_data()
         profile = self.user_system.create_user_profile(user_data)
         
-        # Update session state
+        # First, get personalized experience to create the session
+        experience = self.user_system.get_personalized_experience(profile.user_id)
+        self.assertIsNotNone(experience)
+        
+        # Now update session state
         session_updates = {
             'current_focus': 'Test Focus',
             'temporary_interests': ['Temporary Interest 1', 'Temporary Interest 2']
@@ -392,9 +396,9 @@ class RegressionTestSuite(unittest.TestCase):
         success = self.user_system.update_session_state(profile.user_id, session_updates)
         self.assertTrue(success)
         
-        # Verify session state
-        experience = self.user_system.get_personalized_experience(profile.user_id)
-        self.assertIsNotNone(experience)
+        # Verify session state was updated
+        updated_experience = self.user_system.get_personalized_experience(profile.user_id)
+        self.assertIsNotNone(updated_experience)
         
         print("✅ Session State Management: PASSED")
         return True
@@ -641,8 +645,10 @@ def main():
         print("❌ Regressions detected")
         print("\n🔧 Please fix all failing tests before committing.")
     
-    # Save test report
-    autonomous_tester.save_test_report()
+    # Save test report only when explicitly requested
+    if len(sys.argv) > 1 and ('--save-report' in sys.argv or '--verbose' in sys.argv):
+        autonomous_tester.save_test_report()
+    # Skip saving test reports by default to avoid temporary files
     
     return autonomous_tester.can_commit()
 

@@ -17,7 +17,7 @@ class TestTestingSystem(unittest.TestCase):
     def test_01_import_regression_test_suite(self):
         """Test that regression test suite can be imported"""
         try:
-            from tests.regression_test_suite import (
+            from regression_test_suite import (
                 RegressionTestSuite, TestDataGenerator, 
                 FeatureValidator, AutonomousFeatureTesting
             )
@@ -85,19 +85,23 @@ class TestTestingSystem(unittest.TestCase):
     def test_05_test_data_generator_creation(self):
         """Test that test data generator can create test data"""
         try:
-            from tests.regression_test_suite import TestDataGenerator
+            from regression_test_suite import TestDataGenerator
             
             # Test user data generation
             user_data = TestDataGenerator.create_test_user_data()
             self.assertIsInstance(user_data, dict)
-            self.assertIn('username', user_data)
-            self.assertIn('email', user_data)
+            self.assertIn('identity', user_data)
+            self.assertIn('communication', user_data)
+            self.assertIn('technical', user_data)
+            self.assertIn('interests', user_data)
+            self.assertIn('location', user_data)
             
             # Test contribution data generation
             contribution_data = TestDataGenerator.create_test_contribution_data()
             self.assertIsInstance(contribution_data, dict)
-            self.assertIn('title', contribution_data)
-            self.assertIn('content', contribution_data)
+            self.assertIn('contribution_type', contribution_data)
+            self.assertIn('metadata', contribution_data)
+            self.assertIn('content_data', contribution_data)
             
         except ImportError:
             self.skipTest("TestDataGenerator not available")
@@ -107,7 +111,7 @@ class TestTestingSystem(unittest.TestCase):
     def test_06_feature_validator_creation(self):
         """Test that feature validator can be created"""
         try:
-            from tests.regression_test_suite import FeatureValidator
+            from regression_test_suite import FeatureValidator
             
             validator = FeatureValidator()
             self.assertIsNotNone(validator)
@@ -123,7 +127,7 @@ class TestTestingSystem(unittest.TestCase):
     def test_07_autonomous_feature_testing_creation(self):
         """Test that autonomous feature testing can be created"""
         try:
-            from tests.regression_test_suite import AutonomousFeatureTesting
+            from regression_test_suite import AutonomousFeatureTesting
             
             testing = AutonomousFeatureTesting()
             self.assertIsNotNone(testing)

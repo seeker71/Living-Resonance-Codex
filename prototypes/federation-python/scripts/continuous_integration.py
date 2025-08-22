@@ -34,12 +34,12 @@ class CIRun:
     """Represents a complete CI run"""
     run_id: str
     start_time: str
-    end_time: Optional[str] = None
-    duration: Optional[float] = None
     status: str  # RUNNING, SUCCESS, FAILED, ERROR
     test_results: List[TestResult]
     summary: Dict[str, Any]
     environment: Dict[str, str]
+    end_time: Optional[str] = None
+    duration: Optional[float] = None
 
 class ContinuousIntegration:
     """Main CI system for the Living Codex Platform"""
