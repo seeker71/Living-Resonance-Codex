@@ -15,9 +15,9 @@ from typing import Dict, List, Any, Optional
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 # Import our systems
-from neo4j_integration_system import Neo4jIntegrationSystem
-from database_persistence_system import DatabasePersistenceSystem, DatabaseType, DatabaseNode, QueryFilter, QueryOptions
-from real_external_api_system import RealExternalAPISystem
+from .neo4j_integration_system import Neo4jIntegrationSystem
+from .database_persistence_system import DatabasePersistenceSystem, DatabaseType, DatabaseNode, QueryFilter, QueryOptions
+from .real_external_api_system import RealExternalAPISystem
 
 class BootstrappedSystemExplorer:
     """Explorer for the fully bootstrapped Living Codex system"""

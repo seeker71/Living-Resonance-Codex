@@ -15,6 +15,9 @@ class SQLiteManager:
     """Manages SQLite database connections and schema"""
     
     def __init__(self, db_path: str = "living_codex.db"):
+        # Ensure db_path is never None
+        if db_path is None:
+            db_path = "living_codex.db"
         self.db_path = db_path
         self.connection = None
         self._initialize_database()

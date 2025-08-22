@@ -19,9 +19,9 @@ from datetime import datetime
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 # Import our systems
-from enhanced_ontology_system import EnhancedOntologySystem
-from ai_agent_system import AIAgentSystem, AgentType, LearningMode
-from explore_bootstrapped_system import BootstrappedSystemExplorer
+from ..ontology.enhanced_ontology_system import EnhancedOntologySystem
+from ..ai_agents.ai_agent_system import AIAgentSystem, AgentType, LearningMode
+from ..core.explore_bootstrapped_system import BootstrappedSystemExplorer
 
 class ComprehensiveIntegrationSystem:
     """Comprehensive integration system showcasing all Living Codex capabilities"""

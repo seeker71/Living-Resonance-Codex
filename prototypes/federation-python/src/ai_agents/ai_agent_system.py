@@ -20,7 +20,7 @@ import random
 # Add src to path for modular components
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from enhanced_ontology_system import EnhancedOntologySystem
+from ..ontology.enhanced_ontology_system import EnhancedOntologySystem
 
 class AgentType(Enum):
     """Types of AI agents"""

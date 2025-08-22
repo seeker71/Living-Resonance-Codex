@@ -293,18 +293,27 @@ class DatabasePersistenceSystem:
     
     def __init__(self, db_type: str = "sqlite", db_path: str = None):
         self.db_type = db_type
+        
+        # Ensure db_path is never None and is a valid string
+        if db_path is None:
+            db_path = "living_codex.db"
+        elif not isinstance(db_path, str):
+            logger.warning(f"Invalid db_path type: {type(db_path)}, using default")
+            db_path = "living_codex.db"
+        
         self.db_path = db_path
+        logger.info(f"🔧 Initializing DatabasePersistenceSystem with path: {self.db_path}")
         
         # Initialize database manager
         if MODULAR_IMPORTS_AVAILABLE:
             if db_type == "sqlite":
-                self.db_manager = SQLiteManager(db_path)
+                self.db_manager = SQLiteManager(self.db_path)
                 logger.info("✅ Using modular SQLite components")
             else:
                 logger.warning(f"Database type {db_type} not yet implemented in modular system")
-                self.db_manager = SQLiteManager(db_path)
+                self.db_manager = SQLiteManager(self.db_path)
         else:
-            self.db_manager = SQLiteManager(db_path)
+            self.db_manager = SQLiteManager(self.db_path)
             logger.info("✅ Using legacy database components")
         
         # Initialize operations

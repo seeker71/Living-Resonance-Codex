@@ -24,7 +24,7 @@ import random
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 # Import our systems
-from database_persistence_system import DatabasePersistenceSystem, DatabaseType, DatabaseNode, QueryFilter, QueryOptions
+from ..core.database_persistence_system import DatabasePersistenceSystem, DatabaseType, DatabaseNode, QueryFilter, QueryOptions
 
 class QuantumState(Enum):
     """Quantum states for knowledge representation"""
@@ -141,8 +141,13 @@ class EmergenceNode:
 class EnhancedOntologySystem:
     """Enhanced ontology system with quantum-inspired and consciousness-aware capabilities"""
     
-    def __init__(self, db_path: str = "comprehensive_bootstrap.db"):
-        self.database = DatabasePersistenceSystem(db_path=db_path)
+    def __init__(self, db_path: str = "comprehensive_bootstrap.db", database: DatabasePersistenceSystem = None):
+        # Use existing database instance if provided, otherwise create new one
+        if database is not None:
+            self.database = database
+        else:
+            self.database = DatabasePersistenceSystem(db_path=db_path)
+        
         self.quantum_nodes: Dict[str, QuantumKnowledgeNode] = {}
         self.consciousness_nodes: Dict[str, ConsciousnessNode] = {}
         self.evolutionary_nodes: Dict[str, EvolutionaryNode] = {}

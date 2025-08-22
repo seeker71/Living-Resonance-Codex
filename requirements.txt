@@ -1,0 +1,39 @@
+# Living Codex - Dependencies
+# A transcendent, unified intelligent knowledge system
+
+# Core Python packages
+aiohttp>=3.12.0
+asyncio-mqtt>=0.16.0
+
+# Database and persistence
+sqlite3  # Built into Python 3.x
+
+# Data processing and analysis
+numpy>=2.0.0
+pandas>=2.0.0
+
+# Graph database (optional - for Neo4j integration)
+neo4j>=5.0.0
+
+# AI and machine learning
+scikit-learn>=1.3.0
+torch>=2.0.0  # Optional - for advanced AI capabilities
+
+# Scientific computing
+scipy>=1.10.0
+matplotlib>=3.7.0  # For visualization
+
+# Development and testing
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+black>=23.0.0  # Code formatting
+flake8>=6.0.0  # Linting
+
+# Documentation
+sphinx>=7.0.0
+sphinx-rtd-theme>=1.3.0
+
+# Utilities
+python-dotenv>=1.0.0  # Environment variable management
+click>=8.1.0  # Command line interface
+rich>=13.0.0  # Rich terminal output
