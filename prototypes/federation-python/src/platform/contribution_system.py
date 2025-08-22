@@ -161,6 +161,11 @@ class Contribution:
         # Convert datetime objects to ISO strings
         contribution_dict['created_at'] = self.created_at.isoformat()
         contribution_dict['updated_at'] = self.updated_at.isoformat()
+        
+        # Convert enums to strings
+        contribution_dict['contribution_type'] = self.contribution_type.value
+        contribution_dict['status'] = self.status.value
+        
         return contribution_dict
     
     @classmethod
@@ -171,6 +176,10 @@ class Contribution:
             data['created_at'] = datetime.fromisoformat(data['created_at'])
         if 'updated_at' in data:
             data['updated_at'] = datetime.fromisoformat(data['updated_at'])
+        
+        # Convert string values back to enums
+        data['contribution_type'] = ContributionType(data['contribution_type'])
+        data['status'] = ContributionStatus(data['status'])
         
         # Reconstruct nested objects
         data['metadata'] = ContributionMetadata(**data['metadata'])

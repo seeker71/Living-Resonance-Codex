@@ -246,20 +246,6 @@ def api_contributions():
     contributions = contribution_system.get_user_contributions(current_user.id)
     return jsonify([c.to_dict() for c in contributions])
 
-if __name__ == '__main__':
-    # Create templates directory if it doesn't exist
-    templates_dir = Path(__file__).parent / 'templates'
-    templates_dir.mkdir(exist_ok=True)
-    
-    # Create basic HTML templates
-    create_basic_templates(templates_dir)
-    
-    print("🌐 Starting Living Codex Platform...")
-    print("   Open your browser to: http://localhost:5000")
-    print("   Sign up to create your profile and start contributing!")
-    
-    app.run(debug=True, host='0.0.0.0', port=5000)
-
 def create_basic_templates(templates_dir):
     """Create basic HTML templates for the web interface"""
     
@@ -537,3 +523,17 @@ def create_basic_templates(templates_dir):
 <html><head><title>Profile</title></head><body><h1>Your Profile</h1><p>Name: {{ profile.core_identity.name }}</p><p>Location: {{ profile.location_context.geographic_location }}</p><a href="/dashboard">Back to Dashboard</a></body></html>""")
     
     print("✅ Created basic HTML templates")
+
+if __name__ == '__main__':
+    # Create templates directory if it doesn't exist
+    templates_dir = Path(__file__).parent / 'templates'
+    templates_dir.mkdir(exist_ok=True)
+    
+    # Create basic HTML templates
+    create_basic_templates(templates_dir)
+    
+    print("🌐 Starting Living Codex Platform...")
+    print("   Open your browser to: http://localhost:5000")
+    print("   Sign up to create your profile and start contributing!")
+    
+    app.run(debug=True, host='0.0.0.0', port=5001)

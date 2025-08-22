@@ -1,0 +1,83 @@
+{
+  "user_id": "1162acbd-8c13-46ff-9b97-bcb9516289bf",
+  "core_identity": {
+    "name": "Maria Rodriguez",
+    "pronouns": "she/her",
+    "cultural_background": "Mexican-American",
+    "belief_system": "Community-focused",
+    "life_experience": "Community organizer and educator",
+    "created_at": "2025-08-22T14:58:49.011620+00:00"
+  },
+  "communication": {
+    "primary_language": "Spanish",
+    "secondary_languages": [
+      "English"
+    ],
+    "communication_style": "creative",
+    "learning_style": "kinesthetic",
+    "accessibility_needs": []
+  },
+  "technical_profile": {
+    "skill_levels": {
+      "programming": "beginner",
+      "data_analysis": "beginner",
+      "design": "intermediate",
+      "research": "advanced"
+    },
+    "learning_path": [
+      "Digital Tools",
+      "Data Visualization"
+    ],
+    "preferred_tools": [
+      "Canva",
+      "Google Workspace"
+    ],
+    "contribution_areas": [
+      "Community Solutions",
+      "Education",
+      "Local Knowledge"
+    ]
+  },
+  "interests": {
+    "primary_domains": [
+      "Community Building",
+      "Education",
+      "Social Justice"
+    ],
+    "specific_topics": [
+      "Youth Empowerment",
+      "Food Security",
+      "Cultural Preservation"
+    ],
+    "expertise_levels": {
+      "community_organizing": "expert",
+      "youth_education": "expert",
+      "cultural_programs": "advanced"
+    },
+    "passion_areas": [
+      "Building strong, resilient communities"
+    ]
+  },
+  "location_context": {
+    "geographic_location": "Los Angeles, CA, USA",
+    "timezone": "America/Los_Angeles",
+    "cultural_context": "Large Latino community with rich cultural heritage",
+    "community_connections": [
+      "Local schools",
+      "Community centers",
+      "Cultural organizations"
+    ],
+    "local_challenges": [
+      "Food insecurity",
+      "Language barriers",
+      "Digital access"
+    ],
+    "local_resources": [
+      "Community gardens",
+      "Bilingual services",
+      "Cultural centers"
+    ]
+  },
+  "created_at": "2025-08-22T14:58:49.011630+00:00",
+  "updated_at": "2025-08-22T14:58:49.011631+00:00"
+}

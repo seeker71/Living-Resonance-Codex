@@ -52,6 +52,19 @@ class CoreIdentity:
     def __post_init__(self):
         if self.created_at is None:
             self.created_at = datetime.now(timezone.utc)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for storage"""
+        identity_dict = asdict(self)
+        identity_dict['created_at'] = self.created_at.isoformat()
+        return identity_dict
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'CoreIdentity':
+        """Create from dictionary"""
+        if 'created_at' in data:
+            data['created_at'] = datetime.fromisoformat(data['created_at'])
+        return cls(**data)
 
 @dataclass
 class CommunicationPreferences:
@@ -67,6 +80,20 @@ class CommunicationPreferences:
             self.secondary_languages = []
         if self.accessibility_needs is None:
             self.accessibility_needs = []
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for storage"""
+        comm_dict = asdict(self)
+        comm_dict['communication_style'] = self.communication_style.value
+        comm_dict['learning_style'] = self.learning_style.value
+        return comm_dict
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'CommunicationPreferences':
+        """Create from dictionary"""
+        data['communication_style'] = CommunicationStyle(data['communication_style'])
+        data['learning_style'] = LearningStyle(data['learning_style'])
+        return cls(**data)
 
 @dataclass
 class TechnicalProfile:
@@ -85,6 +112,22 @@ class TechnicalProfile:
             self.preferred_tools = []
         if self.contribution_areas is None:
             self.contribution_areas = []
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for storage"""
+        tech_dict = asdict(self)
+        # Convert SkillLevel enums to strings
+        for skill, level in tech_dict['skill_levels'].items():
+            tech_dict['skill_levels'][skill] = level.value
+        return tech_dict
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'TechnicalProfile':
+        """Create from dictionary"""
+        # Convert string values back to SkillLevel enums
+        for skill, level in data['skill_levels'].items():
+            data['skill_levels'][skill] = SkillLevel(level)
+        return cls(**data)
 
 @dataclass
 class Interests:
@@ -103,6 +146,22 @@ class Interests:
             self.expertise_levels = {}
         if self.passion_areas is None:
             self.passion_areas = []
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for storage"""
+        interests_dict = asdict(self)
+        # Convert SkillLevel enums to strings
+        for topic, level in interests_dict['expertise_levels'].items():
+            interests_dict['expertise_levels'][topic] = level.value
+        return interests_dict
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'Interests':
+        """Create from dictionary"""
+        # Convert string values back to SkillLevel enums
+        for topic, level in data['expertise_levels'].items():
+            data['expertise_levels'][topic] = SkillLevel(level)
+        return cls(**data)
 
 @dataclass
 class LocationContext:
@@ -121,6 +180,15 @@ class LocationContext:
             self.local_challenges = []
         if self.local_resources is None:
             self.local_resources = []
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for storage"""
+        return asdict(self)
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'LocationContext':
+        """Create from dictionary"""
+        return cls(**data)
 
 @dataclass
 class UserProfile:
@@ -146,6 +214,14 @@ class UserProfile:
         # Convert datetime objects to ISO strings
         profile_dict['created_at'] = self.created_at.isoformat()
         profile_dict['updated_at'] = self.updated_at.isoformat()
+        
+        # Use nested objects' to_dict methods
+        profile_dict['core_identity'] = self.core_identity.to_dict()
+        profile_dict['communication'] = self.communication.to_dict()
+        profile_dict['technical_profile'] = self.technical_profile.to_dict()
+        profile_dict['interests'] = self.interests.to_dict()
+        profile_dict['location_context'] = self.location_context.to_dict()
+        
         return profile_dict
     
     @classmethod
@@ -157,12 +233,12 @@ class UserProfile:
         if 'updated_at' in data:
             data['updated_at'] = datetime.fromisoformat(data['updated_at'])
         
-        # Reconstruct nested objects
-        data['core_identity'] = CoreIdentity(**data['core_identity'])
-        data['communication'] = CommunicationPreferences(**data['communication'])
-        data['technical_profile'] = TechnicalProfile(**data['technical_profile'])
-        data['interests'] = Interests(**data['interests'])
-        data['location_context'] = LocationContext(**data['location_context'])
+        # Reconstruct nested objects using their from_dict methods
+        data['core_identity'] = CoreIdentity.from_dict(data['core_identity'])
+        data['communication'] = CommunicationPreferences.from_dict(data['communication'])
+        data['technical_profile'] = TechnicalProfile.from_dict(data['technical_profile'])
+        data['interests'] = Interests.from_dict(data['interests'])
+        data['location_context'] = LocationContext.from_dict(data['location_context'])
         
         return cls(**data)
 
@@ -185,6 +261,19 @@ class VaporState:
             self.current_collaborations = []
         if self.created_at is None:
             self.created_at = datetime.now(timezone.utc)
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for storage"""
+        vapor_dict = asdict(self)
+        vapor_dict['created_at'] = self.created_at.isoformat()
+        return vapor_dict
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'VaporState':
+        """Create from dictionary"""
+        if 'created_at' in data:
+            data['created_at'] = datetime.fromisoformat(data['created_at'])
+        return cls(**data)
 
 class ProfileManager:
     """Manages user profile storage and retrieval"""
@@ -197,11 +286,15 @@ class ProfileManager:
         """Store user profile to disk"""
         try:
             profile_file = self.storage_path / f"{profile.user_id}.json"
+            profile_dict = profile.to_dict()
+            print(f"Debug: Profile dict keys: {list(profile_dict.keys())}")
             with open(profile_file, 'w', encoding='utf-8') as f:
-                json.dump(profile.to_dict(), f, indent=2, ensure_ascii=False)
+                json.dump(profile_dict, f, indent=2, ensure_ascii=False)
             return True
         except Exception as e:
             print(f"Error storing profile: {e}")
+            import traceback
+            traceback.print_exc()
             return False
     
     def get_profile(self, user_id: str) -> Optional[UserProfile]:
@@ -392,6 +485,32 @@ class UserManagementSystem:
         
         # Create personalized experience
         return self.preference_engine.create_experience(liquid_state, vapor_state)
+    
+    def _store_vapor_state(self, user_id: str, vapor_state: VaporState) -> bool:
+        """Store vapor state to disk"""
+        try:
+            vapor_file = Path("vapor_states") / f"{user_id}.json"
+            vapor_file.parent.mkdir(exist_ok=True)
+            with open(vapor_file, 'w', encoding='utf-8') as f:
+                json.dump(vapor_state.to_dict(), f, indent=2, ensure_ascii=False)
+            return True
+        except Exception as e:
+            print(f"Error storing vapor state: {e}")
+            return False
+    
+    def _load_vapor_state(self, user_id: str) -> Optional[VaporState]:
+        """Load vapor state from disk"""
+        try:
+            vapor_file = Path("vapor_states") / f"{user_id}.json"
+            if not vapor_file.exists():
+                return None
+            
+            with open(vapor_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return VaporState.from_dict(data)
+        except Exception as e:
+            print(f"Error loading vapor state: {e}")
+            return None
     
     def update_user_preferences(self, user_id: str, updates: Dict[str, Any]) -> bool:
         """Update user preferences in liquid state"""

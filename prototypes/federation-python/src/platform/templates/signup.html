@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Living Codex Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .form-container { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 15px; backdrop-filter: blur(10px); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; border: none; border-radius: 5px; font-size: 16px; }
+        .btn { background: #4CAF50; color: white; padding: 15px 30px; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; }
+        .btn:hover { background: #45a049; }
+        .section { margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px; }
+        .section h3 { color: #4CAF50; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 40px;">🌟 Join the Living Codex Platform</h1>
+        
+        <form method="POST" class="form-container">
+            <div class="section">
+                <h3>👤 Core Identity</h3>
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="pronouns">Pronouns</label>
+                    <input type="text" id="pronouns" name="pronouns" placeholder="e.g., they/them, she/her">
+                </div>
+                <div class="form-group">
+                    <label for="cultural_background">Cultural Background</label>
+                    <input type="text" id="cultural_background" name="cultural_background">
+                </div>
+                <div class="form-group">
+                    <label for="belief_system">Belief System / Values</label>
+                    <input type="text" id="belief_system" name="belief_system">
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🗣️ Communication Preferences</h3>
+                <div class="form-group">
+                    <label for="primary_language">Primary Language *</label>
+                    <input type="text" id="primary_language" name="primary_language" required>
+                </div>
+                <div class="form-group">
+                    <label for="secondary_languages">Secondary Languages</label>
+                    <input type="text" id="secondary_languages" name="secondary_languages" placeholder="Comma-separated">
+                </div>
+                <div class="form-group">
+                    <label for="communication_style">Communication Style</label>
+                    <select id="communication_style" name="communication_style">
+                        <option value="casual">Casual</option>
+                        <option value="formal">Formal</option>
+                        <option value="technical">Technical</option>
+                        <option value="creative">Creative</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>💻 Technical Profile</h3>
+                <div class="form-group">
+                    <label for="programming_skill">Programming Skill</label>
+                    <select id="programming_skill" name="programming_skill">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="learning_path">Learning Goals</label>
+                    <input type="text" id="learning_path" name="learning_path" placeholder="Comma-separated skills you want to learn">
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🎯 Interests & Passions</h3>
+                <div class="form-group">
+                    <label for="specific_topics">Topics You Care About</label>
+                    <input type="text" id="specific_topics" name="specific_topics" placeholder="e.g., Climate Change, AI Ethics, Community Building">
+                </div>
+                <div class="form-group">
+                    <label for="passion_areas">What Are You Passionate About?</label>
+                    <input type="text" id="passion_areas" name="passion_areas" placeholder="e.g., Making technology accessible to everyone">
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🌍 Location & Community</h3>
+                <div class="form-group">
+                    <label for="location">Where Are You Located? *</label>
+                    <input type="text" id="location" name="location" required placeholder="City, Country">
+                </div>
+                <div class="form-group">
+                    <label for="local_challenges">Local Challenges in Your Area</label>
+                    <input type="text" id="local_challenges" name="local_challenges" placeholder="Comma-separated challenges">
+                </div>
+                <div class="form-group">
+                    <label for="local_resources">Local Resources Available</label>
+                    <input type="text" id="local_resources" name="local_resources" placeholder="Comma-separated resources">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">Create My Profile</button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 20px;">
+            Already have a profile? <a href="/login" style="color: #4CAF50;">Sign In</a>
+        </p>
+    </div>
+</body>
+</html>
