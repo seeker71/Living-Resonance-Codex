@@ -29,27 +29,35 @@ pre-commit>=2.20.0
 Pillow>=9.0.0
 mutagen>=1.45.0
 opencv-python>=4.5.0
-PyPDF2>=2.0.0
+PyPDF2>=3.0.0
 imageio>=2.15.0
 
-# Tree-sitter core
+# Tree-sitter for code parsing
 tree_sitter>=0.21.0
 
-# Tree-sitter language grammars (working packages)
-tree-sitter-python>=0.23.0
-tree-sitter-javascript>=0.23.0
-tree-sitter-typescript>=0.23.0
-tree-sitter-html>=0.23.0
-tree-sitter-css>=0.23.0
-tree-sitter-json>=0.24.0
-tree-sitter-yaml>=0.7.0
-tree-sitter-rust>=0.24.0
-tree-sitter-go>=0.23.0
-tree-sitter-java>=0.23.0
-tree-sitter-cpp>=0.23.0
-tree-sitter-c>=0.23.0
-tree-sitter-php>=0.23.0
-tree-sitter-ruby>=0.23.0
-tree-sitter-bash>=0.23.0
-tree-sitter-lua>=0.2.0
-tree-sitter-sql>=0.3.0
+# Individual language support for Tree-sitter
+tree-sitter-python>=0.20.0
+tree-sitter-javascript>=0.20.0
+tree-sitter-typescript>=0.20.0
+tree-sitter-java>=0.20.0
+tree-sitter-c>=0.20.0
+tree-sitter-cpp>=0.20.0
+tree-sitter-rust>=0.20.0
+tree-sitter-go>=0.20.0
+tree-sitter-ruby>=0.20.0
+tree-sitter-php>=0.20.0
+tree-sitter-csharp>=0.20.0
+tree-sitter-swift>=0.20.0
+tree-sitter-kotlin>=0.20.0
+tree-sitter-scala>=0.20.0
+tree-sitter-haskell>=0.20.0
+tree-sitter-html>=0.20.0
+tree-sitter-css>=0.20.0
+tree-sitter-json>=0.20.0
+tree-sitter-yaml>=0.20.0
+tree-sitter-markdown>=0.20.0
+tree-sitter-sql>=0.20.0
+
+# Web framework for platform interface
+Flask>=2.3.0
+Flask-Login>=0.6.0
