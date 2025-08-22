@@ -20,5 +20,26 @@ requests>=2.31.0
 # Async Support
 asyncio-mqtt>=0.16.0
 
+# Digital Asset Processing (Optional)
+# Image processing
+Pillow>=9.0.0
+
+# Audio metadata extraction
+mutagen>=1.45.0
+
+# Video processing
+opencv-python>=4.5.0
+
+# Document processing
+PyPDF2>=2.10.0
+
+# Additional image formats
+imageio>=2.19.0
+
 # Utilities
 python-multipart>=0.0.6
+
+# Code parsing (Tree-sitter)
+# tree-sitter core bindings and a bundle of common languages
+tree_sitter>=0.21.0
+tree_sitter_languages>=1.10.2

@@ -6,6 +6,7 @@ Changes cost energy based on how well they resonate with existing knowledge.
 """
 
 import sys
+import os
 import json
 import asyncio
 import cmd
@@ -23,6 +24,8 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 from src.core.database_persistence_system import DatabasePersistenceSystem, DatabaseNode, QueryFilter, QueryOptions
 from src.ontology.enhanced_ontology_system import EnhancedOntologySystem
 from src.ai_agents.ai_agent_system import AIAgentSystem
+from src.core.digital_asset_manager import DigitalAssetManager, AssetType
+from src.core.code_parser import CodeParser
 
 @dataclass
 class ResonanceAnalysis:
@@ -243,6 +246,20 @@ Commands:
   analyze <content>    - Analyze resonance of potential content
   energy               - Show current energy status
   resonate <node_id>   - Show resonance analysis for a node
+  
+Code Parsing:
+  code-parse <file>    - Parse a source file and show root info
+  code-query <file> <query> [lang] - Run Tree-sitter query on file
+  
+Asset Management:
+  asset-add <file>     - Add a digital asset to the system
+  asset-list [type]    - List digital assets (image, video, audio, document, etc.)
+  asset-search <term>  - Search digital assets by name or tags
+  asset-info <id>      - Show detailed asset information and metadata
+  asset-tag <id> <tags> - Add tags to an asset
+  asset-delete <id>    - Delete a digital asset
+  asset-stats          - Show asset storage statistics
+  
   help                 - Show this help message
   demo                 - Run system exploration demo to populate database
   quit                 - Exit the CLI
@@ -268,6 +285,20 @@ Type 'help <command>' for detailed help on specific commands.
         self.ontology = EnhancedOntologySystem(database=self.database)
         self.ai_system = AIAgentSystem(self.ontology)
         self.resonance_engine = ResonanceEngine(self.database, self.ontology)
+        
+        # Initialize digital asset manager
+        self.asset_manager = DigitalAssetManager(self.database, storage_root="digital_assets")
+        
+        # Initialize code parser (Tree-sitter)
+        try:
+            self.code_parser = CodeParser()
+            self.code_parser_available = True
+            self.code_parser_error = ""
+        except Exception as e:
+            self.code_parser = None
+            self.code_parser_available = False
+            self.code_parser_error = str(e)
+        
         self.current_energy = 10000  # Starting energy
         self.total_energy_spent = 0
         
@@ -288,8 +319,74 @@ Type 'help <command>' for detailed help on specific commands.
         print("✅ Ontology system ready")
         print("✅ AI agent system ready")
         print("✅ Resonance engine ready")
+        if self.code_parser_available:
+            print("✅ Code parser ready (Tree-sitter)")
+        else:
+            print(f"⚠️  Code parser unavailable: {self.code_parser_error}")
         print(f"💫 Starting energy: {self.current_energy}")
         print()
+
+    # ========== CODE PARSING (TREE-SITTER) ==========
+    def do_code_parse(self, arg):
+        """Parse a source file and show root node info
+        Usage: code-parse <file_path>
+        """
+        if not self.code_parser_available:
+            print(f"❌ Code parser not available: {self.code_parser_error}")
+            return
+        path = arg.strip()
+        if not path:
+            print("❌ Please specify a source file path")
+            return
+        if not os.path.exists(path):
+            print(f"❌ File not found: {path}")
+            return
+        try:
+            with open(path, 'r', encoding='utf8', errors='ignore') as f:
+                code = f.read()
+            tree = self.code_parser.to_syntax_tree(code, file_path=path)
+            print(f"\n🧩 Parsed: {path}")
+            print(f"Root: {tree.type}")
+            print(f"Children: {len(tree.children)}")
+        except Exception as e:
+            print(f"❌ Parse error: {e}")
+
+    def do_code_query(self, arg):
+        """Run a Tree-sitter query on a file
+        Usage: code-query <file_path> <query> [lang]
+        Example (Python functions): code-query file.py "(function_definition name: (identifier) @name)"
+        """
+        if not self.code_parser_available:
+            print(f"❌ Code parser not available: {self.code_parser_error}")
+            return
+        parts = shlex.split(arg)
+        if len(parts) < 2:
+            print("❌ Usage: code-query <file_path> <query> [lang]")
+            return
+        path = parts[0]
+        query = parts[1]
+        lang = parts[2] if len(parts) > 2 else None
+        if not os.path.exists(path):
+            print(f"❌ File not found: {path}")
+            return
+        try:
+            with open(path, 'r', encoding='utf8', errors='ignore') as f:
+                code = f.read()
+            results = self.code_parser.query(code, query, file_path=path, language_hint=lang)
+            if not results:
+                print("📭 No matches.")
+                return
+            print(f"\n🔎 Query matches: {len(results)}")
+            for i, match in enumerate(results[:50]):
+                print(f"Match {i+1}:")
+                for cap in match['captures']:
+                    sp = cap['start_point']
+                    ep = cap['end_point']
+                    preview = cap['text'].strip().splitlines()
+                    snippet = (preview[0][:120] if preview else '').replace('\t', '    ')
+                    print(f"  [{cap['name']}] {cap['type']} {sp}->{ep}  {snippet}")
+        except Exception as e:
+            print(f"❌ Query error: {e}")
     
     def do_explore(self, arg):
         """Explore a specific node by ID or name
@@ -771,13 +868,6 @@ Type 'help <command>' for detailed help on specific commands.
         else:
             return "🔴 Poor"
     
-    def default(self, line):
-        """Handle unknown commands"""
-        if not line.strip():  # Handle empty lines
-            return
-        print(f"❌ Unknown command: {line}")
-        print("Type 'help' for available commands")
-    
     def emptyline(self):
         """Handle empty line"""
         pass
@@ -790,6 +880,392 @@ Type 'help <command>' for detailed help on specific commands.
     def do_eof(self, arg):
         """Handle EOF (Ctrl+D) gracefully - lowercase alias"""
         return self.do_EOF(arg)
+    
+    # ========== DIGITAL ASSET MANAGEMENT COMMANDS ==========
+    
+    def do_asset_add(self, arg):
+        """Add a digital asset to the system
+        Usage: asset-add <file_path> [tags]
+        Example: asset-add /path/to/image.jpg photo,nature,landscape
+        """
+        if not arg:
+            print("❌ Please specify a file path")
+            print("Usage: asset-add <file_path> [tags]")
+            return
+        
+        parts = arg.split()
+        file_path = parts[0]
+        
+        # Parse tags if provided
+        tags = []
+        if len(parts) > 1:
+            tag_string = " ".join(parts[1:])
+            tags = [tag.strip() for tag in tag_string.split(",") if tag.strip()]
+        
+        if not os.path.exists(file_path):
+            print(f"❌ File not found: {file_path}")
+            return
+        
+        print(f"📤 Adding asset: {file_path}")
+        if tags:
+            print(f"🏷️  Tags: {', '.join(tags)}")
+        
+        try:
+            asset = self.asset_manager.add_asset(file_path, tags=tags)
+            
+            if asset:
+                # Calculate energy cost based on file size and type
+                base_cost = 50
+                size_factor = min(asset.metadata.file_size / (1024 * 1024), 10)  # Size in MB, capped at 10MB
+                type_bonus = 0.8 if asset.asset_type in [AssetType.IMAGE, AssetType.DOCUMENT] else 1.0
+                energy_cost = base_cost + (size_factor * 20) * type_bonus
+                
+                if energy_cost > self.current_energy:
+                    print(f"❌ Insufficient energy! Need {energy_cost:.0f}, have {self.current_energy}")
+                    # Remove the asset since we can't afford it
+                    self.asset_manager.delete_asset(asset.asset_id)
+                    return
+                
+                self.current_energy -= energy_cost
+                self.total_energy_spent += energy_cost
+                
+                print(f"✅ Asset added successfully!")
+                print(f"🆔 Asset ID: {asset.asset_id}")
+                print(f"📁 Type: {asset.asset_type.value.title()}")
+                print(f"📏 Size: {asset.metadata.file_size / 1024:.1f} KB")
+                print(f"⚡ Energy Cost: {energy_cost:.0f}")
+                print(f"💫 Energy Remaining: {self.current_energy:.0f}")
+                
+                if asset.preview_available:
+                    print(f"🖼️  Thumbnail generated")
+                    
+            else:
+                print("❌ Failed to add asset")
+                
+        except Exception as e:
+            print(f"❌ Error adding asset: {e}")
+    
+    def do_asset_list(self, arg):
+        """List digital assets
+        Usage: asset-list [type]
+        Types: image, video, audio, document, archive, code, data
+        """
+        asset_type = None
+        if arg:
+            try:
+                asset_type = AssetType(arg.lower())
+            except ValueError:
+                print(f"❌ Invalid asset type: {arg}")
+                print("Valid types: image, video, audio, document, archive, code, data")
+                return
+        
+        try:
+            assets = self.asset_manager.search_assets(asset_type=asset_type, limit=50)
+            
+            if not assets:
+                type_filter = f" of type '{arg}'" if arg else ""
+                print(f"📭 No assets found{type_filter}")
+                return
+            
+            print(f"\n📁 Found {len(assets)} digital assets:")
+            print("-" * 80)
+            
+            for asset in assets:
+                # Format size
+                if asset.metadata.file_size < 1024:
+                    size_str = f"{asset.metadata.file_size} B"
+                elif asset.metadata.file_size < 1024 * 1024:
+                    size_str = f"{asset.metadata.file_size / 1024:.1f} KB"
+                else:
+                    size_str = f"{asset.metadata.file_size / (1024 * 1024):.1f} MB"
+                
+                # Asset type emoji
+                type_emoji = {
+                    AssetType.IMAGE: "🖼️",
+                    AssetType.VIDEO: "🎥",
+                    AssetType.AUDIO: "🎵",
+                    AssetType.DOCUMENT: "📄",
+                    AssetType.ARCHIVE: "📦",
+                    AssetType.CODE: "💻",
+                    AssetType.DATA: "📊",
+                    AssetType.UNKNOWN: "❓"
+                }.get(asset.asset_type, "📁")
+                
+                # Preview indicator
+                preview = "🔍" if asset.preview_available else "  "
+                
+                print(f"{type_emoji} {preview} {asset.original_filename:<25} {asset.asset_type.value:<10} {size_str:<10} {asset.asset_id}")
+                
+                if asset.metadata.tags:
+                    print(f"     🏷️  {', '.join(asset.metadata.tags[:5])}")
+                    
+        except Exception as e:
+            print(f"❌ Error listing assets: {e}")
+    
+    def do_asset_search(self, arg):
+        """Search digital assets by name or tags
+        Usage: asset-search <search_term>
+        """
+        if not arg:
+            print("❌ Please specify a search term")
+            return
+        
+        try:
+            assets = self.asset_manager.search_assets(query=arg, limit=50)
+            
+            if not assets:
+                print(f"🔍 No assets found matching '{arg}'")
+                return
+            
+            print(f"\n🔍 Found {len(assets)} assets matching '{arg}':")
+            print("-" * 80)
+            
+            for asset in assets:
+                type_emoji = {
+                    AssetType.IMAGE: "🖼️",
+                    AssetType.VIDEO: "🎥", 
+                    AssetType.AUDIO: "🎵",
+                    AssetType.DOCUMENT: "📄",
+                    AssetType.ARCHIVE: "📦",
+                    AssetType.CODE: "💻",
+                    AssetType.DATA: "📊",
+                    AssetType.UNKNOWN: "❓"
+                }.get(asset.asset_type, "📁")
+                
+                size_mb = asset.metadata.file_size / (1024 * 1024)
+                print(f"{type_emoji} {asset.original_filename:<30} {asset.asset_type.value:<10} {size_mb:.1f} MB")
+                print(f"   ID: {asset.asset_id}")
+                
+                if asset.metadata.tags:
+                    print(f"   🏷️  {', '.join(asset.metadata.tags)}")
+                print()
+                
+        except Exception as e:
+            print(f"❌ Error searching assets: {e}")
+    
+    def do_asset_info(self, arg):
+        """Show detailed asset information and metadata
+        Usage: asset-info <asset_id>
+        """
+        if not arg:
+            print("❌ Please specify an asset ID")
+            return
+        
+        try:
+            asset = self.asset_manager.get_asset(arg)
+            
+            if not asset:
+                print(f"❌ Asset not found: {arg}")
+                return
+            
+            print(f"\n📁 Asset Information: {asset.original_filename}")
+            print("=" * 60)
+            print(f"ID: {asset.asset_id}")
+            print(f"Type: {asset.asset_type.value.title()}")
+            print(f"Status: {asset.status.value.title()}")
+            print(f"Size: {asset.metadata.file_size:,} bytes ({asset.metadata.file_size / (1024*1024):.2f} MB)")
+            print(f"MIME Type: {asset.metadata.mime_type}")
+            print(f"Content Hash: {asset.content_hash}")
+            print(f"Storage Path: {asset.storage_path}")
+            print(f"Created: {asset.created_at}")
+            print(f"Updated: {asset.updated_at}")
+            print(f"Access Count: {asset.access_count}")
+            
+            if asset.last_accessed:
+                print(f"Last Accessed: {asset.last_accessed}")
+            
+            if asset.thumbnail_path:
+                print(f"Thumbnail: {asset.thumbnail_path}")
+            
+            # Type-specific metadata
+            if asset.metadata.dimensions:
+                print(f"Dimensions: {asset.metadata.dimensions[0]} x {asset.metadata.dimensions[1]}")
+            
+            if asset.metadata.duration:
+                minutes = int(asset.metadata.duration // 60)
+                seconds = int(asset.metadata.duration % 60)
+                print(f"Duration: {minutes}:{seconds:02d}")
+            
+            if asset.metadata.bitrate:
+                print(f"Bitrate: {asset.metadata.bitrate} bps")
+            
+            if asset.metadata.author:
+                print(f"Author: {asset.metadata.author}")
+            
+            if asset.metadata.title:
+                print(f"Title: {asset.metadata.title}")
+            
+            if asset.metadata.description:
+                print(f"Description: {asset.metadata.description}")
+            
+            if asset.metadata.tags:
+                print(f"Tags: {', '.join(asset.metadata.tags)}")
+            
+            if asset.metadata.custom_fields:
+                print("\nCustom Metadata:")
+                for key, value in asset.metadata.custom_fields.items():
+                    if key not in ['dimensions', 'duration', 'bitrate']:  # Skip already displayed
+                        print(f"  {key}: {value}")
+                        
+        except Exception as e:
+            print(f"❌ Error getting asset info: {e}")
+    
+    def do_asset_tag(self, arg):
+        """Add tags to an asset
+        Usage: asset-tag <asset_id> <tag1,tag2,tag3>
+        """
+        if not arg:
+            print("❌ Please specify asset ID and tags")
+            print("Usage: asset-tag <asset_id> <tag1,tag2,tag3>")
+            return
+        
+        parts = arg.split(None, 1)
+        if len(parts) < 2:
+            print("❌ Please specify both asset ID and tags")
+            return
+        
+        asset_id = parts[0]
+        tag_string = parts[1]
+        new_tags = [tag.strip() for tag in tag_string.split(",") if tag.strip()]
+        
+        if not new_tags:
+            print("❌ No valid tags provided")
+            return
+        
+        try:
+            asset = self.asset_manager.get_asset(asset_id)
+            if not asset:
+                print(f"❌ Asset not found: {asset_id}")
+                return
+            
+            # Add new tags (avoid duplicates)
+            existing_tags = set(asset.metadata.tags)
+            added_tags = []
+            
+            for tag in new_tags:
+                if tag not in existing_tags:
+                    asset.metadata.tags.append(tag)
+                    added_tags.append(tag)
+            
+            if added_tags:
+                # Update in database
+                success = self.asset_manager.update_asset_metadata(asset_id, {"tags": asset.metadata.tags})
+                
+                if success:
+                    energy_cost = len(added_tags) * 5  # Small cost per tag
+                    if energy_cost <= self.current_energy:
+                        self.current_energy -= energy_cost
+                        self.total_energy_spent += energy_cost
+                        
+                        print(f"✅ Added tags: {', '.join(added_tags)}")
+                        print(f"🏷️  All tags: {', '.join(asset.metadata.tags)}")
+                        print(f"⚡ Energy cost: {energy_cost}")
+                    else:
+                        print(f"❌ Insufficient energy for tagging: need {energy_cost}, have {self.current_energy}")
+                else:
+                    print("❌ Failed to update asset tags")
+            else:
+                print("❌ All tags already exist on this asset")
+                
+        except Exception as e:
+            print(f"❌ Error adding tags: {e}")
+    
+    def do_asset_delete(self, arg):
+        """Delete a digital asset
+        Usage: asset-delete <asset_id>
+        """
+        if not arg:
+            print("❌ Please specify an asset ID")
+            return
+        
+        try:
+            asset = self.asset_manager.get_asset(arg)
+            if not asset:
+                print(f"❌ Asset not found: {arg}")
+                return
+            
+            # Deletion is expensive (anti-resonant)
+            delete_cost = 300
+            if asset.metadata.file_size > 10 * 1024 * 1024:  # Large files cost more
+                delete_cost += 200
+            
+            print(f"\n🗑️  Deleting asset: {asset.original_filename}")
+            print(f"💥 Energy Cost: {delete_cost} ⚡")
+            
+            if delete_cost > self.current_energy:
+                print(f"❌ Insufficient energy! Need {delete_cost}, have {self.current_energy}")
+                return
+            
+            confirm = input(f"Are you sure you want to delete '{asset.original_filename}'? (y/N): ").strip().lower()
+            if confirm != 'y':
+                print("❌ Deletion cancelled")
+                return
+            
+            success = self.asset_manager.delete_asset(arg, remove_files=True)
+            
+            if success:
+                self.current_energy -= delete_cost
+                self.total_energy_spent += delete_cost
+                print(f"✅ Asset deleted successfully")
+                print(f"💫 Energy remaining: {self.current_energy}")
+            else:
+                print("❌ Failed to delete asset")
+                
+        except Exception as e:
+            print(f"❌ Error deleting asset: {e}")
+    
+    def do_asset_stats(self, arg):
+        """Show asset storage statistics
+        Usage: asset-stats
+        """
+        try:
+            stats = self.asset_manager.get_asset_stats()
+            
+            print(f"\n📊 Digital Asset Statistics")
+            print("=" * 40)
+            print(f"Total Assets: {stats.get('total_assets', 0)}")
+            print(f"Total Size: {stats.get('total_size_mb', 0):.1f} MB ({stats.get('total_size_bytes', 0):,} bytes)")
+            print(f"Storage Root: {stats.get('storage_root', 'Unknown')}")
+            
+            asset_types = stats.get('asset_types', {})
+            if asset_types:
+                print(f"\nAssets by Type:")
+                type_emojis = {
+                    'image': '🖼️',
+                    'video': '🎥',
+                    'audio': '🎵',
+                    'document': '📄',
+                    'archive': '📦',
+                    'code': '💻',
+                    'data': '📊',
+                    'unknown': '❓'
+                }
+                
+                for asset_type, count in sorted(asset_types.items()):
+                    emoji = type_emojis.get(asset_type, '📁')
+                    print(f"  {emoji} {asset_type.title()}: {count}")
+                    
+        except Exception as e:
+            print(f"❌ Error getting asset stats: {e}")
+    
+    # Handle hyphenated commands (cmd module uses underscores)
+    def default(self, line):
+        """Handle unknown commands and hyphenated asset commands"""
+        if not line.strip():  # Handle empty lines
+            return
+        
+        # Convert hyphenated commands to underscore versions (asset-*, code-*)
+        if line.startswith('asset-') or line.startswith('code-'):
+            underscore_line = line.replace('-', '_', 1)
+            parts = underscore_line.split()
+            if parts:
+                command = parts[0]
+                args = ' '.join(parts[1:]) if len(parts) > 1 else ''
+                if hasattr(self, f'do_{command}'):
+                    return getattr(self, f'do_{command}')(args)
+        
+        print(f"❌ Unknown command: {line}")
+        print("Type 'help' for available commands")
 
 def main():
     """Main entry point for the CLI"""

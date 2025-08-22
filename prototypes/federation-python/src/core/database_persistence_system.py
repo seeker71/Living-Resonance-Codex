@@ -400,6 +400,75 @@ class DatabasePersistenceSystem:
                         str(e)
                     )
             
+            def update_node(self, node: DatabaseNode) -> DatabaseOperationResult:
+                """Update an existing node in the database"""
+                start_time = datetime.now()
+                
+                try:
+                    if not self.db_manager.connection:
+                        return DatabaseOperationResult(
+                            OperationType.UPDATE,
+                            False,
+                            None,
+                            0.0,
+                            datetime.now(),
+                            {},
+                            "Database not connected"
+                        )
+                    
+                    cursor = self.db_manager.connection.cursor()
+                    
+                    # Update node using the correct schema
+                    cursor.execute("""
+                        UPDATE nodes SET 
+                            node_type = ?, name = ?, content = ?, realm = ?, water_state = ?,
+                            energy_level = ?, transformation_cost = ?, parent_id = ?, 
+                            children = ?, metadata = ?, structure_info = ?, updated_at = ?
+                        WHERE node_id = ?
+                    """, (
+                        node.node_type,
+                        node.name,
+                        node.content,
+                        node.realm,
+                        node.water_state,
+                        node.energy_level,
+                        node.transformation_cost,
+                        node.parent_id,
+                        json.dumps(node.children) if node.children else None,
+                        json.dumps(node.metadata) if node.metadata else None,
+                        json.dumps(node.structure_info) if node.structure_info else None,
+                        node.updated_at.isoformat() if node.updated_at else datetime.now().isoformat(),
+                        node.node_id
+                    ))
+                    
+                    self.db_manager.connection.commit()
+                    
+                    execution_time = (datetime.now() - start_time).total_seconds()
+                    logger.info(f"✅ Node updated: {node.node_id}")
+                    
+                    return DatabaseOperationResult(
+                        OperationType.UPDATE,
+                        True,
+                        node,
+                        execution_time,
+                        datetime.now(),
+                        {"node_id": node.node_id}
+                    )
+                    
+                except Exception as e:
+                    execution_time = (datetime.now() - start_time).total_seconds()
+                    logger.error(f"❌ Node update failed: {e}")
+                    
+                    return DatabaseOperationResult(
+                        OperationType.UPDATE,
+                        False,
+                        None,
+                        execution_time,
+                        datetime.now(),
+                        {"node_id": node.node_id},
+                        str(e)
+                    )
+            
             def read_node(self, node_id: str) -> DatabaseOperationResult:
                 """Read a node by ID"""
                 start_time = datetime.now()
