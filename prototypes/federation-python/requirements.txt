@@ -1,0 +1,24 @@
+# Living Codex System Requirements
+# Core dependencies for the modular Living Codex system
+
+# Web Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# Data Validation and Settings
+pydantic>=2.5.0
+python-dotenv>=1.0.0
+
+# Database
+neo4j>=5.15.0
+psycopg2-binary>=2.9.9
+
+# HTTP and API
+aiohttp>=3.9.0
+requests>=2.31.0
+
+# Async Support
+asyncio-mqtt>=0.16.0
+
+# Utilities
+python-multipart>=0.0.6
