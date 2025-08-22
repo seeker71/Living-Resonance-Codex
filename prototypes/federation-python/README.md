@@ -54,7 +54,10 @@ api_system = RealExternalAPISystem()
 
 ```bash
 # Test system integration
-python test_phase4_integration.py
+python docs/testing/test_phase5_cleanup.py
+
+# Test comprehensive integration
+python docs/testing/test_phase4_integration.py
 
 # Test specific components
 python -c "from src.config.manager import ConfigManager; print('✅ Config system working')"

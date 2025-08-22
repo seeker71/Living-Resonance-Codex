@@ -19,6 +19,16 @@ Welcome to the comprehensive documentation for the Living Codex system - a fract
 ### **📖 Guides**
 - **[Setup and Testing Guide](guides/COMPREHENSIVE_SETUP_AND_TESTING_GUIDE.md)** - Installation, configuration, and testing
 
+### **🛠️ Setup & Configuration**
+- **[Setup Files](setup/)** - Configuration scripts and environment setup
+- **[Environment Template](setup/env_example.txt)** - Template for .env configuration
+
+### **🧪 Testing**
+- **[Test Suite](testing/)** - Comprehensive system testing and validation
+
+### **🌟 Examples**
+- **[Code Examples](examples/)** - Practical demonstrations and usage patterns
+
 ### **📜 Project History**
 - **[Phase 5 Completion Summary](project-history/PHASE_5_COMPLETION_SUMMARY.md)** - Cleanup and optimization phase
 - **[Phase 6 Completion Summary](project-history/PHASE_6_COMPLETION_SUMMARY.md)** - Documentation and training phase
