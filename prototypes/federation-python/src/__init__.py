@@ -9,13 +9,12 @@ __description__ = "Modular Living Codex System"
 
 # Import main components for easy access
 from .config.manager import ConfigManager
-from .api.integration.external_api_system import RealExternalAPISystem
-from .database.persistence.database_system import DatabasePersistenceSystem
-from .graph.integration.neo4j_system import Neo4jIntegrationSystem
 
 __all__ = [
-    "ConfigManager",
-    "RealExternalAPISystem", 
-    "DatabasePersistenceSystem",
-    "Neo4jIntegrationSystem"
+    "ConfigManager"
 ]
+
+# Additional components will be imported as they are implemented
+# from .api.integration.external_api_system import RealExternalAPISystem
+# from .database.persistence.database_system import DatabasePersistenceSystem
+# from .graph.integration.neo4j_system import Neo4jIntegrationSystem
