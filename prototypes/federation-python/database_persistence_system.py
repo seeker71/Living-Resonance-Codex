@@ -120,8 +120,111 @@ if not MODULAR_IMPORTS_AVAILABLE:
             raise NotImplementedError("Subclasses must implement delete_node")
         
         def query_nodes(self, filters: List[QueryFilter], options: QueryOptions) -> DatabaseOperationResult:
-            """Query nodes with filters (to be implemented by subclasses)"""
-            raise NotImplementedError("Subclasses must implement query_nodes")
+            """Query nodes with filters"""
+            start_time = datetime.now()
+            
+            try:
+                if not self.db_manager.connection:
+                    return DatabaseOperationResult(
+                        OperationType.QUERY,
+                        False,
+                        None,
+                        0.0,
+                        datetime.now(),
+                        {},
+                        "Database not connected"
+                    )
+                
+                cursor = self.db_manager.connection.cursor()
+                
+                # Build query
+                query = "SELECT * FROM nodes WHERE 1=1"
+                params = []
+                
+                # Apply filters
+                for filter_item in filters:
+                    if filter_item.field == "node_type" and filter_item.operator == "=":
+                        query += " AND node_type = ?"
+                        params.append(filter_item.value)
+                    elif filter_item.field == "realm" and filter_item.operator == "=":
+                        query += " AND realm = ?"
+                        params.append(filter_item.value)
+                    elif filter_item.field == "water_state" and filter_item.operator == "=":
+                        query += " AND water_state = ?"
+                        params.append(filter_item.value)
+                    elif filter_item.field == "energy_level_min" and filter_item.operator == ">=":
+                        query += " AND energy_level >= ?"
+                        params.append(filter_item.value)
+                    elif filter_item.field == "name" and filter_item.operator == "=":
+                        query += " AND name = ?"
+                        params.append(filter_item.value)
+                
+                # Apply options
+                if options.order_by:
+                    query += f" ORDER BY {options.order_by}"
+                    if options.order_direction:
+                        query += f" {options.order_direction}"
+                
+                if options.limit:
+                    query += f" LIMIT {options.limit}"
+                
+                if options.offset:
+                    query += f" OFFSET {options.offset}"
+                
+                # Execute query
+                cursor.execute(query, params)
+                rows = cursor.fetchall()
+                
+                # Convert rows to DatabaseNode objects
+                nodes = []
+                for row in rows:
+                    try:
+                        node = DatabaseNode(
+                            node_id=row['node_id'],
+                            node_type=row['node_type'],
+                            name=row['name'],
+                            content=row['content'],
+                            realm=row['realm'],
+                            water_state=row['water_state'],
+                            energy_level=row['energy_level'],
+                            transformation_cost=row['transformation_cost'],
+                            parent_id=row['parent_id'],
+                            children=json.loads(row['children']) if row['children'] else None,
+                            metadata=json.loads(row['metadata']) if row['metadata'] else {},
+                            structure_info=json.loads(row['structure_info']) if row['structure_info'] else None,
+                            created_at=datetime.fromisoformat(row['created_at']) if row['created_at'] else datetime.now(),
+                            updated_at=datetime.fromisoformat(row['updated_at']) if row['updated_at'] else datetime.now()
+                        )
+                        nodes.append(node)
+                    except Exception as e:
+                        logger.warning(f"Could not convert row to DatabaseNode: {e}")
+                        continue
+                
+                execution_time = (datetime.now() - start_time).total_seconds()
+                logger.info(f"✅ Query executed: {len(nodes)} nodes found")
+                
+                return DatabaseOperationResult(
+                    OperationType.QUERY,
+                    True,
+                    nodes,
+                    execution_time,
+                    datetime.now(),
+                    {"result_count": len(nodes)}
+                )
+                
+            except Exception as e:
+                execution_time = (datetime.now() - start_time).total_seconds()
+                logger.error(f"❌ Query failed: {e}")
+                
+                return DatabaseOperationResult(
+                    OperationType.QUERY,
+                    False,
+                    None,
+                    execution_time,
+                    datetime.now(),
+                    {},
+                    str(e)
+                )
 
 # Legacy SQLite manager (maintained for backward compatibility)
 if not MODULAR_IMPORTS_AVAILABLE:
@@ -237,22 +340,27 @@ class DatabasePersistenceSystem:
                     
                     cursor = self.db_manager.connection.cursor()
                     
-                    # Insert node
+                    # Insert node using the correct schema
                     cursor.execute("""
-                        INSERT INTO nodes (node_id, node_type, content_hash, content, metadata, 
-                                        fractal_id, water_state, energy_level, created_at, updated_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO nodes (node_id, node_type, name, content, realm, water_state, 
+                                        energy_level, transformation_cost, parent_id, children, 
+                                        metadata, structure_info, created_at, updated_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """, (
                         node.node_id,
                         node.node_type,
-                        node.content_hash,
-                        json.dumps(node.content),
-                        json.dumps(node.metadata),
-                        node.fractal_id,
+                        node.name,
+                        node.content,
+                        node.realm,
                         node.water_state,
                         node.energy_level,
-                        node.created_at.isoformat(),
-                        node.updated_at.isoformat()
+                        node.transformation_cost,
+                        node.parent_id,
+                        json.dumps(node.children) if node.children else None,
+                        json.dumps(node.metadata) if node.metadata else None,
+                        json.dumps(node.structure_info) if node.structure_info else None,
+                        node.created_at.isoformat() if node.created_at else datetime.now().isoformat(),
+                        node.updated_at.isoformat() if node.updated_at else datetime.now().isoformat()
                     ))
                     
                     self.db_manager.connection.commit()
@@ -307,18 +415,22 @@ class DatabasePersistenceSystem:
                     execution_time = (datetime.now() - start_time).total_seconds()
                     
                     if row:
-                        # Convert row to DatabaseNode
+                        # Convert row to DatabaseNode using the correct schema
                         node = DatabaseNode(
                             node_id=row['node_id'],
                             node_type=row['node_type'],
-                            content_hash=row['content_hash'],
-                            content=json.loads(row['content']),
-                            metadata=json.loads(row['metadata']) if row['metadata'] else {},
-                            created_at=datetime.fromisoformat(row['created_at']),
-                            updated_at=datetime.fromisoformat(row['updated_at']),
-                            fractal_id=row['fractal_id'],
+                            name=row['name'],
+                            content=row['content'],
+                            realm=row['realm'],
                             water_state=row['water_state'],
-                            energy_level=row['energy_level']
+                            energy_level=row['energy_level'],
+                            transformation_cost=row['transformation_cost'],
+                            parent_id=row['parent_id'],
+                            children=json.loads(row['children']) if row['children'] else None,
+                            metadata=json.loads(row['metadata']) if row['metadata'] else {},
+                            structure_info=json.loads(row['structure_info']) if row['structure_info'] else None,
+                            created_at=datetime.fromisoformat(row['created_at']) if row['created_at'] else datetime.now(),
+                            updated_at=datetime.fromisoformat(row['updated_at']) if row['updated_at'] else datetime.now()
                         )
                         
                         logger.info(f"✅ Node read: {node_id}")
@@ -353,6 +465,113 @@ class DatabasePersistenceSystem:
                         {"node_id": node_id},
                         str(e)
                     )
+            
+            def query_nodes(self, filters: List[QueryFilter], options: QueryOptions) -> DatabaseOperationResult:
+                """Query nodes with filters"""
+                start_time = datetime.now()
+                
+                try:
+                    if not self.db_manager.connection:
+                        return DatabaseOperationResult(
+                            OperationType.QUERY,
+                            False,
+                            None,
+                            0.0,
+                            datetime.now(),
+                            {},
+                            "Database not connected"
+                        )
+                    
+                    cursor = self.db_manager.connection.cursor()
+                    
+                    # Build query
+                    query = "SELECT * FROM nodes WHERE 1=1"
+                    params = []
+                    
+                    # Apply filters
+                    for filter_item in filters:
+                        if filter_item.field == "node_type" and filter_item.operator == "=":
+                            query += " AND node_type = ?"
+                            params.append(filter_item.value)
+                        elif filter_item.field == "realm" and filter_item.operator == "=":
+                            query += " AND realm = ?"
+                            params.append(filter_item.value)
+                        elif filter_item.field == "water_state" and filter_item.operator == "=":
+                            query += " AND water_state = ?"
+                            params.append(filter_item.value)
+                        elif filter_item.field == "energy_level" and filter_item.operator == ">=":
+                            query += " AND energy_level >= ?"
+                            params.append(filter_item.value)
+                        elif filter_item.field == "name" and filter_item.operator == "=":
+                            query += " AND name = ?"
+                            params.append(filter_item.value)
+                    
+                    # Apply options
+                    if options.order_by:
+                        query += f" ORDER BY {options.order_by}"
+                        if options.order_direction:
+                            query += f" {options.order_direction}"
+                    
+                    if options.limit:
+                        query += f" LIMIT {options.limit}"
+                    
+                    if options.offset:
+                        query += f" OFFSET {options.offset}"
+                    
+                    # Execute query
+                    cursor.execute(query, params)
+                    rows = cursor.fetchall()
+                    
+                    # Convert rows to DatabaseNode objects
+                    nodes = []
+                    for row in rows:
+                        try:
+                            node = DatabaseNode(
+                                node_id=row['node_id'],
+                                node_type=row['node_type'],
+                                name=row['name'],
+                                content=row['content'],
+                                realm=row['realm'],
+                                water_state=row['water_state'],
+                                energy_level=row['energy_level'],
+                                transformation_cost=row['transformation_cost'],
+                                parent_id=row['parent_id'],
+                                children=json.loads(row['children']) if row['children'] else None,
+                                metadata=json.loads(row['metadata']) if row['metadata'] else {},
+                                structure_info=json.loads(row['structure_info']) if row['structure_info'] else None,
+                                created_at=datetime.fromisoformat(row['created_at']) if row['created_at'] else datetime.now(),
+                                updated_at=datetime.fromisoformat(row['updated_at']) if row['updated_at'] else datetime.now()
+                            )
+                            nodes.append(node)
+                        except Exception as e:
+                            logger.warning(f"Could not convert row to DatabaseNode: {e}")
+                            continue
+                    
+                    execution_time = (datetime.now() - start_time).total_seconds()
+                    logger.info(f"✅ Query executed: {len(nodes)} nodes found")
+                    
+                    return DatabaseOperationResult(
+                        OperationType.QUERY,
+                        True,
+                        nodes,
+                        execution_time,
+                        datetime.now(),
+                        {"result_count": len(nodes)}
+                    )
+                    
+                except Exception as e:
+                    execution_time = (datetime.now() - start_time).total_seconds()
+                    logger.error(f"❌ Query failed: {e}")
+                    
+                    return DatabaseOperationResult(
+                        OperationType.QUERY,
+                        False,
+                        None,
+                        execution_time,
+                        datetime.now(),
+                        {},
+                        str(e)
+                    )
         
         return SimpleDatabaseOperations(self.db_manager)
     
@@ -367,6 +586,36 @@ class DatabasePersistenceSystem:
     def close(self):
         """Close the database connection"""
         self.db_manager.close()
+    
+    def create_relationship(self, source_id: str, target_id: str, relationship_type: str, properties: Dict[str, Any] = None) -> bool:
+        """Create a relationship between two nodes"""
+        try:
+            if not self.db_manager.connection:
+                logger.error("Database not connected")
+                return False
+            
+            cursor = self.db_manager.connection.cursor()
+            
+            # Insert relationship
+            cursor.execute("""
+                INSERT INTO relationships (start_node_id, end_node_id, relationship_type, properties, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                source_id,
+                target_id,
+                relationship_type,
+                json.dumps(properties or {}),
+                datetime.now().isoformat(),
+                datetime.now().isoformat()
+            ))
+            
+            self.db_manager.connection.commit()
+            logger.info(f"✅ Relationship created: {source_id} -> {target_id} ({relationship_type})")
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Relationship creation failed: {e}")
+            return False
 
 async def main():
     """Main function to demonstrate the Database Persistence System"""

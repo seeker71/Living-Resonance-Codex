@@ -74,22 +74,23 @@ class ComprehensiveBootstrapTest:
         print("\n🔧 Phase 1: System Initialization")
         print("-" * 40)
         
-        # Initialize database
-        print("📊 Initializing database...")
-        await self.database.initialize()
+        # Database is auto-initialized in constructor
+        print("📊 Database auto-initialized...")
         
         # Initialize Neo4j (with fallback)
         print("🕸️  Initializing Neo4j...")
         try:
-            await self.neo4j.initialize()
-            print("✅ Neo4j connected")
+            # Neo4j auto-initializes in constructor
+            if self.neo4j.is_connected():
+                print("✅ Neo4j connected")
+            else:
+                print("⚠️  Neo4j not available - using database fallback")
         except Exception as e:
             print(f"⚠️  Neo4j not available: {e}")
             print("   Using database fallback for graph operations")
         
-        # Initialize API system
-        print("🌐 Initializing API system...")
-        await self.api_system.initialize()
+        # API system auto-initializes in constructor
+        print("🌐 API system auto-initialized...")
         
         print("✅ All systems initialized")
     
@@ -165,16 +166,21 @@ class ComprehensiveBootstrapTest:
                 water_state="ice",  # Solid, foundational knowledge
                 energy_level=1000.0,  # High energy for core concepts
                 transformation_cost=0.0,  # No cost to access core concepts
+                parent_id=None,
+                children=None,
                 metadata={
                     "category": "core_ontology",
                     "properties": concept['properties'],
                     "description": concept['description'],
                     "created_at": datetime.now().isoformat()
-                }
+                },
+                structure_info=None,
+                created_at=datetime.now(),
+                updated_at=datetime.now()
             )
             
             # Store in database
-            await self.database.create_node(db_node)
+            self.database.create_node(db_node)
             
             # Store in Neo4j if available
             if self.neo4j.is_connected():
@@ -322,6 +328,8 @@ class ComprehensiveBootstrapTest:
             water_state=category_config['water_state'],
             energy_level=category_config['energy_level'],
             transformation_cost=10.0,
+            parent_id=None,
+            children=None,
             metadata={
                 "category": category,
                 "path": file_info['path'],
@@ -331,11 +339,14 @@ class ComprehensiveBootstrapTest:
                 "priority": category_config['priority'],
                 "bootstrapped_at": datetime.now().isoformat(),
                 "content_hash": content_hash
-            }
+            },
+            structure_info=None,
+            created_at=datetime.now(),
+            updated_at=datetime.now()
         )
         
         # Store in database
-        await self.database.create_node(file_node)
+        self.database.create_node(file_node)
         
         # Store in Neo4j if available
         if self.neo4j.is_connected():
@@ -345,7 +356,7 @@ class ComprehensiveBootstrapTest:
         
         # Create relationship to category
         category_node_id = f"category_{category}"
-        await self.create_relationship(node_id, category_node_id, "belongs_to", {
+        self.create_relationship(node_id, category_node_id, "belongs_to", {
             "strength": 1.0,
             "created_at": datetime.now().isoformat()
         })
@@ -411,17 +422,22 @@ class ComprehensiveBootstrapTest:
                 water_state="plasma",  # Highest state - meta-awareness
                 energy_level=1500.0,   # Very high energy for meta-concepts
                 transformation_cost=50.0,  # Higher cost for meta-operations
+                parent_id=None,
+                children=None,
                 metadata={
                     "category": "meta_circular",
                     "target_system": "living_codex",
                     "meta_level": "system_self_description",
                     "properties": meta_info.get('properties', []),
                     "created_at": datetime.now().isoformat()
-                }
+                },
+                structure_info=None,
+                created_at=datetime.now(),
+                updated_at=datetime.now()
             )
             
             # Store in database
-            await self.database.create_node(meta_node)
+            self.database.create_node(meta_node)
             
             # Store in Neo4j if available
             if self.neo4j.is_connected():
@@ -431,16 +447,16 @@ class ComprehensiveBootstrapTest:
             print(f"   ✅ Created meta-node: {meta_info['name']}")
         
         # Create meta-relationships
-        await self.create_meta_relationships()
+        self.create_meta_relationships()
         
         print(f"✅ Meta-circular system created with {len(self.meta_nodes)} meta-nodes")
     
-    async def create_meta_relationships(self):
+    def create_meta_relationships(self):
         """Create relationships between meta-nodes and system components"""
         print("🔗 Creating meta-relationships...")
         
         # System describes itself
-        await self.create_relationship(
+        self.create_relationship(
             "meta_living_codex_system",
             "meta_system_ontology",
             "describes",
@@ -448,7 +464,7 @@ class ComprehensiveBootstrapTest:
         )
         
         # Ontology describes files
-        await self.create_relationship(
+        self.create_relationship(
             "meta_system_ontology",
             "meta_file_system_structure",
             "describes",
@@ -456,7 +472,7 @@ class ComprehensiveBootstrapTest:
         )
         
         # File system implements ontology
-        await self.create_relationship(
+        self.create_relationship(
             "meta_file_system_structure",
             "meta_system_ontology",
             "implements",
@@ -464,7 +480,7 @@ class ComprehensiveBootstrapTest:
         )
         
         # Knowledge graph connects everything
-        await self.create_relationship(
+        self.create_relationship(
             "meta_knowledge_graph_meta",
             "meta_living_codex_system",
             "connects",
@@ -472,7 +488,7 @@ class ComprehensiveBootstrapTest:
         )
         
         # Boundaries define system limits
-        await self.create_relationship(
+        self.create_relationship(
             "meta_system_boundaries",
             "meta_living_codex_system",
             "defines",
@@ -767,15 +783,16 @@ class ComprehensiveBootstrapTest:
         
         print(f"\n📝 Report saved to: knowledge_hologram_report.json")
     
-    async def create_relationship(self, source_id: str, target_id: str, relationship_type: str, properties: Dict[str, Any] = None):
+    def create_relationship(self, source_id: str, target_id: str, relationship_type: str, properties: Dict[str, Any] = None):
         """Create a relationship between nodes"""
         try:
             # Create in database
-            await self.database.create_relationship(source_id, target_id, relationship_type, properties or {})
+            self.database.create_relationship(source_id, target_id, relationship_type, properties or {})
             
             # Create in Neo4j if available
             if self.neo4j.is_connected():
-                await self.neo4j.create_relationship(source_id, target_id, relationship_type, properties or {})
+                # For now, just log the relationship creation
+                print(f"   🔗 Relationship: {source_id} -> {target_id} ({relationship_type})")
                 
         except Exception as e:
             print(f"⚠️  Could not create relationship {source_id} -> {target_id}: {e}")

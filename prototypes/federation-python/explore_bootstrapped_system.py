@@ -32,17 +32,19 @@ class BootstrappedSystemExplorer:
         print("🔍 Living Codex - Bootstrapped System Explorer")
         print("=" * 60)
         
-        # Initialize systems
-        await self.database.initialize()
+        # Initialize systems - DatabasePersistenceSystem doesn't need async initialization
+        print("✅ Database system ready")
         
+        # Check Neo4j connection status
         try:
-            await self.neo4j.initialize()
-            print("✅ Neo4j connected")
+            if self.neo4j.is_connected():
+                print("✅ Neo4j connected")
+            else:
+                print("⚠️  Neo4j not available - using database fallback")
         except Exception as e:
-            print(f"⚠️  Neo4j not available: {e}")
-            print("   Using database fallback")
+            print(f"⚠️  Neo4j error: {e} - using database fallback")
         
-        await self.api_system.initialize()
+        print("✅ API system ready")
         print("✅ Explorer initialized")
     
     async def explore_system_boundaries(self):
@@ -51,11 +53,16 @@ class BootstrappedSystemExplorer:
         print("-" * 40)
         
         # Query for meta-nodes that define boundaries
-        boundary_nodes = await self.database.query_nodes(
-            QueryFilter(node_type="meta_node", realm="meta_system"),
+        boundary_result = self.database.operations.query_nodes(
+            [QueryFilter("node_type", "=", "meta_node")],
             QueryOptions(limit=100)
         )
         
+        if not boundary_result.success:
+            print(f"❌ Query failed: {boundary_result.error_message}")
+            return []
+        
+        boundary_nodes = boundary_result.data or []
         print(f"📊 Found {len(boundary_nodes)} boundary-defining meta-nodes")
         
         for node in boundary_nodes:
@@ -77,20 +84,24 @@ class BootstrappedSystemExplorer:
         print("-" * 40)
         
         # Get all nodes by type
-        ontology_nodes = await self.database.query_nodes(
-            QueryFilter(node_type="ontological_concept"),
+        ontology_result = self.database.operations.query_nodes(
+            [QueryFilter("node_type", "=", "ontological_concept")],
             QueryOptions(limit=100)
         )
         
-        file_nodes = await self.database.query_nodes(
-            QueryFilter(node_type="file"),
+        file_result = self.database.operations.query_nodes(
+            [QueryFilter("node_type", "=", "file")],
             QueryOptions(limit=100)
         )
         
-        meta_nodes = await self.database.query_nodes(
-            QueryFilter(node_type="meta_node"),
+        meta_result = self.database.operations.query_nodes(
+            [QueryFilter("node_type", "=", "meta_node")],
             QueryOptions(limit=100)
         )
+        
+        ontology_nodes = ontology_result.data if ontology_result.success else []
+        file_nodes = file_result.data if file_result.success else []
+        meta_nodes = meta_result.data if meta_result.success else []
         
         print(f"🧬 Ontological Concepts: {len(ontology_nodes)}")
         print(f"📁 Files: {len(file_nodes)}")
@@ -149,10 +160,16 @@ class BootstrappedSystemExplorer:
         
         if pattern_name == "fractal":
             # Look for self-similar structures
-            nodes = await self.database.query_nodes(
-                QueryFilter(realm="ontology"),
+            nodes_result = self.database.operations.query_nodes(
+                [QueryFilter("realm", "=", "ontology")],
                 QueryOptions(limit=50)
             )
+            
+            if not nodes_result.success:
+                print(f"   ❌ Query failed: {nodes_result.error_message}")
+                return
+            
+            nodes = nodes_result.data or []
             
             # Group by type to find patterns
             type_groups = {}
@@ -168,32 +185,48 @@ class BootstrappedSystemExplorer:
         
         elif pattern_name == "holographic":
             # Look for highly interconnected nodes
-            high_energy_nodes = await self.database.query_nodes(
-                QueryFilter(energy_level_min=800.0),
+            high_energy_result = self.database.operations.query_nodes(
+                [QueryFilter("energy_level", ">=", 800.0)],
                 QueryOptions(limit=20)
             )
             
+            if not high_energy_result.success:
+                print(f"   ❌ Query failed: {high_energy_result.error_message}")
+                return
+            
+            high_energy_nodes = high_energy_result.data or []
             print(f"   Found {len(high_energy_nodes)} high-energy interconnected nodes:")
             for node in high_energy_nodes[:5]:  # Show top 5
                 print(f"     {node.name} (Energy: {node.energy_level:.0f})")
         
         elif pattern_name == "meta_circular":
             # Look for self-describing nodes
-            meta_nodes = await self.database.query_nodes(
-                QueryFilter(node_type="meta_node"),
+            meta_result = self.database.operations.query_nodes(
+                [QueryFilter("node_type", "=", "meta_node")],
                 QueryOptions(limit=20)
             )
             
+            if not meta_result.success:
+                print(f"   ❌ Query failed: {meta_result.error_message}")
+                return
+            
+            meta_nodes = meta_result.data or []
             print(f"   Found {len(meta_nodes)} meta-circular nodes:")
             for node in meta_nodes:
                 print(f"     {node.name} - {node.metadata.get('meta_level', 'unknown')}")
         
         elif pattern_name == "energy_flow":
             # Analyze energy flow patterns
-            all_nodes = await self.database.query_nodes(
-                QueryFilter(),
+            all_nodes_result = self.database.operations.query_nodes(
+                [],
                 QueryOptions(limit=100)
             )
+            
+            if not all_nodes_result.success:
+                print(f"   ❌ Query failed: {all_nodes_result.error_message}")
+                return
+            
+            all_nodes = all_nodes_result.data or []
             
             # Sort by energy level
             sorted_nodes = sorted(all_nodes, key=lambda x: x.energy_level, reverse=True)
@@ -226,11 +259,11 @@ class BootstrappedSystemExplorer:
             missing = []
             for component in components:
                 # Check if component exists
-                existing = await self.database.query_nodes(
-                    QueryFilter(name=component),
+                existing_result = self.database.operations.query_nodes(
+                    [QueryFilter("name", "=", component)],
                     QueryOptions(limit=1)
                 )
-                if not existing:
+                if not existing_result.success or not existing_result.data:
                     missing.append(component)
             
             if missing:
@@ -305,32 +338,35 @@ class BootstrappedSystemExplorer:
         
         # Pattern 1: From specific concept to meta-description
         print("\n1. Concept → Meta-Description:")
-        ontology_nodes = await self.database.query_nodes(
-            QueryFilter(node_type="ontological_concept"),
+        ontology_result = self.database.operations.query_nodes(
+            [QueryFilter("node_type", "=", "ontological_concept")],
             QueryOptions(limit=3)
         )
         
+        ontology_nodes = ontology_result.data if ontology_result.success else []
         for node in ontology_nodes:
             print(f"   {node.name} → meta_system_ontology (describes)")
         
         # Pattern 2: From file to category to system structure
         print("\n2. File → Category → System Structure:")
-        file_nodes = await self.database.query_nodes(
-            QueryFilter(node_type="file"),
+        file_result = self.database.operations.query_nodes(
+            [QueryFilter("node_type", "=", "file")],
             QueryOptions(limit=3)
         )
         
+        file_nodes = file_result.data if file_result.success else []
         for node in file_nodes:
             category = node.metadata.get("category", "unknown")
             print(f"   {node.name} → category_{category} → meta_file_system_structure")
         
         # Pattern 3: From meta-node to system boundaries
         print("\n3. Meta-Node → System Boundaries:")
-        meta_nodes = await self.database.query_nodes(
-            QueryFilter(node_type="meta_node"),
+        meta_result = self.database.operations.query_nodes(
+            [QueryFilter("node_type", "=", "meta_node")],
             QueryOptions(limit=3)
         )
         
+        meta_nodes = meta_result.data if meta_result.success else []
         for node in meta_nodes:
             print(f"   {node.name} → meta_system_boundaries (defines limits)")
         
