@@ -60,8 +60,8 @@ cp env_example.txt .env
 
 ### **3. Test Everything**
 ```bash
-# Run comprehensive test
-python test_comprehensive_apis.py
+# Run unified system test
+python test_unified_system.py
 ```
 
 ---
@@ -251,39 +251,37 @@ pip install fastapi uvicorn pydantic requests aiohttp neo4j psycopg2-binary
 
 ## 🧪 **Testing Your System**
 
-## **Section 1: Individual Component Tests**
+## **Section 1: Unified System Testing (Recommended)**
 
-### **Test Configuration**
+### **Test Everything at Once**
+```bash
+python test_unified_system.py
+```
+**What it does**: Tests all system components in one comprehensive run
+**Expected Output**: Detailed test results for each component with overall summary
+
+### **Test Configuration Only**
 ```bash
 python config_manager.py
 ```
 **Expected Output**: All configured services show ✅ status
 
-### **Test Neo4j Connection**
-```bash
-python test_neo4j_connection.py
-```
-**Expected Output**: Neo4j connection successful, test node created
+## **Section 2: Component-Specific Testing (Advanced)**
 
-### **Test Web Search APIs**
-```bash
-python test_web_search.py
-```
-**Expected Output**: Google Custom Search, DuckDuckGo, Wikipedia all working
+### **Understanding Test Results**
+The unified test script provides:
+- **Individual test results** for each component
+- **Comprehensive summary** with success rates
+- **Performance metrics** including test duration
+- **Clear error reporting** for failed tests
 
-### **Test OpenAI Integration**
-```bash
-python test_openai_integration.py
-```
-**Expected Output**: OpenAI consultation successful, AI response received
-
-## **Section 2: Comprehensive System Test**
-
-### **Run Complete System Test**
-```bash
-python test_comprehensive_apis.py
-```
-**Expected Output**: All APIs working together, confidence score 1.00
+### **Test Components Covered**
+1. **Configuration Testing** - API keys and settings validation
+2. **Neo4j Integration** - Database connection and operations
+3. **Database Persistence** - SQLite system validation
+4. **Web Search APIs** - Google, DuckDuckGo, Wikipedia
+5. **OpenAI Integration** - AI consultation testing
+6. **Comprehensive Integration** - All systems working together
 
 ### **Run Integrated Demo**
 ```bash
@@ -293,30 +291,54 @@ python integrated_real_systems_demo.py
 
 ## **Section 3: Expected Test Results**
 
-### **Successful Configuration**
+### **Successful Unified Test Run**
 ```
-📊 API Configuration Status:
-  OpenAI API: ✅ Configured
-  Google Custom Search: ✅ Configured
-  Neo4j: ✅ Configured
+============================================================
+  Living Codex Unified System Test
+============================================================
+Running comprehensive system validation...
+
+----------------------------------------
+  Testing System Configuration
+----------------------------------------
+✅ PASS OpenAI API
+     Configured
+✅ PASS Google Custom Search
+     Configured
+✅ PASS Neo4j Database
+     Configured
+✅ PASS PostgreSQL Database
+     Configured
+
+----------------------------------------
+  Testing Neo4j Integration
+----------------------------------------
+✅ PASS Neo4j Connection
+     Successfully connected
+✅ PASS Neo4j Node Creation
+     Test node created
+✅ PASS Neo4j Query
+     Found 3 nodes
+
+============================================================
+  Test Summary
+============================================================
+📊 Test Results:
+  Total Tests: 14
+  Passed: 14 ✅
+  Failed: 0 ❌
+  Success Rate: 100.0%
+
+🎉 All tests passed! Your Living Codex is fully operational!
+
+⏱️  Total test duration: 5.28 seconds
 ```
 
-### **Successful Web Search**
-```
-🔍 Testing search query: 'Living Codex ontological framework'
-📊 Search Results Summary:
-  Total Sources: 3
-  Successful Sources: 3
-  Confidence Score: 1.00
-```
-
-### **Successful OpenAI Integration**
-```
-🤖 Expert System Response:
-  Status: success
-  Response Time: 2.62s
-  ✅ OpenAI consultation successful!
-```
+### **Understanding Test Output**
+- **✅ PASS**: Component test successful
+- **❌ FAIL**: Component test failed with error details
+- **Test Summary**: Overall results with success rate
+- **Duration**: Total time for all tests
 
 ---
 
