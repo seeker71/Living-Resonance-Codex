@@ -4,7 +4,7 @@ Living Codex Platform - Unified Web Interface
 Combines original functionality with enhanced discovery, navigation, and collaboration features
 """
 
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, abort, send_from_directory
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import os
 import json
@@ -12,6 +12,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import random
 from typing import List, Dict, Any, Optional
+import hashlib
+import mimetypes
 
 # Import our platform components
 import sys
@@ -44,6 +46,59 @@ contributions = {}
 user_connections = {}  # User-to-user connections
 content_tags = {}      # Content tagging system
 exploration_paths = {} # User exploration history
+
+# Digital asset store
+assets_dir = Path(__file__).parent / 'assets_store'
+assets_dir.mkdir(exist_ok=True)
+assets_index_path = assets_dir / 'assets_index.json'
+try:
+    if assets_index_path.exists():
+        with open(assets_index_path, 'r', encoding='utf-8') as f:
+            assets_index = json.load(f)
+    else:
+        assets_index = []
+except Exception:
+    assets_index = []
+
+def save_assets_index():
+    try:
+        with open(assets_index_path, 'w', encoding='utf-8') as f:
+            json.dump(assets_index, f, ensure_ascii=False, indent=2, default=str)
+    except Exception as e:
+        print(f"Failed to save assets index: {e}")
+
+def hash_file(path: Path) -> str:
+    sha256 = hashlib.sha256()
+    with open(path, 'rb') as f:
+        for chunk in iter(lambda: f.read(8192), b''):
+            sha256.update(chunk)
+    return sha256.hexdigest()
+
+def detect_asset_type(path: Path) -> str:
+    mime, _ = mimetypes.guess_type(str(path))
+    if not mime:
+        return 'other'
+    if mime.startswith('image/'):
+        return 'image'
+    if mime.startswith('video/'):
+        return 'video'
+    if mime.startswith('audio/'):
+        return 'audio'
+    if mime in ('application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'):
+        return 'document'
+    if mime in ('application/zip', 'application/x-tar', 'application/x-7z-compressed', 'application/x-rar-compressed', 'application/gzip'):
+        return 'archive'
+    if mime in ('text/x-python', 'application/javascript', 'text/markdown', 'text/x-c', 'text/x-java-source'):
+        return 'code'
+    if mime in ('text/csv', 'application/json', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'):
+        return 'data'
+    return 'other'
+
+def find_asset(asset_id: str) -> Optional[Dict[str, Any]]:
+    for a in assets_index:
+        if a['id'] == asset_id or a['checksum'].startswith(asset_id):
+            return a
+    return None
 
 class WebUser(UserMixin):
     """Enhanced web user class for Flask-Login"""
@@ -622,6 +677,84 @@ def api_opportunities():
     # This would integrate with the existing contribution system
     opportunities = contribution_system.find_opportunities(current_user.profile)
     return jsonify(opportunities)
+
+# ============================================================================
+# ASSET API ENDPOINTS
+# ============================================================================
+
+@app.route('/api/assets', methods=['GET'])
+@login_required
+def api_assets_list():
+    """List digital assets"""
+    return jsonify(assets_index)
+
+@app.route('/api/assets', methods=['POST'])
+@login_required
+def api_assets_upload():
+    """Upload/add a digital asset (multipart form)"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'file field required'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'empty filename'}), 400
+    # Save to temp then hash
+    tmp_path = assets_dir / f"__upload_{datetime.now().timestamp()}"
+    file.save(str(tmp_path))
+    checksum = hash_file(tmp_path)
+    ext = Path(file.filename).suffix.lstrip('.') or 'bin'
+    stored_name = f"{checksum}.{ext}"
+    dest = assets_dir / stored_name
+    if not dest.exists():
+        tmp_path.rename(dest)
+    else:
+        tmp_path.unlink(missing_ok=True)
+    asset_type = request.form.get('type') or detect_asset_type(dest)
+    tags = [t.strip() for t in request.form.get('tags', '').split(',') if t.strip()]
+    meta = find_asset(checksum)
+    if meta:
+        meta.update({
+            'original_name': file.filename,
+            'stored_name': stored_name,
+            'size': dest.stat().st_size,
+            'type': asset_type,
+            'tags': sorted(set(meta.get('tags', []) + tags)),
+            'updated_at': datetime.now().isoformat(),
+            'uploader': current_user.id
+        })
+    else:
+        meta = {
+            'id': checksum,
+            'checksum': checksum,
+            'original_name': file.filename,
+            'stored_name': stored_name,
+            'size': dest.stat().st_size,
+            'type': asset_type,
+            'tags': tags,
+            'created_at': datetime.now().isoformat(),
+            'uploader': current_user.id
+        }
+        assets_index.append(meta)
+    save_assets_index()
+    return jsonify(meta), 201
+
+@app.route('/api/assets/<asset_id>', methods=['GET'])
+@login_required
+def api_asset_info(asset_id):
+    meta = find_asset(asset_id)
+    if not meta:
+        return jsonify({'error': 'not found'}), 404
+    return jsonify(meta)
+
+@app.route('/api/assets/download/<asset_id>', methods=['GET'])
+@login_required
+def api_asset_download(asset_id):
+    meta = find_asset(asset_id)
+    if not meta:
+        abort(404)
+    stored = assets_dir / meta['stored_name']
+    if not stored.exists():
+        abort(404)
+    return send_from_directory(str(assets_dir), meta['stored_name'], as_attachment=True, download_name=meta['original_name'])
 
 @app.route('/logout')
 @login_required
