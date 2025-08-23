@@ -1,0 +1,148 @@
+version: '3.8'
+
+services:
+  # 🧊 ICE Bootstrap Pod - Immutable, Self-Containing
+  ice-bootstrap:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.ice
+    container_name: living-codex-ice-simple
+    environment:
+      - ICE_POD_ID=ice-bootstrap-001
+      - ICE_POD_STATE=ICE
+    ports:
+      - "8080:8080"
+      - "5005:5000"
+    volumes:
+      - ice_core:/app/ice_core
+    networks:
+      - living-codex-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # 💧 WATER Web Service Pod - Stable, Operational
+  water-web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.water
+    container_name: living-codex-water-web-simple
+    environment:
+      - WATER_POD_ID=water-web-001
+      - WATER_POD_STATE=WATER
+      - WATER_POD_ROLE=web
+    ports:
+      - "5010:5004"
+      - "8081:8080"
+    volumes:
+      - water_data:/app/data
+      - water_logs:/app/logs
+      - water_profiles:/app/user_profiles
+      - water_contributions:/app/contributions
+    networks:
+      - living-codex-network
+    depends_on:
+      - ice-bootstrap
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ☁️ VAPOR Interaction Pod - Temporary, Contextual
+  vapor-interaction:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.vapor
+    container_name: living-codex-vapor-simple
+    environment:
+      - VAPOR_POD_ID=vapor-interaction-001
+      - VAPOR_POD_STATE=VAPOR
+      - VAPOR_POD_TTL=3600
+      - VAPOR_POD_CONTEXT=test
+    ports:
+      - "5020:5002"
+      - "8082:8081"
+    volumes:
+      - vapor_temp:/app/temp
+      - vapor_sessions:/app/sessions
+      - vapor_cache:/app/cache
+    networks:
+      - living-codex-network
+    depends_on:
+      - ice-bootstrap
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # ⚡ PLASMA Streaming Pod - Real-Time, Collaborative
+  plasma-streaming:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.plasma
+    container_name: living-codex-plasma-simple
+    environment:
+      - PLASMA_POD_ID=plasma-streaming-001
+      - PLASMA_POD_STATE=PLASMA
+      - PLASMA_POD_STREAMS=10
+      - PLASMA_POD_BANDWIDTH=1000
+    ports:
+      - "5030:5003"
+      - "8083:8082"
+      - "6380:6379"
+    volumes:
+      - plasma_streams:/app/streams
+      - plasma_events:/app/events
+      - plasma_subscribers:/app/subscribers
+    networks:
+      - living-codex-network
+    depends_on:
+      - water-web
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  ice_core:
+    driver: local
+  water_data:
+    driver: local
+  water_logs:
+    driver: local
+  water_profiles:
+    driver: local
+  water_contributions:
+    driver: local
+  vapor_temp:
+    driver: local
+  vapor_sessions:
+    driver: local
+  vapor_cache:
+    driver: local
+  plasma_streams:
+    driver: local
+  plasma_events:
+    driver: local
+  plasma_subscribers:
+    driver: local
+
+networks:
+  living-codex-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

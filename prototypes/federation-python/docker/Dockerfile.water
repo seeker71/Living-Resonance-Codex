@@ -26,7 +26,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy Living Codex system
 COPY src/ src/
-COPY tests/ tests/
 COPY docs/ docs/
 COPY scripts/ scripts/
 
@@ -40,13 +39,13 @@ echo "State: ${WATER_POD_STATE}"\n\
 echo "Role: ${WATER_POD_ROLE}"\n\
 \n\
 # Initialize database and services\n\
-python src/core/minimal_ice_bootstrap.py\n\
+python src/core/ice_bootstrap_engine.py\n\
 \n\
 # Start appropriate service based on role\n\
 case ${WATER_POD_ROLE} in\n\
     "web")\n\
         echo "🌐 Starting web service..."\n\
-        python src/platform/web_interface.py\n\
+        python src/web_platform/unified_web_interface.py\n\
         ;;\n\
     "api")\n\
         echo "🔌 Starting API service..."\n\
@@ -58,7 +57,7 @@ case ${WATER_POD_ROLE} in\n\
         ;;\n\
     *)\n\
         echo "🌐 Starting default web service..."\n\
-        python src/platform/web_interface.py\n\
+        python src/web_platform/unified_web_interface.py\n\
         ;;\n\
 esac' > /app/start_water.sh && chmod +x /app/start_water.sh
 

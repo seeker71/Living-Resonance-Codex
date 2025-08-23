@@ -1,10 +1,22 @@
-# Core dependencies for Docker deployment
-Flask>=2.3.0
-Flask-Login>=0.6.0
+# Docker-compatible requirements for Living Codex
+# Core dependencies only - essential packages that are guaranteed to work
+
+# Core system dependencies
 requests>=2.28.0
 python-dotenv>=0.19.0
+aiohttp>=3.8.0
+websockets>=10.0
+
+# Data processing (core)
 numpy>=1.21.0
 pandas>=1.3.0
-matplotlib>=3.5.0
-scikit-learn>=1.0.0
-tree-sitter>=0.21.0
+
+# Web framework
+Flask>=2.0.0
+Flask-Login>=0.6.0
+Werkzeug>=2.0.0
+
+# Note: sqlite3 is built into Python - no need to install
+# Note: Removed neo4j temporarily to avoid compatibility issues
+# Note: Removed problematic tree-sitter packages and heavy ML libraries
+# These can be added back once we verify compatibility

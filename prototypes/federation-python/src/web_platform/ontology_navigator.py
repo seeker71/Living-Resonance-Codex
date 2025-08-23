@@ -139,7 +139,7 @@ class OntologyNavigator:
                 'category': 'platform_system',
                 'relationships': ['ice_core', 'contribution_system', 'web_interface'],
                 'metadata': {
-                    'file_path': 'src/platform/user_management.py',
+                    'file_path': 'src/web_platform/user_management.py',
                     'complexity': 'medium',
                     'dependencies': ['flask_login', 'dataclasses'],
                     'status': 'active'
@@ -153,7 +153,7 @@ class OntologyNavigator:
                 'category': 'platform_system',
                 'relationships': ['user_management', 'web_interface'],
                 'metadata': {
-                    'file_path': 'src/platform/contribution_system.py',
+                    'file_path': 'src/web_platform/contribution_system.py',
                     'complexity': 'medium',
                     'dependencies': ['user_management', 'enums'],
                     'status': 'active'
@@ -167,7 +167,7 @@ class OntologyNavigator:
                 'category': 'platform_system',
                 'relationships': ['user_management', 'contribution_system', 'discovery_engine'],
                 'metadata': {
-                    'file_path': 'src/platform/unified_web_interface.py',
+                    'file_path': 'src/web_platform/unified_web_interface.py',
                     'complexity': 'high',
                     'dependencies': ['flask', 'flask_login', 'all_modules'],
                     'status': 'active'
@@ -181,7 +181,7 @@ class OntologyNavigator:
                 'category': 'discovery_system',
                 'relationships': ['web_interface', 'user_management'],
                 'metadata': {
-                    'file_path': 'src/platform/unified_web_interface.py',
+                    'file_path': 'src/web_platform/unified_web_interface.py',
                     'complexity': 'medium',
                     'dependencies': ['user_management'],
                     'status': 'active'
@@ -195,7 +195,7 @@ class OntologyNavigator:
                 'category': 'navigation_system',
                 'relationships': ['web_interface', 'user_management'],
                 'metadata': {
-                    'file_path': 'src/platform/unified_web_interface.py',
+                    'file_path': 'src/web_platform/unified_web_interface.py',
                     'complexity': 'medium',
                     'dependencies': ['user_management'],
                     'status': 'active'

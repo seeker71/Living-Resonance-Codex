@@ -132,7 +132,7 @@ print("ICE Core Bootstrap System - Ready")''',
 """Dependency Manager for ICE Core"""
 print("Dependency Manager - Ready")''',
         
-        'src/platform/web_interface.py': '''#!/usr/bin/env python3
+        'src/web_platform/web_interface.py': '''#!/usr/bin/env python3
 """Web Interface for Living Codex"""
 print("Web Interface - Ready")''',
         

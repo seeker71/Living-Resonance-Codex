@@ -19,14 +19,14 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copy requirements and install Python dependencies
-COPY requirements.txt .
+COPY requirements-docker.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy ICE bootstrap system
 COPY src/core/ src/core/
-COPY src/platform/ src/platform/
+COPY src/web_platform/ src/web_platform/
 COPY src/ontology/ src/ontology/
-COPY tests/ tests/
+COPY src/test_suites/ src/test_suites/
 COPY docs/ docs/
 COPY scripts/ scripts/
 
@@ -40,7 +40,7 @@ echo "State: ${ICE_POD_STATE}"\n\
 echo "Ready to bootstrap Living Codex system..."\n\
 \n\
 # Start bootstrap process\n\
-python src/core/minimal_ice_bootstrap.py\n\
+python src/core/ice_bootstrap_engine.py\n\
 \n\
 # Keep pod running for discovery\n\
 while true; do\n\

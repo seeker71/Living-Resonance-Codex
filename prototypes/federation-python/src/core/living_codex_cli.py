@@ -16,6 +16,9 @@ import math
 import re
 import random
 from dataclasses import dataclass
+import hashlib
+import mimetypes
+import shutil
 
 # Standalone mode - no external dependencies
 DEPENDENCIES_AVAILABLE = False
@@ -422,6 +425,12 @@ Type 'quit' or 'exit' to leave.
         # Project root for file operations
         self.project_root = Path(__file__).parent.parent.parent
         
+        # Asset store initialization
+        self.assets_dir = self.project_root / "assets_store"
+        self.assets_dir.mkdir(exist_ok=True)
+        self.assets_index_path = self.assets_dir / "assets_index.json"
+        self.assets_index = self._load_assets_index()
+        
         print("🚀 Initializing Living Codex Consolidated CLI...")
         if DEPENDENCIES_AVAILABLE:
             print("✅ Advanced features available")
@@ -465,6 +474,12 @@ Type 'quit' or 'exit' to leave.
             print("  create <type>      - Create new knowledge nodes")
             print("  list <type>        - List nodes by type")
             print("  search <query>     - Search knowledge base")
+            print("  asset add <path> [--type t] [--tags a,b] - Add digital asset")
+            print("  asset list         - List assets")
+            print("  asset info <id>    - Show asset metadata")
+            print("  asset get <id> [dest] - Retrieve asset to destination")
+            print("  asset search <q>   - Search assets by name/tag/type")
+            print("  asset remove <id>  - Remove asset (metadata only)")
             
             print("\n⚡ System Management:")
             print("  energy             - Show energy levels")
@@ -1782,6 +1797,186 @@ Type 'quit' or 'exit' to leave.
     def emptyline(self):
         """Do nothing on empty line"""
         pass
+
+    # ================================
+    # Digital Asset Management Commands
+    # ================================
+    def _load_assets_index(self) -> List[Dict[str, Any]]:
+        try:
+            if self.assets_index_path.exists():
+                with open(self.assets_index_path, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+        except Exception:
+            pass
+        return []
+
+    def _save_assets_index(self) -> None:
+        try:
+            with open(self.assets_index_path, 'w', encoding='utf-8') as f:
+                json.dump(self.assets_index, f, ensure_ascii=False, indent=2, default=str)
+        except Exception as e:
+            print(f"❌ Failed to save assets index: {e}")
+
+    def _hash_file(self, path: Path) -> str:
+        sha256 = hashlib.sha256()
+        with open(path, 'rb') as f:
+            for chunk in iter(lambda: f.read(8192), b''):
+                sha256.update(chunk)
+        return sha256.hexdigest()
+
+    def _detect_asset_type(self, path: Path) -> str:
+        mime, _ = mimetypes.guess_type(str(path))
+        if not mime:
+            return 'other'
+        if mime.startswith('image/'):
+            return 'image'
+        if mime.startswith('video/'):
+            return 'video'
+        if mime.startswith('audio/'):
+            return 'audio'
+        if mime in ('application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'):
+            return 'document'
+        if mime in ('application/zip', 'application/x-tar', 'application/x-7z-compressed', 'application/x-rar-compressed', 'application/gzip'):
+            return 'archive'
+        if mime in ('text/x-python', 'application/javascript', 'text/markdown', 'text/x-c', 'text/x-java-source'):
+            return 'code'
+        if mime in ('text/csv', 'application/json', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'):
+            return 'data'
+        return 'other'
+
+    def _find_asset_by_id(self, asset_id: str) -> Optional[Dict[str, Any]]:
+        # Allow checksum prefix matches
+        for a in self.assets_index:
+            if a['id'] == asset_id or a['checksum'].startswith(asset_id):
+                return a
+        return None
+
+    def do_asset(self, arg):
+        """Manage digital assets: asset <add|list|info|get|search|remove> ..."""
+        if not arg:
+            print("Usage: asset <add|list|info|get|search|remove> ...")
+            return
+        parts = shlex.split(arg)
+        cmd = parts[0]
+        if cmd == 'add':
+            if len(parts) < 2:
+                print("❌ Usage: asset add <path> [--type t] [--tags a,b]")
+                return
+            src = Path(parts[1]).expanduser()
+            if not src.is_file():
+                print(f"❌ File not found: {src}")
+                return
+            # Parse options
+            asset_type = None
+            tags: List[str] = []
+            for i, token in enumerate(parts[2:], start=2):
+                if token == '--type' and i + 1 < len(parts):
+                    asset_type = parts[i + 1]
+                if token == '--tags' and i + 1 < len(parts):
+                    tags = [t.strip() for t in parts[i + 1].split(',') if t.strip()]
+            if not asset_type:
+                asset_type = self._detect_asset_type(src)
+            checksum = self._hash_file(src)
+            ext = src.suffix.lstrip('.') or 'bin'
+            stored_name = f"{checksum}.{ext}"
+            dest = self.assets_dir / stored_name
+            if not dest.exists():
+                try:
+                    shutil.copy2(str(src), str(dest))
+                except Exception as e:
+                    print(f"❌ Failed to store asset: {e}")
+                    return
+            # Create or update index entry
+            existing = self._find_asset_by_id(checksum)
+            if existing:
+                existing.update({
+                    'original_name': src.name,
+                    'stored_name': stored_name,
+                    'size': src.stat().st_size,
+                    'type': asset_type,
+                    'tags': sorted(set(existing.get('tags', []) + tags)),
+                    'updated_at': datetime.now().isoformat()
+                })
+                asset_meta = existing
+            else:
+                asset_meta = {
+                    'id': checksum,
+                    'checksum': checksum,
+                    'original_name': src.name,
+                    'stored_name': stored_name,
+                    'size': src.stat().st_size,
+                    'type': asset_type,
+                    'tags': tags,
+                    'created_at': datetime.now().isoformat()
+                }
+                self.assets_index.append(asset_meta)
+            self._save_assets_index()
+            print(f"✅ Asset stored: {src.name}")
+            print(f"🆔 ID (checksum): {checksum[:12]}…")
+            print(f"📦 Stored as: {stored_name}")
+            print(f"🏷️  Type: {asset_type} | Tags: {', '.join(tags) if tags else '-'}")
+        elif cmd == 'list':
+            if not self.assets_index:
+                print("📭 No assets in store")
+                return
+            print(f"\n📁 Assets in store ({len(self.assets_index)}):")
+            print("-" * 60)
+            for a in self.assets_index:
+                print(f"🆔 {a['id'][:12]}… | {a['original_name']} ({a['type']}, {a['size']} bytes)")
+        elif cmd == 'info':
+            if len(parts) < 2:
+                print("❌ Usage: asset info <id>")
+                return
+            meta = self._find_asset_by_id(parts[1])
+            if not meta:
+                print("❌ Asset not found")
+                return
+            print(json.dumps(meta, indent=2))
+        elif cmd == 'get':
+            if len(parts) < 2:
+                print("❌ Usage: asset get <id> [dest]")
+                return
+            meta = self._find_asset_by_id(parts[1])
+            if not meta:
+                print("❌ Asset not found")
+                return
+            src = self.assets_dir / meta['stored_name']
+            if not src.exists():
+                print("❌ Stored file missing")
+                return
+            dest = Path(parts[2]).expanduser() if len(parts) > 2 else Path.cwd() / meta['original_name']
+            try:
+                if dest.is_dir():
+                    dest = dest / meta['original_name']
+                shutil.copy2(str(src), str(dest))
+                print(f"✅ Retrieved to: {dest}")
+            except Exception as e:
+                print(f"❌ Retrieve failed: {e}")
+        elif cmd == 'search':
+            if len(parts) < 2:
+                print("❌ Usage: asset search <query>")
+                return
+            q = parts[1].lower()
+            hits = [a for a in self.assets_index if q in a['original_name'].lower() or q in a['type'].lower() or any(q in t.lower() for t in a.get('tags', []))]
+            if not hits:
+                print("📭 No matching assets")
+                return
+            print(f"\n🔎 Found {len(hits)} assets:")
+            for a in hits:
+                print(f"🆔 {a['id'][:12]}… | {a['original_name']} ({a['type']}) | tags: {', '.join(a.get('tags', []))}")
+        elif cmd == 'remove':
+            if len(parts) < 2:
+                print("❌ Usage: asset remove <id>")
+                return
+            meta = self._find_asset_by_id(parts[1])
+            if not meta:
+                print("❌ Asset not found")
+                return
+            self.assets_index = [a for a in self.assets_index if a['id'] != meta['id']]
+            self._save_assets_index()
+            print("🗑️  Asset metadata removed (file retained)")
+        else:
+            print("❌ Unknown subcommand. Use: add, list, info, get, search, remove")
 
 def main():
     """Main entry point for the consolidated CLI"""

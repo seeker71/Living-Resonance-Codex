@@ -116,7 +116,7 @@ class MinimalICEBootstrap:
         """Create necessary directory structure"""
         directories = [
             'src/core',
-            'src/platform',
+            'src/web_platform',
             'src/ontology',
             'tests',
             'docs',
@@ -140,7 +140,7 @@ class MinimalICEBootstrap:
                 if name.endswith('_storage'):
                     file_path = Path(f"src/core/{name}.py")
                 elif name.startswith('user_') or name.startswith('contribution_') or name.startswith('web_'):
-                    file_path = Path(f"src/platform/{name}.py")
+                    file_path = Path(f"src/web_platform/{name}.py")
                 elif name.startswith('enhanced_'):
                     file_path = Path(f"src/ontology/{name}.py")
                 elif name.startswith('test_') or name.startswith('regression_'):
@@ -170,8 +170,8 @@ class MinimalICEBootstrap:
         # Check if key files exist
         required_files = [
             "src/core/water_state_storage.py",
-            "src/platform/user_management.py",
-            "src/platform/web_interface.py",
+            "src/web_platform/user_management.py",
+            "src/web_platform/web_interface.py",
             "tests/regression_test_suite.py"
         ]
         
@@ -218,7 +218,7 @@ class MinimalICEBootstrap:
             
             # Test user management
             print("👤 Testing user management...")
-            sys.path.insert(0, 'src/platform')
+            sys.path.insert(0, 'src/web_platform')
             from user_management import UserManagementSystem
             
             user_system = UserManagementSystem("test_user_profiles")
@@ -262,7 +262,7 @@ class MinimalICEBootstrap:
         
         try:
             # Test web interface components
-            sys.path.insert(0, 'src/platform')
+            sys.path.insert(0, 'src/web_platform')
             from web_interface import app
             
             # Check if Flask app is properly configured

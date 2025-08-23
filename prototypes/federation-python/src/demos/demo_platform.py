@@ -297,7 +297,7 @@ def main():
         print("   ✅ Water state metaphor in action (liquid preferences, vapor sessions)")
         
         print("\nNext steps:")
-        print("   • Run the web interface: python src/platform/web_interface.py")
+        print("   • Run the web interface: python src/web_platform/web_interface.py")
         print("   • Sign up users through the web interface")
         print("   • Create contributions and see personalization in action")
         print("   • Explore the API endpoints for integration")

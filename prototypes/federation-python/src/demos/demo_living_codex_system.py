@@ -40,7 +40,7 @@ class LivingCodexDemo:
                 return False
         except requests.exceptions.ConnectionError:
             print("❌ Cannot connect to Living Codex service")
-            print("💡 Make sure the service is running with: python src/platform/web_interface.py")
+            print("💡 Make sure the service is running with: python src/web_platform/web_interface.py")
             return False
         except Exception as e:
             print(f"❌ Error testing service: {e}")

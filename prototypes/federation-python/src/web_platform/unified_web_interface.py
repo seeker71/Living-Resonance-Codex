@@ -4,7 +4,7 @@ Living Codex Platform - Unified Web Interface
 Combines original functionality with enhanced discovery, navigation, and collaboration features
 """
 
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, abort, send_from_directory
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import os
 import json
@@ -12,19 +12,21 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import random
 from typing import List, Dict, Any, Optional
+import hashlib
+import mimetypes
 
 # Import our platform components
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from src.platform.user_management import (
+from src.web_platform.user_management import (
     UserManagementSystem, UserProfile, CoreIdentity, CommunicationPreferences,
     TechnicalProfile, Interests, LocationContext, SkillLevel, CommunicationStyle, LearningStyle
 )
-from src.platform.contribution_system import (
+from src.web_platform.contribution_system import (
     ContributionSystem, ContributionType, ContentCategory, ContributionStatus
 )
-from src.platform.ontology_navigator import ontology_navigator
+from src.web_platform.ontology_navigator import ontology_navigator
 
 app = Flask(__name__)
 app.secret_key = 'living-codex-secret-key-2024'  # In production, use environment variable
@@ -44,6 +46,59 @@ contributions = {}
 user_connections = {}  # User-to-user connections
 content_tags = {}      # Content tagging system
 exploration_paths = {} # User exploration history
+
+# Digital asset store
+assets_dir = Path(__file__).parent / 'assets_store'
+assets_dir.mkdir(exist_ok=True)
+assets_index_path = assets_dir / 'assets_index.json'
+try:
+    if assets_index_path.exists():
+        with open(assets_index_path, 'r', encoding='utf-8') as f:
+            assets_index = json.load(f)
+    else:
+        assets_index = []
+except Exception:
+    assets_index = []
+
+def save_assets_index():
+    try:
+        with open(assets_index_path, 'w', encoding='utf-8') as f:
+            json.dump(assets_index, f, ensure_ascii=False, indent=2, default=str)
+    except Exception as e:
+        print(f"Failed to save assets index: {e}")
+
+def hash_file(path: Path) -> str:
+    sha256 = hashlib.sha256()
+    with open(path, 'rb') as f:
+        for chunk in iter(lambda: f.read(8192), b''):
+            sha256.update(chunk)
+    return sha256.hexdigest()
+
+def detect_asset_type(path: Path) -> str:
+    mime, _ = mimetypes.guess_type(str(path))
+    if not mime:
+        return 'other'
+    if mime.startswith('image/'):
+        return 'image'
+    if mime.startswith('video/'):
+        return 'video'
+    if mime.startswith('audio/'):
+        return 'audio'
+    if mime in ('application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'):
+        return 'document'
+    if mime in ('application/zip', 'application/x-tar', 'application/x-7z-compressed', 'application/x-rar-compressed', 'application/gzip'):
+        return 'archive'
+    if mime in ('text/x-python', 'application/javascript', 'text/markdown', 'text/x-c', 'text/x-java-source'):
+        return 'code'
+    if mime in ('text/csv', 'application/json', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'):
+        return 'data'
+    return 'other'
+
+def find_asset(asset_id: str) -> Optional[Dict[str, Any]]:
+    for a in assets_index:
+        if a['id'] == asset_id or a['checksum'].startswith(asset_id):
+            return a
+    return None
 
 class WebUser(UserMixin):
     """Enhanced web user class for Flask-Login"""
@@ -512,6 +567,59 @@ def explore_category(category):
                          content=category_content,
                          interested_users=interested_users)
 
+@app.route('/assets', methods=['GET', 'POST'])
+@login_required
+def assets_page():
+    """Assets manager page with upload form and listing"""
+    message = None
+    if request.method == 'POST':
+        try:
+            if 'file' not in request.files or request.files['file'].filename == '':
+                message = ('error', 'Please choose a file to upload')
+            else:
+                file = request.files['file']
+                tmp_path = assets_dir / f"__upload_{datetime.now().timestamp()}"
+                file.save(str(tmp_path))
+                checksum = hash_file(tmp_path)
+                ext = Path(file.filename).suffix.lstrip('.') or 'bin'
+                stored_name = f"{checksum}.{ext}"
+                dest = assets_dir / stored_name
+                if not dest.exists():
+                    tmp_path.rename(dest)
+                else:
+                    tmp_path.unlink(missing_ok=True)
+                asset_type = request.form.get('type') or detect_asset_type(dest)
+                tags = [t.strip() for t in request.form.get('tags', '').split(',') if t.strip()]
+                meta = find_asset(checksum)
+                if meta:
+                    meta.update({
+                        'original_name': file.filename,
+                        'stored_name': stored_name,
+                        'size': dest.stat().st_size,
+                        'type': asset_type,
+                        'tags': sorted(set(meta.get('tags', []) + tags)),
+                        'updated_at': datetime.now().isoformat(),
+                        'uploader': current_user.id
+                    })
+                else:
+                    meta = {
+                        'id': checksum,
+                        'checksum': checksum,
+                        'original_name': file.filename,
+                        'stored_name': stored_name,
+                        'size': dest.stat().st_size,
+                        'type': asset_type,
+                        'tags': tags,
+                        'created_at': datetime.now().isoformat(),
+                        'uploader': current_user.id
+                    }
+                    assets_index.append(meta)
+                save_assets_index()
+                message = ('success', f"Uploaded {file.filename}")
+        except Exception as e:
+            message = ('error', f"Upload failed: {e}")
+    return render_template('unified_assets.html', assets=assets_index, message=message)
+
 @app.route('/connect/<user_id>')
 @login_required
 def connect_with_user(user_id):
@@ -622,6 +730,84 @@ def api_opportunities():
     # This would integrate with the existing contribution system
     opportunities = contribution_system.find_opportunities(current_user.profile)
     return jsonify(opportunities)
+
+# ============================================================================
+# ASSET API ENDPOINTS
+# ============================================================================
+
+@app.route('/api/assets', methods=['GET'])
+@login_required
+def api_assets_list():
+    """List digital assets"""
+    return jsonify(assets_index)
+
+@app.route('/api/assets', methods=['POST'])
+@login_required
+def api_assets_upload():
+    """Upload/add a digital asset (multipart form)"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'file field required'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'empty filename'}), 400
+    # Save to temp then hash
+    tmp_path = assets_dir / f"__upload_{datetime.now().timestamp()}"
+    file.save(str(tmp_path))
+    checksum = hash_file(tmp_path)
+    ext = Path(file.filename).suffix.lstrip('.') or 'bin'
+    stored_name = f"{checksum}.{ext}"
+    dest = assets_dir / stored_name
+    if not dest.exists():
+        tmp_path.rename(dest)
+    else:
+        tmp_path.unlink(missing_ok=True)
+    asset_type = request.form.get('type') or detect_asset_type(dest)
+    tags = [t.strip() for t in request.form.get('tags', '').split(',') if t.strip()]
+    meta = find_asset(checksum)
+    if meta:
+        meta.update({
+            'original_name': file.filename,
+            'stored_name': stored_name,
+            'size': dest.stat().st_size,
+            'type': asset_type,
+            'tags': sorted(set(meta.get('tags', []) + tags)),
+            'updated_at': datetime.now().isoformat(),
+            'uploader': current_user.id
+        })
+    else:
+        meta = {
+            'id': checksum,
+            'checksum': checksum,
+            'original_name': file.filename,
+            'stored_name': stored_name,
+            'size': dest.stat().st_size,
+            'type': asset_type,
+            'tags': tags,
+            'created_at': datetime.now().isoformat(),
+            'uploader': current_user.id
+        }
+        assets_index.append(meta)
+    save_assets_index()
+    return jsonify(meta), 201
+
+@app.route('/api/assets/<asset_id>', methods=['GET'])
+@login_required
+def api_asset_info(asset_id):
+    meta = find_asset(asset_id)
+    if not meta:
+        return jsonify({'error': 'not found'}), 404
+    return jsonify(meta)
+
+@app.route('/api/assets/download/<asset_id>', methods=['GET'])
+@login_required
+def api_asset_download(asset_id):
+    meta = find_asset(asset_id)
+    if not meta:
+        abort(404)
+    stored = assets_dir / meta['stored_name']
+    if not stored.exists():
+        abort(404)
+    return send_from_directory(str(assets_dir), meta['stored_name'], as_attachment=True, download_name=meta['original_name'])
 
 @app.route('/logout')
 @login_required
@@ -905,6 +1091,71 @@ def create_unified_templates():
     # Save the template
     with open(templates_dir / 'unified_index.html', 'w') as f:
         f.write(index_html)
+    
+    # Unified assets template
+    assets_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets - Living Codex</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #eee; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: #4CAF50; }
+        .card { background: #1b1b1b; padding: 20px; border-radius: 10px; margin: 15px 0; }
+        input, select { padding: 8px; border-radius: 6px; border: 1px solid #333; background: #222; color: #eee; }
+        .btn { padding: 10px 16px; border-radius: 6px; border: none; background: #4CAF50; color: white; cursor: pointer; }
+        .btn:hover { opacity: 0.9; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border-bottom: 1px solid #333; padding: 8px; text-align: left; }
+        small { color: #aaa; }
+        .msg { padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+        .success { background: #124d2a; }
+        .error { background: #4d1212; }
+    </style>
+    </head>
+<body>
+ <div class="container">
+  <h1>📁 Digital Assets</h1>
+  {% if message %}
+    <div class="msg {{ message[0] }}">{{ message[1] }}</div>
+  {% endif %}
+  <div class="card">
+    <h3>Upload Asset</h3>
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="file" required> 
+      <select name="type">
+        <option value="">auto-detect</option>
+        <option>image</option><option>video</option><option>audio</option>
+        <option>document</option><option>archive</option><option>code</option><option>data</option>
+      </select>
+      <input type="text" name="tags" placeholder="tags (comma separated)">
+      <button class="btn" type="submit">Upload</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Assets List</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Size</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for a in assets %}
+        <tr>
+          <td><small>{{ a.id[:12] }}…</small></td>
+          <td>{{ a.original_name }}</td>
+          <td>{{ a.type }}</td>
+          <td>{{ a.size }}</td>
+          <td><a class="btn" href="/api/assets/download/{{ a.id }}">Download</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+ </div>
+</body>
+</html>"""
+    with open(templates_dir / 'unified_assets.html', 'w') as f:
+        f.write(assets_html)
     
     print("✅ Unified templates created successfully!")
 

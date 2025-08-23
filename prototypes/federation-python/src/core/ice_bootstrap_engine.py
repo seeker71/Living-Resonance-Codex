@@ -154,7 +154,7 @@ class ICEBootstrapEngine:
         """Create the necessary directory structure"""
         directories = [
             'src/core',
-            'src/platform', 
+            'src/web_platform', 
             'src/ontology',
             'src/ai_agents',
             'src/integration',
@@ -313,8 +313,8 @@ class ICEBootstrapEngine:
             # Check if key files exist
             required_files = [
                 "src/core/water_state_storage.py",
-                "src/platform/user_management.py",
-                "src/platform/web_interface.py",
+                "src/web_platform/user_management.py",
+                "src/web_platform/web_interface.py",
                 "tests/regression_test_suite.py"
             ]
             
