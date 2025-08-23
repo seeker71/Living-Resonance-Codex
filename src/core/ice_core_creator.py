@@ -41,9 +41,9 @@ class ICECoreCreator:
             {"path": "src/core/dependency_manager.py", "type": "module", "name": "dependency_manager"},
             
             # Platform modules
-            {"path": "src/platform/user_management.py", "type": "module", "name": "user_management"},
-            {"path": "src/platform/contribution_system.py", "type": "module", "name": "contribution_system"},
-            {"path": "src/platform/web_interface.py", "type": "module", "name": "web_interface"},
+            {"path": "src/web_platform/user_management.py", "type": "module", "name": "user_management"},
+            {"path": "src/web_platform/contribution_system.py", "type": "module", "name": "contribution_system"},
+            {"path": "src/web_platform/web_interface.py", "type": "module", "name": "web_interface"},
             
             # Ontology modules
             {"path": "src/ontology/enhanced_ontology_system.py", "type": "module", "name": "enhanced_ontology_system"},
@@ -320,7 +320,7 @@ def start_web_service():
     """Start the web service"""
     try:
         # Import and start web interface
-        sys.path.insert(0, 'src/platform')
+        sys.path.insert(0, 'src/web_platform')
         from web_interface import app
         
         print("🌐 Web service starting on port 5001...")

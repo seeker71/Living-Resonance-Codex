@@ -18,9 +18,9 @@ import io
 # Add the src directory to Python path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-# Temporarily rename platform directory to avoid conflicts
-platform_dir = Path(__file__).parent / "src" / "platform"
-platform_backup = Path(__file__).parent / "src" / "platform_backup"
+# Temporarily rename web_platform directory to avoid conflicts
+platform_dir = Path(__file__).parent / "src" / "web_platform"
+platform_backup = Path(__file__).parent / "src" / "web_platform_backup"
 
 if platform_dir.exists():
     print("🔄 Temporarily renaming platform directory to avoid conflicts...")

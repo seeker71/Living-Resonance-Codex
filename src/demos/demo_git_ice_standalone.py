@@ -46,7 +46,7 @@ This repository contains the immutable core (ICE) of the Living Codex system.
 
 ## Structure
 - `src/core/` - Core system components
-- `src/platform/` - Platform modules
+- `src/web_platform/` - Platform modules
 - `bootstrap/` - Bootstrap scripts and manifests
 - `public_nodes.json` - Network discovery information
 
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     dm.validate_system()
 ''',
         
-        'src/platform/web_interface.py': '''#!/usr/bin/env python3
+        'src/web_platform/web_interface.py': '''#!/usr/bin/env python3
 """
 Web Interface for Living Codex
 Provides web-based access to system features
@@ -207,7 +207,7 @@ if __name__ == "__main__":
   "components": [
     "src/core/minimal_ice_bootstrap.py",
     "src/core/dependency_manager.py",
-    "src/platform/web_interface.py",
+    "src/web_platform/web_interface.py",
     "bootstrap/ice_bootstrap.py"
   ],
   "dependencies": {

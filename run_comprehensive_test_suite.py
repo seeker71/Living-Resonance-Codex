@@ -76,9 +76,9 @@ def run_smoke_tests():
     try:
         sys.path.insert(0, str(Path(__file__).parent / "src"))
         
-        # Temporarily rename platform directory to avoid conflicts
-        platform_dir = Path(__file__).parent / "src" / "platform"
-        platform_backup = Path(__file__).parent / "src" / "platform_backup"
+        # Temporarily rename web_platform directory to avoid conflicts
+        platform_dir = Path(__file__).parent / "src" / "web_platform"
+        platform_backup = Path(__file__).parent / "src" / "web_platform_backup"
         
         if platform_dir.exists():
             platform_dir.rename(platform_backup)
@@ -102,7 +102,7 @@ def run_smoke_tests():
     
     # Test 2: Web interface file check
     try:
-        web_interface_file = Path(__file__).parent / "src" / "platform" / "unified_web_interface.py"
+        web_interface_file = Path(__file__).parent / "src" / "web_platform" / "unified_web_interface.py"
         if web_interface_file.exists():
             # Try to parse the file to check for syntax errors
             with open(web_interface_file, 'r') as f:
@@ -130,7 +130,7 @@ def run_smoke_tests():
     
     # Test 4: Template directory
     try:
-        templates_dir = Path(__file__).parent / "src" / "platform" / "templates"
+        templates_dir = Path(__file__).parent / "src" / "web_platform" / "templates"
         templates_dir.mkdir(exist_ok=True)
         print("✅ Template Directory: PASSED")
         smoke_results.append(True)

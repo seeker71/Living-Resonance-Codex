@@ -14,11 +14,11 @@ def test_web_interface_file_structure():
     print("🧪 Testing Web Interface File Structure...")
     
     try:
-        web_dir = Path(__file__).parent / "src" / "platform"
+        web_dir = Path(__file__).parent / "src" / "web_platform"
         
-        # Check if platform directory exists
-        assert web_dir.exists(), "Platform directory should exist"
-        assert web_dir.is_dir(), "Platform directory should be a directory"
+        # Check if web_platform directory exists
+        assert web_dir.exists(), "Web platform directory should exist"
+        assert web_dir.is_dir(), "Web platform directory should be a directory"
         
         # Check for key web interface files
         key_files = [
@@ -45,7 +45,7 @@ def test_web_interface_syntax():
     print("🧪 Testing Web Interface Syntax...")
     
     try:
-        web_dir = Path(__file__).parent / "src" / "platform"
+        web_dir = Path(__file__).parent / "src" / "web_platform"
         
         # Test main web interface file
         main_file = web_dir / "unified_web_interface.py"
@@ -74,7 +74,7 @@ def test_web_interface_routes():
     print("🧪 Testing Web Interface Routes...")
     
     try:
-        main_file = Path(__file__).parent / "src" / "platform" / "unified_web_interface.py"
+        main_file = Path(__file__).parent / "src" / "web_platform" / "unified_web_interface.py"
         
         with open(main_file, 'r') as f:
             content = f.read()
@@ -109,7 +109,7 @@ def test_web_interface_classes():
     print("🧪 Testing Web Interface Classes...")
     
     try:
-        main_file = Path(__file__).parent / "src" / "platform" / "unified_web_interface.py"
+        main_file = Path(__file__).parent / "src" / "web_platform" / "unified_web_interface.py"
         
         with open(main_file, 'r') as f:
             content = f.read()
@@ -139,7 +139,7 @@ def test_web_interface_asset_management():
     print("🧪 Testing Web Interface Asset Management...")
     
     try:
-        main_file = Path(__file__).parent / "src" / "platform" / "unified_web_interface.py"
+        main_file = Path(__file__).parent / "src" / "web_platform" / "unified_web_interface.py"
         
         with open(main_file, 'r') as f:
             content = f.read()
@@ -169,7 +169,7 @@ def test_web_interface_templates():
     print("🧪 Testing Web Interface Template Creation...")
     
     try:
-        main_file = Path(__file__).parent / "src" / "platform" / "unified_web_interface.py"
+        main_file = Path(__file__).parent / "src" / "web_platform" / "unified_web_interface.py"
         
         with open(main_file, 'r') as f:
             content = f.read()
@@ -191,7 +191,7 @@ def test_web_interface_api_endpoints():
     print("🧪 Testing Web Interface API Endpoints...")
     
     try:
-        main_file = Path(__file__).parent / "src" / "platform" / "unified_web_interface.py"
+        main_file = Path(__file__).parent / "src" / "web_platform" / "unified_web_interface.py"
         
         with open(main_file, 'r') as f:
             content = f.read()

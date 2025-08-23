@@ -36,9 +36,9 @@ def copy_essential_files(source_dir: Path, target_dir: Path):
         "src/core/water_state_storage.py",
         "src/core/ice_bootstrap_engine.py", 
         "src/core/ice_core_creator.py",
-        "src/platform/user_management.py",
-        "src/platform/contribution_system.py",
-        "src/platform/web_interface.py",
+        "src/web_platform/user_management.py",
+        "src/web_platform/contribution_system.py",
+        "src/web_platform/web_interface.py",
         "src/ontology/enhanced_ontology_system.py",
         "tests/regression_test_suite.py",
         "tests/test_testing_system.py",
@@ -158,8 +158,8 @@ def test_ice_bootstrap(test_dir: Path):
             # Verify system reconstruction
             required_files = [
                 "src/core/water_state_storage.py",
-                "src/platform/user_management.py",
-                "src/platform/web_interface.py",
+                "src/web_platform/user_management.py",
+                "src/web_platform/web_interface.py",
                 "tests/regression_test_suite.py"
             ]
             

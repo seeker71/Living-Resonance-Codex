@@ -1684,7 +1684,7 @@ Type 'quit' or 'exit' to leave.
             "🧊 ICE Core": ["src/core/", "Bootstrap system, dependencies, storage"],
             "🌌 Ontology": ["src/ontology/", "Knowledge representation, consciousness"],
             "🧠 AI Agents": ["src/ai_agents/", "Autonomous learning, intelligence"],
-            "🌐 Platform": ["src/platform/", "Web interface, user management"],
+            "🌐 Platform": ["src/web_platform/", "Web interface, user management"],
             "🔬 Demos": ["src/demos/", "Demonstrations and examples"],
             "🐳 Docker": ["docker/", "Containerization and deployment"],
             "🌍 Regional Hubs": ["regional_hubs/", "Distributed network nodes"],

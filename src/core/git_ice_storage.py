@@ -83,7 +83,7 @@ This repository contains the immutable core (ICE) of the Living Codex system.
 
 ## Structure
 - `src/core/` - Core system components
-- `src/platform/` - Platform modules
+- `src/web_platform/` - Platform modules
 - `bootstrap/` - Bootstrap scripts and manifests
 - `public_nodes.json` - Network discovery information
 

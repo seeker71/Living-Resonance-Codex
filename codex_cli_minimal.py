@@ -176,7 +176,7 @@ Type 'quit' or 'exit' to leave.
             "🧊 ICE Core": ["src/core/", "Bootstrap system, dependencies, storage"],
             "🌌 Ontology": ["src/ontology/", "Knowledge representation, consciousness"],
             "🧠 AI Agents": ["src/ai_agents/", "Autonomous learning, intelligence"],
-            "🌐 Platform": ["src/platform/", "Web interface, user management"],
+            "🌐 Platform": ["src/web_platform/", "Web interface, user management"],
             "🔬 Demos": ["src/demos/", "Demonstrations and examples"],
             "🐳 Docker": ["docker/", "Containerization and deployment"],
             "🌍 Regional Hubs": ["regional_hubs/", "Distributed network nodes"],
@@ -241,7 +241,7 @@ Type 'quit' or 'exit' to leave.
             ("🧊 ICE Core", "src/core/"),
             ("🌌 Ontology", "src/ontology/"),
             ("🧠 AI Agents", "src/ai_agents/"),
-            ("🌐 Platform", "src/platform/"),
+            ("🌐 Platform", "src/web_platform/"),
             ("🔬 Demos", "src/demos/"),
             ("🐳 Docker", "docker/"),
         ]
@@ -348,7 +348,7 @@ Type 'quit' or 'exit' to leave.
     
     def _test_directory_structure(self):
         """Test if key directories exist"""
-        required_dirs = ["src", "src/core", "src/platform", "docs"]
+        required_dirs = ["src", "src/core", "src/web_platform", "docs"]
         return all((self.project_root / d).exists() for d in required_dirs)
     
     def _test_python_files(self):
@@ -402,7 +402,7 @@ Type 'quit' or 'exit' to leave.
             "src/core/": "🧊 ICE Core Components",
             "src/ontology/": "🌌 Ontology Components", 
             "src/ai_agents/": "🧠 AI Agent Components",
-            "src/platform/": "🌐 Platform Components",
+            "src/web_platform/": "🌐 Platform Components",
             "src/demos/": "🔬 Demo Components",
         }
         

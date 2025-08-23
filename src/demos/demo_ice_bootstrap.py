@@ -104,7 +104,7 @@ def demo_web_service_startup():
         # In a real deployment, this would start the Flask app
         print(f"\n🚀 To start the web service:")
         print(f"   cd {Path.cwd()}")
-        print(f"   python src/platform/web_interface.py")
+        print(f"   python src/web_platform/web_interface.py")
         print(f"   Then open: http://localhost:5001")
         
         return True

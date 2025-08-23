@@ -14,9 +14,9 @@ def main():
     # Get the directory where this script is located
     script_dir = Path(__file__).parent.absolute()
     
-    # Temporarily rename platform directory to avoid conflicts
-    platform_dir = script_dir / "src" / "platform"
-    platform_backup = script_dir / "src" / "platform_backup"
+    # Temporarily rename web_platform directory to avoid conflicts
+    platform_dir = script_dir / "src" / "web_platform"
+    platform_backup = script_dir / "src" / "web_platform_backup"
     
     if platform_dir.exists():
         print("🔄 Temporarily renaming platform directory to avoid conflicts...")

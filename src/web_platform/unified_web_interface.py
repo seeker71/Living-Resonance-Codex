@@ -19,14 +19,14 @@ import mimetypes
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from src.platform.user_management import (
+from src.web_platform.user_management import (
     UserManagementSystem, UserProfile, CoreIdentity, CommunicationPreferences,
     TechnicalProfile, Interests, LocationContext, SkillLevel, CommunicationStyle, LearningStyle
 )
-from src.platform.contribution_system import (
+from src.web_platform.contribution_system import (
     ContributionSystem, ContributionType, ContentCategory, ContributionStatus
 )
-from src.platform.ontology_navigator import ontology_navigator
+from src.web_platform.ontology_navigator import ontology_navigator
 
 app = Flask(__name__)
 app.secret_key = 'living-codex-secret-key-2024'  # In production, use environment variable
