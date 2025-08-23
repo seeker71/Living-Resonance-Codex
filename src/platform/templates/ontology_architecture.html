@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Living Codex - System Architecture</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .nav { background: #34495e; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .nav a { color: white; text-decoration: none; margin-right: 20px; padding: 8px 16px; border-radius: 4px; }
+        .nav a:hover { background: #2c3e50; }
+        .architecture-overview { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .architecture-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+        .layer-card { background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3498db; }
+        .layer-card h3 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .component-list { list-style: none; padding: 0; }
+        .component-list li { padding: 8px 0; border-bottom: 1px solid #e9ecef; }
+        .component-list li:last-child { border-bottom: none; }
+        .component-list a { color: #3498db; text-decoration: none; }
+        .component-list a:hover { text-decoration: underline; }
+        .system-flow { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .flow-diagram { background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center; }
+        .flow-step { display: inline-block; background: #3498db; color: white; padding: 15px 25px; border-radius: 25px; margin: 10px; position: relative; }
+        .flow-step:not(:last-child)::after { content: '→'; position: absolute; right: -25px; top: 50%; transform: translateY(-50%); color: #2c3e50; font-size: 20px; font-weight: bold; }
+        .flow-step.ice { background: #3498db; }
+        .flow-step.water { background: #27ae60; }
+        .flow-step.vapor { background: #f39c12; }
+        .flow-step.plasma { background: #e91e63; }
+        .relationships { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .relationship-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
+        .relationship-item { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
+        .relationship-item h4 { margin: 0 0 10px 0; color: #2c3e50; }
+        .relationship-item .type { color: #3498db; font-weight: bold; margin-bottom: 5px; }
+        .btn { background: #3498db; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn:hover { background: #2980b9; }
+        .btn-secondary { background: #95a5a6; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat { background: #3498db; color: white; padding: 20px; border-radius: 8px; text-align: center; }
+        .stat h3 { margin: 0; font-size: 24px; }
+        .stat p { margin: 5px 0 0 0; opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ Living Codex - System Architecture</h1>
+            <p>Explore the complete system architecture and component relationships</p>
+        </div>
+        
+        <div class="nav">
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('discover') }}">🔍 Discover</a>
+            <a href="{{ url_for('navigate') }}">🧭 Navigate</a>
+            <a href="{{ url_for('contribute') }}">✍️ Contribute</a>
+            <a href="{{ url_for('explore_ontology') }}">🌌 Ontology</a>
+            <a href="{{ url_for('profile') }}">👤 Profile</a>
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+        
+        <div class="architecture-overview">
+            <h2>🏗️ System Architecture Overview</h2>
+            <p>The Living Codex is built on a layered architecture that supports the transformation from ICE (immutable core) through WATER (operational system) to VAPOR (runtime sessions) and PLASMA (real-time collaboration).</p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <h3>{{ architecture_stats.total_layers }}</h3>
+                    <p>Architecture Layers</p>
+                </div>
+                <div class="stat">
+                    <h3>{{ architecture_stats.total_components }}</h3>
+                    <p>System Components</p>
+                </div>
+                <div class="stat">
+                    <h3>{{ architecture_stats.total_relationships }}</h3>
+                    <p>Component Relationships</p>
+                </div>
+                <div class="stat">
+                    <h3>{{ architecture_stats.active_components }}</h3>
+                    <p>Active Components</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="system-flow">
+            <h2>🔄 System State Flow</h2>
+            <p>The Living Codex operates through a continuous cycle of state transformations:</p>
+            
+            <div class="flow-diagram">
+                <div class="flow-step ice">🧊 ICE Core</div>
+                <div class="flow-step water">💧 Water Storage</div>
+                <div class="flow-step vapor">☁️ Vapor Sessions</div>
+                <div class="flow-step plasma">⚡ Plasma Streaming</div>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center;">
+                <p><strong>ICE → WATER → VAPOR → PLASMA → ICE</strong></p>
+                <p>This cycle represents the continuous evolution and learning of the system</p>
+            </div>
+        </div>
+        
+        <div class="architecture-grid">
+            <div class="layer-card">
+                <h3>🧊 ICE Core Layer</h3>
+                <p><strong>Purpose:</strong> Immutable, self-contained core system that provides the foundation for all other layers.</p>
+                <p><strong>Characteristics:</strong> Self-bootstrapping, dependency-managed, version-controlled, integrity-validated.</p>
+                
+                <h4>Core Components:</h4>
+                <ul class="component-list">
+                    <li><a href="{{ url_for('explore_component', component_id='ice_bootstrap') }}">ICE Bootstrap System</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='dependency_manager') }}">Dependency Manager</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='git_ice_storage') }}">Git ICE Storage</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='ice_core_creator') }}">ICE Core Creator</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='water_state_storage') }}">Water State Storage</a></li>
+                </ul>
+            </div>
+            
+            <div class="layer-card">
+                <h3>💧 Water Storage Layer</h3>
+                <p><strong>Purpose:</strong> Persistent data storage and state management for the operational system.</p>
+                <p><strong>Characteristics:</strong> SQLite-based, state-transition-aware, data-integrity-focused, query-optimized.</p>
+                
+                <h4>Storage Components:</h4>
+                <ul class="component-list">
+                    <li><a href="{{ url_for('explore_component', component_id='database_manager') }}">Database Manager</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='data_models') }}">Data Models</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='query_engine') }}">Query Engine</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='state_transitions') }}">State Transitions</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='data_validation') }}">Data Validation</a></li>
+                </ul>
+            </div>
+            
+            <div class="layer-card">
+                <h3>☁️ Vapor Sessions Layer</h3>
+                <p><strong>Purpose:</strong> Runtime session management and user interaction processing.</p>
+                <p><strong>Characteristics:</strong> Session-aware, user-contextual, real-time-responsive, stateful.</p>
+                
+                <h4>Session Components:</h4>
+                <ul class="component-list">
+                    <li><a href="{{ url_for('explore_component', component_id='session_manager') }}">Session Manager</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='user_context') }}">User Context</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='interaction_processor') }}">Interaction Processor</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='runtime_validation') }}">Runtime Validation</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='session_persistence') }}">Session Persistence</a></li>
+                </ul>
+            </div>
+            
+            <div class="layer-card">
+                <h3>⚡ Plasma Streaming Layer</h3>
+                <p><strong>Purpose:</strong> Real-time collaboration, streaming, and multi-user interaction.</p>
+                <p><strong>Characteristics:</strong> Real-time, collaborative, streaming-enabled, multi-user-aware.</p>
+                
+                <h4>Streaming Components:</h4>
+                <ul class="component-list">
+                    <li><a href="{{ url_for('explore_component', component_id='collaboration_engine') }}">Collaboration Engine</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='streaming_manager') }}">Streaming Manager</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='multi_user_sync') }}">Multi-User Sync</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='real_time_communication') }}">Real-Time Communication</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='collaborative_editing') }}">Collaborative Editing</a></li>
+                </ul>
+            </div>
+            
+            <div class="layer-card">
+                <h3>🌌 Ontology Layer</h3>
+                <p><strong>Purpose:</strong> Knowledge representation and semantic understanding of the system.</p>
+                <p><strong>Characteristics:</strong> Quantum-inspired, consciousness-aware, emergence-patterned, knowledge-entangled.</p>
+                
+                <h4>Ontology Components:</h4>
+                <ul class="component-list">
+                    <li><a href="{{ url_for('explore_component', component_id='enhanced_ontology') }}">Enhanced Ontology System</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='consciousness_engine') }}">Consciousness Engine</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='emergence_patterns') }}">Emergence Patterns</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='knowledge_entanglement') }}">Knowledge Entanglement</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='semantic_understanding') }}">Semantic Understanding</a></li>
+                </ul>
+            </div>
+            
+            <div class="layer-card">
+                <h3>🧠 AI Agent Layer</h3>
+                <p><strong>Purpose:</strong> Autonomous learning and intelligent decision-making capabilities.</p>
+                <p><strong>Characteristics:</strong> Autonomous, consciousness-aware, self-learning, task-generating.</p>
+                
+                <h4>AI Components:</h4>
+                <ul class="component-list">
+                    <li><a href="{{ url_for('explore_component', component_id='ai_agent_system') }}">AI Agent System</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='autonomous_learning') }}">Autonomous Learning</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='consciousness_ai') }}">Consciousness-Aware AI</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='task_generation') }}">Task Generation</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='meta_learning') }}">Meta-Learning</a></li>
+                </ul>
+            </div>
+            
+            <div class="layer-card">
+                <h3>🔬 Code Intelligence Layer</h3>
+                <p><strong>Purpose:</strong> Programming language understanding and code analysis capabilities.</p>
+                <p><strong>Characteristics:</strong> Tree-sitter-integrated, multi-language-aware, syntax-analyzing, navigation-enabled.</p>
+                
+                <h4>Code Intelligence Components:</h4>
+                <ul class="component-list">
+                    <li><a href="{{ url_for('explore_component', component_id='tree_sitter_integration') }}">Tree-sitter Integration</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='code_parser') }}">Code Parser</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='syntax_analyzer') }}">Syntax Analyzer</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='code_navigator') }}">Code Navigator</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='multi_language_support') }}">Multi-Language Support</a></li>
+                </ul>
+            </div>
+            
+            <div class="layer-card">
+                <h3>🌐 Platform Layer</h3>
+                <p><strong>Purpose:</strong> Web interface, user management, and platform services.</p>
+                <p><strong>Characteristics:</strong> Web-based, user-managed, contribution-enabled, discovery-powered.</p>
+                
+                <h4>Platform Components:</h4>
+                <ul class="component-list">
+                    <li><a href="{{ url_for('explore_component', component_id='web_interface') }}">Web Interface</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='user_management') }}">User Management</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='contribution_system') }}">Contribution System</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='discovery_engine') }}">Discovery Engine</a></li>
+                    <li><a href="{{ url_for('explore_component', component_id='navigation_system') }}">Navigation System</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="relationships">
+            <h2>🔗 Key System Relationships</h2>
+            <p>Understanding how different layers and components interact:</p>
+            
+            <div class="relationship-grid">
+                <div class="relationship-item">
+                    <div class="type">Data Flow</div>
+                    <h4>ICE → WATER</h4>
+                    <p>Core system components are stored and managed in the water storage layer</p>
+                </div>
+                
+                <div class="relationship-item">
+                    <div class="type">State Management</div>
+                    <h4>WATER → VAPOR</h4>
+                    <p>Persistent data is loaded into runtime sessions for user interaction</p>
+                </div>
+                
+                <div class="relationship-item">
+                    <div class="type">Real-time Sync</div>
+                    <h4>VAPOR → PLASMA</h4>
+                    <p>Session data is synchronized for real-time collaboration</p>
+                </div>
+                
+                <div class="relationship-item">
+                    <div class="type">Learning Integration</div>
+                    <h4>PLASMA → ICE</h4>
+                    <p>Collaborative insights are integrated back into the core system</p>
+                </div>
+                
+                <div class="relationship-item">
+                    <div class="type">Knowledge Representation</div>
+                    <h4>Ontology ↔ All Layers</h4>
+                    <p>Ontology system provides semantic understanding across all layers</p>
+                </div>
+                
+                <div class="relationship-item">
+                    <div class="type">Intelligence Integration</div>
+                    <h4>AI Agents ↔ All Layers</h4>
+                    <p>AI agents provide intelligent processing and learning across the system</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url_for('explore_ontology') }}" class="btn">🌌 Ontology Overview</a>
+            <a href="{{ url_for('navigate') }}" class="btn btn-secondary">🧭 System Navigation</a>
+            <a href="{{ url_for('contribute') }}" class="btn btn-secondary">✍️ Contribute</a>
+        </div>
+    </div>
+</body>
+</html>

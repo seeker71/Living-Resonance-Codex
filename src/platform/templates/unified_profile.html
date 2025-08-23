@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Living Codex - Profile</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .nav { background: #34495e; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .nav a { color: white; text-decoration: none; margin-right: 20px; padding: 8px 16px; border-radius: 4px; }
+        .nav a:hover { background: #2c3e50; }
+        .profile-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        .profile-sidebar { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .profile-main { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .avatar { width: 120px; height: 120px; border-radius: 50%; background: #3498db; color: white; display: flex; align-items: center; justify-content: center; font-size: 48px; margin: 0 auto 20px; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+        .stat { text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px; }
+        .stat h3 { margin: 0; color: #3498db; font-size: 24px; }
+        .stat p { margin: 5px 0 0 0; color: #7f8c8d; }
+        .section { margin-bottom: 30px; }
+        .section h3 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .tag { background: #ecf0f1; padding: 4px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px; margin-bottom: 5px; display: inline-block; }
+        .btn { background: #3498db; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn:hover { background: #2980b9; }
+        .btn-secondary { background: #95a5a6; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .contribution-item { padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px; }
+        .contribution-item h4 { margin: 0 0 10px 0; color: #2c3e50; }
+        .contribution-item .meta { color: #7f8c8d; font-size: 0.9em; margin-bottom: 10px; }
+        .contribution-item .tags { margin-bottom: 10px; }
+        .edit-form { background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👤 Living Codex - Profile</h1>
+            <p>Manage your profile and view your contributions</p>
+        </div>
+        
+        <div class="nav">
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('discover') }}">🔍 Discover</a>
+            <a href="{{ url_for('navigate') }}">🧭 Navigate</a>
+            <a href="{{ url_for('contribute') }}">✍️ Contribute</a>
+            <a href="{{ url_for('explore_ontology') }}">🌌 Ontology</a>
+            <a href="{{ url_for('profile') }}">👤 Profile</a>
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+        
+        <div class="profile-grid">
+            <div class="profile-sidebar">
+                <div class="avatar">
+                    {{ current_user.profile.core_identity.username[0].upper() }}
+                </div>
+                
+                <h2>{{ current_user.profile.core_identity.username }}</h2>
+                <p><strong>Member since:</strong> {{ current_user.profile.core_identity.registration_date }}</p>
+                <p><strong>Status:</strong> <span style="color: green;">Active</span></p>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <h3>{{ user_stats.contributions_count }}</h3>
+                        <p>Contributions</p>
+                    </div>
+                    <div class="stat">
+                        <h3>{{ user_stats.exploration_score }}</h3>
+                        <p>Exploration Score</p>
+                    </div>
+                    <div class="stat">
+                        <h3>{{ user_stats.connections_count }}</h3>
+                        <p>Connections</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button onclick="toggleEdit()" class="btn">✏️ Edit Profile</button>
+                </div>
+            </div>
+            
+            <div class="profile-main">
+                <div class="section">
+                    <h3>👤 Core Identity</h3>
+                    <p><strong>Username:</strong> {{ current_user.profile.core_identity.username }}</p>
+                    <p><strong>Email:</strong> {{ current_user.profile.core_identity.email }}</p>
+                    <p><strong>Full Name:</strong> {{ current_user.profile.core_identity.full_name }}</p>
+                    <p><strong>Bio:</strong> {{ current_user.profile.core_identity.bio or 'No bio provided' }}</p>
+                </div>
+                
+                <div class="section">
+                    <h3>🎯 Interests & Expertise</h3>
+                    <p><strong>Primary Domains:</strong></p>
+                    <div class="tags">
+                        {% for domain in current_user.profile.interests.primary_domains %}
+                        <span class="tag">{{ domain }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <p><strong>Secondary Domains:</strong></p>
+                    <div class="tags">
+                        {% for domain in current_user.profile.interests.secondary_domains %}
+                        <span class="tag">{{ domain }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <p><strong>Learning Goals:</strong> {{ current_user.profile.interests.learning_goals or 'No learning goals specified' }}</p>
+                </div>
+                
+                <div class="section">
+                    <h3>💻 Technical Profile</h3>
+                    <p><strong>Programming Languages:</strong></p>
+                    <div class="tags">
+                        {% for lang, level in current_user.profile.technical.skill_levels.items() %}
+                        <span class="tag">{{ lang }}: {{ level }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <p><strong>Tools & Technologies:</strong></p>
+                    <div class="tags">
+                        {% for tool in current_user.profile.technical.tools_technologies %}
+                        <span class="tag">{{ tool }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <p><strong>Experience Level:</strong> {{ current_user.profile.technical.experience_level }}</p>
+                </div>
+                
+                <div class="section">
+                    <h3>🌍 Location & Context</h3>
+                    <p><strong>Geographic Location:</strong> {{ current_user.profile.location.geographic_location }}</p>
+                    <p><strong>Time Zone:</strong> {{ current_user.profile.location.time_zone }}</p>
+                    <p><strong>Cultural Context:</strong> {{ current_user.profile.location.cultural_context or 'Not specified' }}</p>
+                </div>
+                
+                <div class="section">
+                    <h3>📚 Recent Contributions</h3>
+                    {% for contribution in recent_contributions %}
+                    <div class="contribution-item">
+                        <h4>{{ contribution.title }}</h4>
+                        <div class="meta">
+                            <strong>Type:</strong> {{ contribution.type }} | 
+                            <strong>Category:</strong> {{ contribution.category }} | 
+                            <strong>Date:</strong> {{ contribution.date }}
+                        </div>
+                        <p>{{ contribution.description[:150] }}{% if contribution.description|length > 150 %}...{% endif %}</p>
+                        <div class="tags">
+                            {% for tag in contribution.tags %}
+                            <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        <a href="#" class="btn">View Details</a>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if not recent_contributions %}
+                    <p>No contributions yet. <a href="{{ url_for('contribute') }}" class="btn">Start contributing!</a></p>
+                    {% endif %}
+                </div>
+                
+                <div class="section">
+                    <h3>🔗 Connections</h3>
+                    <p><strong>Connected Users:</strong></p>
+                    <div class="tags">
+                        {% for connection in user_connections %}
+                        <span class="tag">{{ connection.username }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if not user_connections %}
+                    <p>No connections yet. Start exploring to connect with other users!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Edit Profile Form (Hidden by default) -->
+        <div id="edit-form" class="edit-form" style="display: none; margin-top: 30px;">
+            <h2>✏️ Edit Profile</h2>
+            <form method="POST" action="{{ url_for('profile') }}">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" value="{{ current_user.profile.core_identity.full_name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" name="bio">{{ current_user.profile.core_identity.bio or '' }}</textarea>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="learning_goals">Learning Goals</label>
+                    <textarea id="learning_goals" name="learning_goals">{{ current_user.profile.interests.learning_goals or '' }}</textarea>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="submit" class="btn">💾 Save Changes</button>
+                    <button type="button" onclick="toggleEdit()" class="btn btn-secondary">🚪 Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function toggleEdit() {
+            const editForm = document.getElementById('edit-form');
+            if (editForm.style.display === 'none') {
+                editForm.style.display = 'block';
+            } else {
+                editForm.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

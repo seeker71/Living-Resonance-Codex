@@ -182,6 +182,10 @@ class MinimalICEBootstrap:
         
         print("✅ All required files present")
         
+        # Check and install external dependencies
+        if not self._validate_dependencies():
+            return False
+        
         # Test basic functionality
         if not self._test_core_functionality():
             return False
@@ -227,6 +231,29 @@ class MinimalICEBootstrap:
             
         except Exception as e:
             print(f"❌ Core functionality test failed: {e}")
+            return False
+    
+    def _validate_dependencies(self) -> bool:
+        """Validate and install external dependencies"""
+        print("📦 Validating external dependencies...")
+        
+        try:
+            # Import dependency manager
+            sys.path.insert(0, 'src/core')
+            from dependency_manager import DependencyManager
+            
+            # Create dependency manager and validate system readiness
+            dep_manager = DependencyManager()
+            
+            if dep_manager.validate_system_readiness():
+                print("✅ All external dependencies are ready")
+                return True
+            else:
+                print("❌ External dependencies not ready")
+                return False
+                
+        except Exception as e:
+            print(f"❌ Dependency validation failed: {e}")
             return False
     
     def start_web_service(self) -> bool:

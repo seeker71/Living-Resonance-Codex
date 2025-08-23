@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Navigation - Living Codex Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .nav-links { text-align: center; margin: 30px 0; }
+        .nav-links a { margin: 0 15px; color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .overview-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; text-align: center; backdrop-filter: blur(10px); }
+        .overview-card h3 { color: #4CAF50; margin-bottom: 15px; }
+        .overview-card .number { font-size: 2.5em; font-weight: bold; color: #4CAF50; }
+        .overview-card .label { font-size: 0.9em; opacity: 0.8; }
+        
+        .progress-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+        .progress-section h2 { color: #4CAF50; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        
+        .progress-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .progress-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; text-align: center; }
+        .progress-card .progress-number { font-size: 2em; font-weight: bold; color: #4CAF50; }
+        .progress-card .progress-label { font-size: 0.9em; opacity: 0.8; margin-top: 5px; }
+        
+        .exploration-paths { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); }
+        .exploration-paths h2 { color: #4CAF50; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        
+        .paths-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .path-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-left: 4px solid #4CAF50; }
+        .path-card h3 { color: #4CAF50; margin-bottom: 15px; }
+        .path-card .description { margin-bottom: 20px; opacity: 0.9; }
+        
+        .path-steps { list-style: none; padding: 0; margin-bottom: 20px; }
+        .path-steps li { background: rgba(255,255,255,0.1); padding: 12px; margin: 8px 0; border-radius: 8px; position: relative; }
+        .path-steps li::before { content: "✓"; color: #4CAF50; font-weight: bold; margin-right: 10px; }
+        
+        .path-meta { display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.9em; opacity: 0.8; }
+        .path-actions { margin-top: 20px; }
+        
+        .btn { padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; transition: all 0.3s; display: inline-block; margin: 5px; }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn-secondary { background: transparent; color: white; border: 2px solid white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .top-categories { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; }
+        .top-categories h2 { color: #4CAF50; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        .category-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .category-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; text-align: center; }
+        .category-item .category-name { font-weight: bold; color: #4CAF50; }
+        .category-item .category-count { font-size: 0.9em; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧭 System Navigation</h1>
+            <p>Explore the Living Codex ecosystem and track your progress</p>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/discover">🔍 Discover</a>
+            <a href="/contribute">💡 Contribute</a>
+            <a href="/profile">👤 Profile</a>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+        
+        <!-- System Overview -->
+        <div class="overview-grid">
+            <div class="overview-card">
+                <div class="number">{{ system_overview.total_users }}</div>
+                <div class="label">Active Users</div>
+            </div>
+            <div class="overview-card">
+                <div class="number">{{ system_overview.total_contributions }}</div>
+                <div class="label">Total Contributions</div>
+            </div>
+            <div class="overview-card">
+                <div class="number">{{ system_overview.active_communities }}</div>
+                <div class="label">Active Communities</div>
+            </div>
+            <div class="overview-card">
+                <div class="number">{{ system_overview.recent_activity }}</div>
+                <div class="label">Recent Activity (7 days)</div>
+            </div>
+        </div>
+        
+        <!-- Your Progress -->
+        <div class="progress-section">
+            <h2>📊 Your Progress</h2>
+            <div class="progress-grid">
+                <div class="progress-card">
+                    <div class="progress-number">{{ user_progress.contributions_made }}</div>
+                    <div class="progress-label">Contributions Made</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-number">{{ user_progress.connections_made }}</div>
+                    <div class="progress-label">Connections Made</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-number">{{ user_progress.exploration_score }}</div>
+                    <div class="progress-label">Exploration Score</div>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-number">{{ user_progress.collaboration_count }}</div>
+                    <div class="progress-label">Collaborations</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Exploration Paths -->
+        <div class="exploration-paths">
+            <h2>🚀 Your Exploration Paths</h2>
+            <div class="paths-grid">
+                {% for path in user_paths %}
+                <div class="path-card">
+                    <h3>{{ path.title }}</h3>
+                    <div class="description">{{ path.description }}</div>
+                    
+                    <ol class="path-steps">
+                        {% for step in path.steps %}
+                        <li>{{ step }}</li>
+                        {% endfor %}
+                    </ol>
+                    
+                    <div class="path-meta">
+                        <span><strong>Difficulty:</strong> {{ path.difficulty }}</span>
+                        <span><strong>Time:</strong> {{ path.estimated_time }}</span>
+                    </div>
+                    
+                    <div class="path-actions">
+                        <a href="#" class="btn btn-primary">Start Path</a>
+                        <a href="#" class="btn btn-secondary">View Details</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Top Categories -->
+        {% if system_overview.top_categories %}
+        <div class="top-categories">
+            <h2>🏆 Top Content Categories</h2>
+            <div class="category-list">
+                {% for category, count in system_overview.top_categories %}
+                <div class="category-item">
+                    <div class="category-name">{{ category }}</div>
+                    <div class="category-count">{{ count }} contributions</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Living Codex Platform - Unified</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .form-container { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 15px; backdrop-filter: blur(10px); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; background: rgba(255,255,255,0.9); color: #333; }
+        input:focus, select:focus, textarea:focus { outline: none; box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
+        
+        .section { margin-bottom: 30px; padding: 25px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid #4CAF50; }
+        .section h3 { color: #4CAF50; margin-bottom: 20px; font-size: 1.3em; }
+        
+        .btn { background: #4CAF50; color: white; padding: 15px 30px; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .btn:hover { background: #45a049; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .discovery-note { background: rgba(76, 175, 80, 0.2); padding: 15px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #4CAF50; }
+        .discovery-note h4 { color: #4CAF50; margin-bottom: 10px; }
+        
+        .nav-links { text-align: center; margin-top: 20px; }
+        .nav-links a { color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .modules-info { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .modules-info h4 { color: #4CAF50; margin-bottom: 15px; }
+        .module-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .module-item { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; text-align: center; }
+        .module-item .module-name { font-weight: bold; color: #4CAF50; }
+        .module-item .module-desc { font-size: 0.9em; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Join the Living Codex Platform</h1>
+            <p>Create your comprehensive profile and unlock all platform features</p>
+        </div>
+        
+        <form method="POST" class="form-container">
+            <div class="discovery-note">
+                <h4>🔧 Unified Platform Features</h4>
+                <p>Your profile powers all four platform modules: Discovery Engine, Navigation System, Contribution Manager, and User Manager. The more details you provide, the better your experience will be!</p>
+            </div>
+            
+            <div class="modules-info">
+                <h4>🚀 What You'll Unlock</h4>
+                <div class="module-list">
+                    <div class="module-item">
+                        <div class="module-name">🔍 Discovery</div>
+                        <div class="module-desc">Find similar users & content</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="module-name">🧭 Navigation</div>
+                        <div class="module-desc">Personalized exploration paths</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="module-name">💡 Contribution</div>
+                        <div class="module-desc">Enhanced content creation</div>
+                    </div>
+                    <div class="module-item">
+                        <div class="module-name">👥 Community</div>
+                        <div class="module-desc">Build meaningful connections</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>👤 Core Identity</h3>
+                <div class="form-group">
+                    <label for="name">Name *</label>
+                    <input type="text" id="name" name="name" required placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label for="pronouns">Pronouns</label>
+                    <input type="text" id="pronouns" name="pronouns" placeholder="e.g., they/them, she/her, he/him">
+                </div>
+                <div class="form-group">
+                    <label for="cultural_background">Cultural Background</label>
+                    <input type="text" id="cultural_background" name="cultural_background" placeholder="e.g., Indigenous, European, Asian, African, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="belief_system">Belief System / Values</label>
+                    <input type="text" id="belief_system" name="belief_system" placeholder="e.g., Humanism, Environmentalism, Community-focused, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="life_experience">Life Experience</label>
+                    <textarea id="life_experience" name="life_experience" rows="3" placeholder="Share experiences that shape your perspective"></textarea>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🗣️ Communication Preferences</h3>
+                <div class="form-group">
+                    <label for="primary_language">Primary Language *</label>
+                    <input type="text" id="primary_language" name="primary_language" required placeholder="e.g., English, Spanish, Mandarin, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="secondary_languages">Secondary Languages</label>
+                    <input type="text" id="secondary_languages" name="secondary_languages" placeholder="Comma-separated languages you know">
+                </div>
+                <div class="form-group">
+                    <label for="communication_style">Communication Style</label>
+                    <select id="communication_style" name="communication_style">
+                        <option value="casual">Casual & Friendly</option>
+                        <option value="formal">Formal & Professional</option>
+                        <option value="technical">Technical & Precise</option>
+                        <option value="creative">Creative & Expressive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="learning_style">Learning Style</label>
+                    <select id="learning_style" name="learning_style">
+                        <option value="reading">Reading & Documentation</option>
+                        <option value="visual">Visual & Diagrams</option>
+                        <option value="hands_on">Hands-on Practice</option>
+                        <option value="discussion">Discussion & Collaboration</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="accessibility_needs">Accessibility Needs</label>
+                    <input type="text" id="accessibility_needs" name="accessibility_needs" placeholder="e.g., Screen reader, high contrast, audio descriptions">
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>💻 Technical Profile</h3>
+                <div class="form-group">
+                    <label for="programming_skill">Programming Skill Level</label>
+                    <select id="programming_skill" name="programming_skill">
+                        <option value="beginner">Beginner (Learning to code)</option>
+                        <option value="intermediate">Intermediate (Can build small projects)</option>
+                        <option value="advanced">Advanced (Can build complex systems)</option>
+                        <option value="expert">Expert (Can architect large systems)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="data_skill">Data Analysis Skill Level</label>
+                    <select id="data_skill" name="data_skill">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="design_skill">Design Skill Level</label>
+                    <select id="design_skill" name="design_skill">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="research_skill">Research Skill Level</label>
+                    <select id="research_skill" name="research_skill">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="learning_path">Learning Goals</label>
+                    <input type="text" id="learning_path" name="learning_path" placeholder="Comma-separated skills you want to learn">
+                </div>
+                <div class="form-group">
+                    <label for="preferred_tools">Preferred Tools & Technologies</label>
+                    <input type="text" id="preferred_tools" name="preferred_tools" placeholder="e.g., Python, JavaScript, React, Docker, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="contribution_areas">Areas Where You Want to Contribute</label>
+                    <input type="text" id="contribution_areas" name="contribution_areas" placeholder="e.g., Documentation, Code, Design, Research, etc.">
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🎯 Interests & Passions</h3>
+                <div class="form-group">
+                    <label for="primary_domains">Primary Interest Domains *</label>
+                    <input type="text" id="primary_domains" name="primary_domains" required placeholder="e.g., AI/ML, Climate Change, Education, Health, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="specific_topics">Specific Topics You Care About</label>
+                    <input type="text" id="specific_topics" name="specific_topics" placeholder="e.g., Renewable Energy, Mental Health, Digital Privacy, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="passion_areas">What Are You Passionate About?</label>
+                    <textarea id="passion_areas" name="passion_areas" rows="3" placeholder="e.g., Making technology accessible to everyone, Building sustainable communities, etc."></textarea>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🌍 Location & Community</h3>
+                <div class="form-group">
+                    <label for="location">Where Are You Located? *</label>
+                    <input type="text" id="location" name="location" required placeholder="City, Country">
+                </div>
+                <div class="form-group">
+                    <label for="timezone">Timezone</label>
+                    <input type="text" id="timezone" name="timezone" placeholder="e.g., UTC-5, PST, GMT+1">
+                </div>
+                <div class="form-group">
+                    <label for="cultural_context">Cultural Context</label>
+                    <input type="text" id="cultural_context" name="cultural_context" placeholder="e.g., Urban, Rural, Indigenous community, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="local_challenges">Local Challenges in Your Area</label>
+                    <input type="text" id="local_challenges" name="local_challenges" placeholder="Comma-separated challenges">
+                </div>
+                <div class="form-group">
+                    <label for="local_resources">Local Resources Available</label>
+                    <input type="text" id="local_resources" name="local_resources" placeholder="Comma-separated resources">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">Create My Profile & Unlock All Features</button>
+        </form>
+        
+        <div class="nav-links">
+            <p>Already have a profile? <a href="/login">Sign In</a></p>
+        </div>
+    </div>
+</body>
+</html>

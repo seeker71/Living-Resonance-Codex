@@ -18,7 +18,7 @@ from dataclasses import asdict
 from datetime import datetime
 import importlib.util
 
-from ice_bootstrap_engine import SystemComponent, create_ice_core
+from .ice_bootstrap_engine import SystemComponent
 
 class ICECoreCreator:
     """
@@ -35,8 +35,10 @@ class ICECoreCreator:
         return [
             # Core system modules
             {"path": "src/core/water_state_storage.py", "type": "module", "name": "water_state_storage"},
-            {"path": "src/core/database_persistence_system.py", "type": "module", "name": "database_persistence_system"},
-            {"path": "src/core/explore_bootstrapped_system.py", "type": "module", "name": "explore_bootstrapped_system"},
+            {"path": "src/core/ice_bootstrap_engine.py", "type": "module", "name": "ice_bootstrap_engine"},
+            {"path": "src/core/ice_core_creator.py", "type": "module", "name": "ice_core_creator"},
+            {"path": "src/core/minimal_ice_bootstrap.py", "type": "module", "name": "minimal_ice_bootstrap"},
+            {"path": "src/core/dependency_manager.py", "type": "module", "name": "dependency_manager"},
             
             # Platform modules
             {"path": "src/platform/user_management.py", "type": "module", "name": "user_management"},
@@ -46,12 +48,9 @@ class ICECoreCreator:
             # Ontology modules
             {"path": "src/ontology/enhanced_ontology_system.py", "type": "module", "name": "enhanced_ontology_system"},
             
-            # AI Agent modules
-            {"path": "src/ai_agents/autonomous_learning_system.py", "type": "module", "name": "autonomous_learning_system"},
-            
-            # Integration modules
-            {"path": "src/integration/neo4j_integration_system.py", "type": "module", "name": "neo4j_integration_system"},
-            {"path": "src/integration/real_external_api_system.py", "type": "module", "name": "real_external_api_system"},
+            # Core tests
+            {"path": "tests/regression_test_suite.py", "type": "test", "name": "regression_test_suite"},
+            {"path": "tests/test_testing_system.py", "type": "test", "name": "test_testing_system"},
             
             # Core tests
             {"path": "tests/regression_test_suite.py", "type": "test", "name": "regression_test_suite"},
@@ -389,6 +388,7 @@ if __name__ == "__main__":
                     "test_web_interface"
                 ],
                 'startup_sequence': [
+                    "validate_system",
                     "initialize_database",
                     "load_ontology", 
                     "start_web_service"

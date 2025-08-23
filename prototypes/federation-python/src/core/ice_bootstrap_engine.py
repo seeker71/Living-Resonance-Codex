@@ -252,6 +252,8 @@ class ICEBootstrapEngine:
                 return self._initialize_database()
             elif step == "load_ontology":
                 return self._load_ontology()
+            elif step == "validate_system":
+                return self._validate_system()
             else:
                 print(f"⚠️ Unknown startup step: {step}")
                 return True
@@ -301,6 +303,41 @@ class ICEBootstrapEngine:
             
         except Exception as e:
             print(f"❌ Ontology loading failed: {e}")
+            return False
+    
+    def _validate_system(self) -> bool:
+        """Validate the reconstructed system"""
+        try:
+            print("🔍 Validating reconstructed system...")
+            
+            # Check if key files exist
+            required_files = [
+                "src/core/water_state_storage.py",
+                "src/platform/user_management.py",
+                "src/platform/web_interface.py",
+                "tests/regression_test_suite.py"
+            ]
+            
+            for file_path in required_files:
+                if not Path(file_path).exists():
+                    print(f"❌ Required file missing: {file_path}")
+                    return False
+            
+            print("✅ All required files present")
+            
+            # Test basic imports
+            try:
+                import src.core.water_state_storage
+                import src.platform.user_management
+                print("✅ Core modules import successfully")
+            except Exception as e:
+                print(f"❌ Module import failed: {e}")
+                return False
+            
+            return True
+            
+        except Exception as e:
+            print(f"❌ System validation failed: {e}")
             return False
     
     def bootstrap_full_system(self) -> bool:

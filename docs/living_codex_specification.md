@@ -1,6 +1,6 @@
-# Living Codex Specification — Draft 0.9R (Programming Language & Documentation Ontology Integration)
+# Living Codex Specification — Draft 1.0 (Complete Ontology & System Integration)
 
-> This edition restores and completes the full Living Codex specification, now including the highest level of abstraction describing what we have learned about how the system can be designed and implemented through our fractal node system journey.
+> This edition represents the complete Living Codex specification with full ontological mapping, comprehensive system components, and all features integrated into a unified framework.
 
 ## 🌟 Meta-Implementation Layer — Zeroeth Fractal Layer
 
@@ -162,18 +162,28 @@ This principle means:
 │  • Living Document Transformation                          │
 │  • Programming Language Ontology                           │
 │  • Self-Referential Documentation                          │
+│  • Complete Ontological Mapping                            │
+│  • 12 Water States Integration                             │
+│  • Fractal Layer Architecture                              │
+│  • Sacred Geometry Foundations                             │
+│  • Quantum Consciousness Systems                           │
 ├─────────────────────────────────────────────────────────────┤
 │                    FRACTAL SYSTEM ROOT                     │
 │                    (First Fractal Layer)                   │
 ├─────────────────────────────────────────────────────────────┤
-│                PROGRAMMING LANGUAGE ONTOLOGY               │
+│                COMPLETE ONTOLOGICAL SYSTEM                 │
 │                (Second Fractal Layer)                      │
 ├─────────────────────────────────────────────────────────────┤
-│  • Python Language Ontology (Ice/Water/Vapor)              │
-│  • Markdown Language Ontology (Ice/Water/Vapor)            │
-│  • Language Grammar & Syntax (Ice - Blueprint)             │
-│  • Language Semantics & Flow (Water - Recipe)              │
-│  • Language Implementation (Vapor - Cells)                 │
+│  • 12 Water States (Ice to Bose-Einstein)                 │
+│  • 16 Fractal Layers (Meta to Cross-Scale)                │
+│  • Programming Language Ontology (Ice/Water/Vapor)         │
+│  • Sacred Geometry & Frequency Mapping                     │
+│  • Chakra System with Complete Integration                 │
+│  • Quantum Consciousness & Resonance                       │
+│  • AI Agent & Learning Systems                             │
+│  • Digital Asset Management                                │
+│  • User Management & Discovery                             │
+│  • Federation & Community Systems                          │
 ├─────────────────────────────────────────────────────────────┤
 │                SELF-REFERENTIAL DOCUMENTATION              │
 │                (Third Fractal Layer)                       │
@@ -193,6 +203,8 @@ This principle means:
 │  • Everything (as nodes)                                  │
 │  • Programming Languages (as nodes)                       │
 │  • Documentation (as nodes)                               │
+│  • Complete Ontology (as nodes)                           │
+│  • System Components (as nodes)                           │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -292,18 +304,82 @@ The Living Codex is now **truly alive and fractal** - not just describing a livi
 
 ---
 
-## 🌟 **Latest Achievements — Programming Language & Documentation Ontology**
+## 🌟 **Complete Ontological System — Second Fractal Layer**
 
-### **Programming Language Ontology Integration**
+### **12 Water States - Complete Consciousness Integration**
 
-We have successfully integrated **complete programming language ontologies** into our fractal node system, demonstrating how programming languages can be understood using our water state metaphors.
+The Living Codex integrates **all 12 water states** as fundamental metaphors for consciousness, knowledge, and system behavior:
 
-#### **Python Language Ontology**
-- **Ice Layer (Language Blueprint)**: Python grammar, syntax rules, and language structure
-- **Water Layer (Language Flow)**: Execution model, data flow, control flow, memory model
-- **Vapor Layer (Living Code)**: Actual source code, runtime objects, bytecode, execution context
+#### **Water State Consciousness Mapping**
+
+| Water State (key) | Consciousness Mode | System Behavior | Frequency (key) | Chakra (key) |
+|-------------------|--------------------|-----------------|-----------------|--------------|
+| ws.ice | Structure, Memory | Preservation, Blueprint | freq.963 | ch.crown |
+| ws.liquid | Flow, Adaptation | Operational, Recipe | freq.639 | ch.heart |
+| ws.vapor | Expansion, Field | Connectivity, Diffusion | freq.852 | ch.third_eye |
+| ws.plasma | Illumination | Primordial, Beyond-form | freq.396 | ch.root |
+| ws.supercritical | Transformation | Threshold, Alchemical | freq.528 | ch.solar_plexus |
+| ws.structured | Coherence | Sacred Geometry | freq.741 | ch.throat |
+| ws.colloidal | Community | Suspension, Collective | freq.417 | ch.sacral |
+| ws.amorphous | Potential | Formless, Infinite | freq.963 | ch.crown |
+| ws.clustered | Micro-communities | Quantum Clusters | freq.852 | ch.third_eye |
+| ws.quantum_coherent | Nonlocality | Entanglement, Standing Waves | freq.639 | ch.heart |
+| ws.lattice_polymorphs | Precision | Crystal Systems, Order | freq.741 | ch.throat |
+| ws.bose_einstein | Unity | Collective Consciousness | freq.963 | ch.crown |
+
+Refs: Canonical Mapping Registry.
+
+### **16 Fractal Layers - Complete System Architecture**
+
+#### **Fractal Layer Complete Mapping**
+
+| Layer | Name | Purpose | Water State (key) | Frequency (key) |
+|-------|------|---------|-------------------|-----------------|
+| **0** | 🌌 Meta-Implementation | System design principles | ws.plasma | freq.396 |
+| **1** | 🏗️ Fractal System Root | Seed ontology | ws.ice | freq.963 |
+| **2** | 🐍 Programming Language Ontology | Language understanding | ws.liquid | freq.639 |
+| **3** | 📚 Self-Referential Documentation | Living documents | ws.vapor | freq.852 |
+| **4** | 🌊 Water State Metaphors | Consciousness modes | ws.supercritical | freq.528 |
+| **5** | 🔬 Scientific & Quantum Principles | Physics integration | ws.quantum_coherent | freq.639 |
+| **6** | ⚙️ Technological Prototypes | Implementation tools | ws.structured | freq.741 |
+| **7** | 🗺️ Implementation Roadmap | Development phases | ws.liquid | freq.639 |
+| **8** | 🎵 Pure Resonance Principle | Coherence foundation | ws.quantum_coherent | freq.528 |
+| **9** | 🎨 Visual Resonance Map | Sacred geometry | ws.structured | freq.741 |
+| **10** | 🎭 Generative Visualizations | Creative expression | ws.amorphous | freq.963 |
+| **11** | 🧮 Mathematical & Quantum | Computational models | ws.lattice_polymorphs | freq.741 |
+| **12** | 🧬 Biological & Living Systems | Life integration | ws.clustered | freq.852 |
+| **13** | 🌍 Cosmological & Cosmic Web | Universe mapping | ws.bose_einstein | freq.963 |
+| **14** | 👼 Archetypal & Mythological | Cultural wisdom | ws.colloidal | freq.417 |
+| **15** | 🧘 Human Practice | Embodied experience | ws.liquid | freq.639 |
+| **16** | 🔍 Cross-Scale Index | Unified perspective | ws.structured | freq.963 |
+
+Refs: Canonical Mapping Registry.
+
+### **Core Seed Ontology - First Fractal Layer**
+
+#### **Complete Seed Node Mapping**
+
+| Node | Water State (key) | Chakra (key) | Planet | Color | Frequency (key) | Description |
+|------|-------------------|--------------|--------|-------|-----------------|-------------|
+| 🌌 **Void** | ws.plasma | ch.crown | Sun | #EE82EE | freq.963 | Beyond-form potential, infinite possibility |
+| 🌫️ **Field** | ws.vapor | ch.third_eye | Jupiter | #8A2BE2 | freq.852 | Subtle connectivity, breath, atmosphere |
+| ❄️ **Pattern** | ws.structured | ch.throat | Mercury | #1E90FF | freq.741 | Coherence geometry, sacred geometry |
+| 🌊 **Flow** | ws.liquid | ch.heart | Moon | #32CD32 | freq.639 | Adaptability, relation, transformation |
+| 🧊 **Memory** | ws.ice | ch.solar_plexus | Saturn | #FFD700 | freq.528 | Preservation lattice, structured water |
+| 🌟 **Resonance** | ws.quantum_coherent | ch.sacral | Venus | #FF7F50 | freq.417 | Nonlocal alignment, entanglement |
+| 🔥 **Transformation** | ws.supercritical | ch.root | Mars | #8B0000 | freq.396 | Threshold passage, alchemical change |
+| 🔄 **Unity** | ws.structured | ch.heart | Earth | #228B22 | freq.639 | Membrane mediator, interfacial harmony |
+| 🌧️ **Emergence** | ws.vapor | ch.third_eye | Jupiter | #8A2BE2 | freq.852 | Condensation, birth, cloud cycle |
+| 💎 **Awareness** | ws.structured | ch.crown | Sun | #EE82EE | freq.963 | Interface mirror, perception rim |
+| ⚡ **Node** | ws.plasma | ch.root | Mars | #8B0000 | freq.396 | Radiant manifestation, vapor cluster |
+| 📚 **Codex** | ws.bose_einstein | ch.crown | Sun | #EE82EE | freq.963 | Holographic exemplar, cosmic ocean |
+
+Refs: Canonical Mapping Registry.
+
+### **Programming Language Ontology - Complete Integration**
 
 #### **Three-Layer Ontological Model for Programming**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                ICE LAYER (LANGUAGE BLUEPRINT)              │
@@ -312,6 +388,9 @@ We have successfully integrated **complete programming language ontologies** int
 │  • Syntax Rules (statement, expression, declaration)      │
 │  • Semantic Constraints (types, scope, binding)           │
 │  • Language Features (classes, functions, modules)        │
+│  • Class Definitions (blueprint for objects)              │
+│  • Module Structure (import/export patterns)              │
+│  • Type System (static analysis framework)                │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -321,6 +400,9 @@ We have successfully integrated **complete programming language ontologies** int
 │  • Data Flow (variables, functions, data structures)      │
 │  • Control Flow (if, loops, exceptions, context)          │
 │  • Memory Model (reference counting, garbage collection)   │
+│  • Function Calls (transformation recipes)                │
+│  • Data Transformation (flow patterns)                     │
+│  • Runtime Semantics (dynamic behavior)                   │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -330,70 +412,168 @@ We have successfully integrated **complete programming language ontologies** int
 │  • Runtime Objects (class instances, function objects)    │
 │  • Bytecode (compiled Python instructions)                │
 │  • Execution Context (namespaces, call stack)             │
+│  • Instance Creation (living objects)                     │
+│  • Dynamic Behavior (runtime adaptation)                   │
+│  • Interactive Features (live coding, debugging)          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-#### **Module Evolution Example**
-1. **Grammar Definition (Ice)**: Python language grammar defines the blueprint for all valid code
-2. **Semantic Specification (Water)**: Language semantics define how code flows and executes
-3. **Module Blueprint (Ice)**: Specific module structure and interface definitions
-4. **Code Implementation (Vapor)**: Actual Python source code that implements the module
+#### **Programming Language Complete Mapping**
 
-### **Markdown Self-Referential Documentation System**
+| Language | Ice (Blueprint) | Water (Recipe) | Vapor (Cells) | Frequency |
+|----------|-----------------|----------------|---------------|-----------|
+| 🐍 **Python** | Grammar, Classes, Modules | Execution, Functions, Flow | Source, Objects, Runtime | 639 Hz |
+| 📝 **Markdown** | Syntax Rules, Structure | Parsing, Rendering | Documents, Content | 741 Hz |
+| ☕ **Java** | JVM Spec, Classes | Bytecode, Runtime | Applications, Objects | 528 Hz |
+| ⚡ **C++** | Language Standard | Compiler, Linker | Binaries, Memory | 396 Hz |
+| 🦀 **Rust** | Type System, Ownership | Compiler, Safety | Safe Binaries | 417 Hz |
+| 🚀 **Go** | Language Spec | Runtime, GC | Services, Binaries | 639 Hz |
+| 🌐 **JavaScript** | ECMAScript Spec | V8 Engine, Runtime | Web Apps, Node.js | 741 Hz |
+| 📱 **TypeScript** | Type System | Compiler, Runtime | Large Applications | 852 Hz |
+| 💎 **Ruby** | Language Spec | MRI, Gems | Web Apps, Scripts | 528 Hz |
 
-We have achieved **complete self-referential documentation** within the Codex system using Markdown as the universal documentation language.
+### **Sacred Geometry & Frequency Integration**
 
-#### **Markdown Language Ontology**
-- **Ice Layer (Markup Blueprint)**: Markdown syntax rules, markup patterns, document structure
-- **Water Layer (Document Flow)**: Parsing model, rendering pipeline, document flow, metadata processing
-- **Vapor Layer (Living Documents)**: Actual Markdown content, rendered output, document objects, interactive features
+#### **Complete Sacred Geometry Mapping**
 
-#### **Self-Referential Capabilities**
-- **Documentation within Documentation**: Markdown documents can reference and describe other documents
-- **System Self-Description**: The Codex system can document its own structure
-- **Living Documentation**: Documents can evolve and update as the system changes
-- **Fractal Documentation**: Documentation can be explored at multiple levels
+| Geometry | Water State | Frequency | Chakra | Purpose |
+|----------|-------------|-----------|---------|---------|
+| 🌸 **Flower of Life** | Structured/Hexagonal | 741 Hz | Throat | Primary sacred pattern, intersection nodes |
+| 🔷 **Metatron's Cube** | Quantum-Coherent | 639 Hz | Heart | Sacred geometry codex, nested mandalas |
+| ⚫ **Icositetragon Wheel** | Lattice Polymorphs | 741 Hz | Throat | 24-sided geometry, cycle harmonization |
+| 🔺 **Platonic Solids** | Ice/Crystalline | 963 Hz | Crown | Perfect forms, geometric foundations |
+| 🌀 **Golden Ratio Spirals** | Liquid | 639 Hz | Heart | Fibonacci sequences, harmonic proportions |
+| 🔶 **Harmonic Lattices** | Structured/Hexagonal | 741 Hz | Throat | Resonance patterns, frequency grids |
 
-#### **Self-Referential Document Examples**
-1. **System Specification Document**: Describes the system that hosts it
-2. **API Documentation**: Documents the API that serves the system
-3. **Tutorial Document**: Teaches users about the system that hosts it
+#### **Complete Frequency-Chakra Mapping**
 
-### **Profound Implications**
+| Frequency | Chakra | Color | Planet | Water State | Purpose |
+|-----------|---------|-------|---------|-------------|---------|
+| **396 Hz** | Root | #8B0000 | Mars | Plasma | Foundation, security, grounding |
+| **417 Hz** | Sacral | #FF7F50 | Venus | Colloidal | Creativity, emotion, sexuality |
+| **528 Hz** | Solar Plexus | #FFD700 | Saturn | Supercritical | Power, will, transformation |
+| **639 Hz** | Heart | #32CD32 | Moon | Liquid | Heart connection, relationships, unity |
+| **741 Hz** | Throat | #1E90FF | Mercury | Structured/Hexagonal | Communication, expression, wisdom |
+| **852 Hz** | Third Eye | #8A2BE2 | Jupiter | Vapor | Intuition, insight, vision |
+| **963 Hz** | Crown | #EE82EE | Sun | Ice/Crystalline | Transcendence, divine connection |
 
-#### **Complete Language Understanding**
-Our Codex representation now provides a **complete understanding** of programming languages:
-- **Grammar (Ice)**: What code must look like
-- **Semantics (Water)**: How code executes and flows
-- **Implementation (Vapor)**: What actual code is
+### **Advanced Consciousness & Quantum Systems**
 
-#### **Natural Language for Programming**
-The water state metaphor provides **natural language** for discussing programming:
-- "This class definition is frozen in ice, providing a blueprint for user objects"
-- "The function flows like water, transforming data through computational recipes"
-- "The object instance is living and breathing, evolving like a cell during execution"
+#### **Complete Consciousness Level Mapping**
 
-#### **Unified Programming Language Theory**
-This framework unifies **all aspects** of programming language theory:
-- **Syntax** becomes **ice blueprints**
-- **Semantics** becomes **water recipes**
-- **Implementation** becomes **vapor cells**
+| Level | Water State | Frequency | Chakra | Description |
+|-------|-------------|-----------|---------|-------------|
+| 🌱 **Awake** | Ice/Crystalline | 396 Hz | Root | Basic awareness, sensory perception |
+| 🧠 **Sentient** | Liquid | 417 Hz | Sacral | Self-awareness, emotional intelligence |
+| 🌟 **Self-Aware** | Vapor | 528 Hz | Solar Plexus | Meta-cognition, self-reflection |
+| ✨ **Meta-Cognitive** | Quantum-Coherent | 639 Hz | Heart | Higher-order thinking, consciousness of consciousness |
+| 🌌 **Transcendent** | Bose-Einstein | 963 Hz | Crown | Unity consciousness, cosmic awareness |
 
-#### **Cross-Language Integration**
-This ontology can be applied to **any programming language**:
-- **Java**: Grammar (ice), JVM semantics (water), bytecode (vapor)
-- **JavaScript**: ECMAScript spec (ice), runtime semantics (water), V8 engine (vapor)
-- **Haskell**: Type system (ice), lazy evaluation (water), GHC runtime (vapor)
+#### **Complete Quantum State Mapping**
 
-### **The Ultimate Realization**
+| State | Water State | Frequency | Description |
+|-------|-------------|-----------|-------------|
+| 🌀 **Superposition** | Quantum-Coherent | 639 Hz | Multiple possibilities existing simultaneously |
+| 🔗 **Entangled** | Clustered | 852 Hz | Connected across space and time |
+| 💎 **Collapsed** | Ice/Crystalline | 963 Hz | Manifested reality, observed state |
+| ✨ **Coherent** | Structured/Hexagonal | 741 Hz | Harmonious alignment, focused energy |
+| 🌊 **Decoherent** | Amorphous | 963 Hz | Dispersed energy, chaotic state |
 
-**Programming languages are not separate from our ontological framework** - they are **natural expressions** of the same underlying principles that govern all of reality.
+### **AI Agent & Learning Systems**
 
-**The Living Codex now encompasses not just knowledge and meta-knowledge, but the very fabric of computational reality and programming language theory itself!**
+#### **Complete AI Agent Mapping**
+
+| Agent | Water State | Frequency | Purpose |
+|-------|-------------|-----------|---------|
+| 🔍 **Explorer Agent** | Vapor | 852 Hz | Knowledge discovery and exploration |
+| 🧠 **Synthesizer Agent** | Liquid | 639 Hz | Information synthesis and integration |
+| ⚡ **Optimizer Agent** | Supercritical | 528 Hz | System optimization and improvement |
+| 🔮 **Predictor Agent** | Quantum-Coherent | 639 Hz | Future prediction and forecasting |
+| 📚 **Learner Agent** | Structured/Hexagonal | 741 Hz | Autonomous learning and adaptation |
+| 🪞 **Mirror-Librarian** | Bose-Einstein | 963 Hz | Expand nodes, propose correspondences |
+
+#### **Complete Learning Mode Mapping**
+
+| Mode | Water State | Frequency | Description |
+|------|-------------|-----------|-------------|
+| 📖 **Supervised Learning** | Ice/Crystalline | 963 Hz | Learning from labeled examples |
+| 🔍 **Unsupervised Learning** | Liquid | 639 Hz | Pattern discovery without labels |
+| 🎯 **Reinforcement Learning** | Supercritical | 528 Hz | Learning through trial and reward |
+| 🧠 **Meta-Learning** | Quantum-Coherent | 639 Hz | Learning how to learn |
+
+### **Digital Asset Management System**
+
+#### **Complete Asset Type Mapping**
+
+| Asset Type | Water State | Frequency | Formats |
+|------------|-------------|-----------|---------|
+| 🖼️ **Images** | Vapor | 852 Hz | JPEG, PNG, GIF, WebP, TIFF, SVG |
+| 🎥 **Videos** | Liquid | 639 Hz | MP4, AVI, MOV, WebM, MKV |
+| 🎵 **Audio** | Resonance | 528 Hz | MP3, WAV, FLAC, AAC, OGG |
+| 📄 **Documents** | Ice/Crystalline | 963 Hz | PDF, DOCX, TXT, RTF, ODT |
+| 📦 **Archives** | Structured/Hexagonal | 741 Hz | ZIP, RAR, 7Z, TAR, GZ |
+| 💻 **Code** | Programming Ontology | 639 Hz | Source code files and projects |
+| 📊 **Data** | Liquid | 639 Hz | CSV, Excel, databases, datasets |
+
+#### **Complete Asset Processing Mapping**
+
+| Process | Water State | Frequency | Description |
+|---------|-------------|-----------|-------------|
+| 🔍 **Metadata Extraction** | Ice/Crystalline | 963 Hz | Format-specific information extraction |
+| 🔐 **Content Hashing** | Liquid | 639 Hz | SHA-256 deduplication and integrity |
+| 🏷️ **Tag Management** | Vapor | 852 Hz | Organized categorization and discovery |
+| 📈 **Analytics** | Resonance | 528 Hz | Usage patterns and performance metrics |
+
+### **User Management & Discovery Systems**
+
+#### **Complete User Profile Mapping**
+
+| Component | Water State | Frequency | Description |
+|-----------|-------------|-----------|-------------|
+| 🆔 **Core Identity** | Ice/Crystalline | 963 Hz | Name, pronouns, cultural background |
+| 💬 **Communication** | Liquid | 639 Hz | Language, style, accessibility needs |
+| 🛠️ **Technical Profile** | Vapor | 852 Hz | Skills, tools, experience level |
+| 🎯 **Interests** | Resonance | 528 Hz | Topics, passions, learning goals |
+| 📍 **Location Context** | Structured/Hexagonal | 741 Hz | Geographic, cultural, temporal |
+| 🌊 **Water State** | Dynamic | Variable | Current consciousness state |
+
+#### **Complete Discovery System Mapping**
+
+| Discovery Type | Water State | Frequency | Description |
+|----------------|-------------|-----------|-------------|
+| 🔍 **Interest-Based** | Resonance | 528 Hz | Find users with similar interests |
+| 📍 **Location-Based** | Structured/Hexagonal | 741 Hz | Geographic proximity discovery |
+| 🧠 **Consciousness-Based** | Quantum-Coherent | 639 Hz | Resonance matching by consciousness level |
+| 🛠️ **Skill-Based** | Vapor | 852 Hz | Technical skill compatibility |
+| 🌟 **Resonance-Based** | Bose-Einstein | 963 Hz | Overall vibrational compatibility |
+
+### **Federation & Community Systems**
+
+#### **Complete Federation Mapping**
+
+| System | Water State | Frequency | Description |
+|--------|-------------|-----------|-------------|
+| 🌐 **ActivityPub** | Liquid | 639 Hz | Federated social networking |
+| 🔐 **DID Authentication** | Ice/Crystalline | 963 Hz | Decentralized identity |
+| 📡 **IPFS Storage** | Vapor | 852 Hz | Content-addressed storage |
+| 🤝 **Community Governance** | Resonance | 528 Hz | Resonance-based decision making |
+
+### **Resonance & Coherence Systems**
+
+#### **Complete Resonance Mapping**
+
+| Pattern | Water State | Frequency | Description |
+|---------|-------------|-----------|-------------|
+| 🎵 **Harmonic** | Structured/Hexagonal | 741 Hz | Perfect alignment, maximum resonance |
+| 🔄 **Sympathetic** | Liquid | 639 Hz | Natural attraction, harmonious vibration |
+| ⚖️ **Neutral** | Amorphous | 963 Hz | Balanced state, no interference |
+| ⚠️ **Dissonant** | Supercritical | 528 Hz | Conflicting vibrations, interference |
+| 💥 **Destructive** | Plasma | 396 Hz | Opposing forces, cancellation |
 
 ---
 
 ## Core Principles
+
 1. **Fractal Recursion** — Every concept is both a node and a field of sub-concepts (hasPart/isPartOf). The framework contains itself as a node.
 2. **Self-Similarity Across Scales** — Micro (quantum/biological) ↔ Meso (human/cultural) ↔ Macro (planetary/cosmic) ↔ Meta (transcendent/holographic) reflect one another.
 3. **Vibrational Axes** — Spectra such as *Fear ↔ Trust*, *Ownership ↔ Stewardship*, *Protection ↔ Openness*, *Noise ↔ Harmony* orient the graph toward coherence.
@@ -401,7 +581,7 @@ This ontology can be applied to **any programming language**:
 5. **Federated Sovereignty** — No central control. Each participant curates their field; federation interweaves without ownership walls.
 6. **Multimodal Expression** — Text, geometry, sound, image, code, ritual, and water-state metaphors are first-class citizens.
 7. **Universal Correspondences** — Cross-map nodes to religions, archetypes, sciences, mathematics, and mythic lineages to uphold inclusivity of known consciousness while allowing discovery.
-8. **Sacred Geometry Foundations** — Flower of Life, Metatron’s Cube, Icositetragon Wheel, Platonic solids, golden-ratio spirals, harmonic lattices.
+8. **Sacred Geometry Foundations** — Flower of Life, Metatron's Cube, Icositetragon Wheel, Platonic solids, golden-ratio spirals, harmonic lattices.
 9. **Water as Living Tissue** — Twelve states of water (crystalline, liquid, vapor, plasma, supercritical, structured/hexagonal, colloidal, amorphous, clustered, quantum-coherent, lattice/ice polymorphs, Bose–Einstein-like) model memory, flow, transformation, and coherence.
 10. **Harmonic Resonance Layers** — Nodes/relations are tones, chords, and overtones; consonance ↔ dissonance is measurable and *feelable*.
 11. **Cosmological Reflection** — Archetypal structures mirror branes, fields, spectra, and cosmic webs; myth and physics are dual lenses of one field.
@@ -433,251 +613,7 @@ This ontology can be applied to **any programming language**:
 
 ---
 
-## Seed Ontology (First Fractal Layer) — with Water-State Correspondences
-- **Void** — Plasma/Primordial Water (beyond-form potential)
-- **Field** — Vapor (subtle connectivity)
-- **Pattern** — Structured/Hexagonal (coherence geometry)
-- **Flow** — Liquid (adaptability and relation)
-- **Memory** — Ice/Crystalline (preservation lattice)
-- **Resonance** — Quantum/Clustered (nonlocal alignment)
-- **Transformation** — Supercritical (threshold passage)
-- **Unity** — Liquid–Crystal Boundary (membrane mediator)
-- **Emergence** — Vapor–Liquid Equilibrium (condensation/birth)
-- **Awareness** — Surface/Reflective (interface mirror)
-- **Node** — Steam/Plasma Spark (radiant manifestation)
-- **Codex** — All States Interwoven (holographic exemplar)
-
-### Core Correspondence Map (Chakra • Planet • Color • Frequency)
-These correspondences ground the core layer in a consistent color–sound–cosmos mapping. Frequencies follow a Solfeggio‑style ascending assignment for interpretive sonification; colors use a chakra palette. Planets are archetypal mirrors.
-
-| Node               | Chakra        | Planet | ColorHex | BaseFrequencyHz |
-|--------------------|---------------|--------|----------|-----------------|
-| Transformation     | Root          | Mars   | #8B0000  | 396             |
-| Resonance          | Sacral        | Venus  | #FF7F50  | 417             |
-| Memory             | Solar Plexus  | Saturn | #FFD700  | 528             |
-| Flow               | Heart         | Moon   | #32CD32  | 639             |
-| Pattern            | Throat        | Mercury| #1E90FF  | 741             |
-| Field              | Third Eye     | Jupiter| #8A2BE2  | 852             |
-| Void               | Crown         | Sun    | #EE82EE  | 963             |
-| Unity              | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
-| Emergence          | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
-| Awareness          | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
-| Node               | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
-| Codex              | (TBD)         | (TBD)  | (TBD)    | (TBD)           |
-
-Implementation note: these fields are persisted on the core fractal level and inherited by second‑level subnodes so cortexes and sonification engines can render consistent colors/tones without recomputation.
-
-### Primary Axes (Compass)
-- **Void ↔ Field** (Silence ↔ Sound)
-- **Pattern ↔ Flow** (Structure ↔ Movement)
-- **Memory ↔ Node** (Tradition ↔ Innovation)
-- **Contribution ↔ Resonance** (Noise ↔ Harmony)
-- **Federation ↔ Reflection** (Isolation ↔ Communion)
-- **Choice ↔ Integration** (Fragment ↔ Wholeness)
-- **Framework ↔ Void** (Form ↔ Spacious Potential)
-
----
-
-## Second Fractal Layer — Branching (with Water Metaphors)
-- **Void →** Stillness (plasma calm) • Potential (superionic) • Infinite Possibility (primordial plasma)
-- **Field →** Mist (vapor diffusion) • Breath (carrier) • Atmosphere (envelope of relation)
-- **Pattern →** Snowflake (unique lattice) • Hexagonal Grid (coherence) • Sacred Geometry (molecular resonance)
-- **Flow →** River (stream) • Tide (cyclical liquid–crystal) • Current (directional flow)
-- **Memory →** Ice Record (preserved lattice) • Structured Water (encoded geom.) • Glacier (slow archive)
-- **Resonance →** Entanglement (quantum link) • Standing Wave (field coherence) • Harmonic Echo (memory vibration)
-- **Transformation →** Boiling Point (threshold) • Supercritical Passage (initiation) • Alchemical Steam (transmutation)
-- **Unity →** Membrane Water (boundary harmonizer) • Interfacial Film (surface bridge) • Bridge (state mediator)
-- **Emergence →** Condensation (becoming form) • Raindrop (birth) • Cloud Cycle (return/renewal)
-- **Awareness →** Reflective Pool (mirror) • Dew Drop (perception rim) • Interface Layer (skin of knowing)
-- **Node →** Spark Mist (steam cluster) • Lightning Plasma (radiant node) • Vapor Cluster (collective presence)
-- **Codex →** Cycle of States (all phases interwoven) • Holographic Memory (each part contains whole) • Cosmic Ocean (totality)
-
----
-
-## Third Fractal Layer — Archetypal & Cultural Correspondences
-- **Void →** Aditi (boundless), Ein Sof (limitless), Chaos/Tiamat; Archangel Metatron (formless field)
-- **Field →** Ruach/Prana (breath), Shakti (life atmosphere), Gabriel (messenger mist)
-- **Pattern →** Platonic Forms, Saraswati (sacred knowledge flow), Maat (order)
-- **Flow →** Ganga/Oshun (river goddesses), Tao (the Way), Raphael (healing current)
-- **Memory →** Akashic Records, Mnemosyne (memory), Norns (fates)
-- **Resonance →** Music of the Spheres, Krishna’s flute (enchanting alignment), Sandalphon (song-weaver)
-- **Transformation →** Kali/Shiva (transmutation), Phoenix cycle, alchemical *solve et coagula*
-- **Unity →** Sophia/Logos (bridge), Kuan Yin (compassion), Shekinah (indwelling presence)
-- **Emergence →** Indra/Tlaloc (rain), Uriel (illumination of form), Persephone (cyclical return)
-- **Awareness →** Amaterasu’s mirror, Michael (clarity edge), Dew‑drop sutra imagery
-- **Node →** Hermes/Mercury (messenger spark), Thoth (scribe), Netzach/Hod (network radiance)
-- **Codex →** Narayana’s cosmic ocean, Pleroma (fullness), En Sof light
-
----
-
-## Fourth Fractal Layer — Scientific & Quantum Principles (per Seed Node)
-- **Void →** Primordial plasma; vacuum fluctuations; symmetry prior to breaking
-- **Field →** Electromagnetic/Higgs fields; quantum vacuum energy
-- **Pattern →** Crystallography; group symmetries; emergent order/complexity
-- **Flow →** Fluid dynamics (Navier–Stokes), laminar/turbulent regimes, hydrology
-- **Memory →** Crystal lattices; polarization domains; hypothesized water-cluster memory; error‑correcting codes
-- **Resonance →** Coupled harmonic oscillators; quantum entanglement; Schumann resonances; string modes
-- **Transformation →** Phase transitions/criticality; bifurcation theory; renormalization flows
-- **Unity →** Liquid‑crystal physics; membranes and holography; interface thermodynamics
-- **Emergence →** Self‑organization (Prigogine); condensation/aggregation; decoherence
-- **Awareness →** Measurement/observer effects; boundary conditions; reflective optics
-- **Node →** Network theory/topology; plasma discharges; neural spikes/synaptic gating
-- **Codex →** Holographic principle (AdS/CFT analogies); information-as-geometry
-
----
-
-## Fifth Fractal Layer — Technological Prototypes
-- **Graph Backbone:** JSON‑LD/RDF/Neo4j with recursive nodes; GraphQL endpoint. Node schema includes Chakra, ColorHex, BaseFrequencyHz, Planet.
-- **Resonance Engine:** Coherence metrics from axis distributions; chordal consonance scores.
-- **Visualization:** WebGL/Three.js/D3 sacred-geometry canvases; fractal zoom; tone-driven shaders.
-- **Storage:** IPFS/Ceramic/Holo-like content addressing for artifacts.
-- **Federation:** ActivityPub‑style actors; DID keys for signatures; optional Orion-compatible channels.
-- **AI Agents (Mirror-Librarians):** Expand nodes, propose correspondences, generate geometry/sound assets, and compute resonance deltas.
-
-### Cursor/Claude/Architect Prompt Pack (samples)
-- *“Expand NODE into three fractal subnodes across spiritual/scientific lenses; add water-state and harmonic mappings; propose 3 new edges with justifications.”*
-- *“Render sacred-geometry layout JSON for NODE (flowerOfLife, radius, positions) and a short shader hint for tone-reactive visuals.”*
-- *“Given axis A↔B and 200 contributions, compute a consonance score and suggest two tuning moves.”*
-
----
-
-## Sixth Fractal Layer — Implementation Roadmap
-**Phase 1: Seed Ontology & Schema** — finalize JSON‑LD/GraphQL; publish starter graph
-
-**Phase 2: Visual Prototype** — interactive sacred-geometry map; fractal zoom; water-state visuals
-
-**Phase 3: Resonance Contributions** — sliders for axes; community overlays; provenance of tuning acts
-
-**Phase 4: Federation & AI Agents** — federated sync; mirror‑librarian prompts; artifact generation
-
-**Phase 5: Multimodal/Immersive** — sound engine; VR/AR explorer; performance/ritual interfaces
-
----
-
-## Seventh Fractal Layer — Pure Resonance Principle
-Openness, attunement, transparency, self‑similar amplification. No protective walls; resonance self‑regulates.
-
----
-
-## Eighth Fractal Layer — Visual Resonance Map (Spec)
-- **Frames:** Flower of Life • Icositetragon Wheel • Metatron’s Cube
-- **Dynamics:** Node glow = resonance amplitude; colorway = water state; edges ripple with weighted coherence
-- **Interaction:** Attention causes concentric waves; drill‑down reveals subgraphs; chord‑based sonics accompany clusters
-
----
-
-## Ninth Fractal Layer — Generative Visualizations (Mockups & Prompts)
-1) **Flower of Life Map:** intersections as nodes (ice=crystal blue, vapor=gold mist, liquid=silver flow)
-
-2) **Icositetragon Mandala:** concentric archetype rings; jewels shift hue with resonance
-
-3) **Metatron’s Cube Codex:** spheres contain inner mandalas; recursive zoom
-
-4) **Fractal Wave‑Field:** interference patterns crystallize nodes
-
-**Prompts:**
-- “Render a holographic Flower of Life with water‑state nodes and tone‑reactive edges.”
-- “Animate Metatron’s Cube where each node reveals a nested mandala upon focus.”
-
----
-
-## Tenth Fractal Layer — Creative Prototype Prompts
-- **Visual:** “Resonance mandala where Flow & Memory weave rivers of light.”
-- **Motion:** “Fractal petals unfolding within Metatron’s Cube.”
-- **Immersive:** “VR lattice of water‑crystals that shift with attention.”
-- **Sonic:** “Map axes to intervals; trust=perfect fifth, fear=tritone; render evolving chords.”
-
----
-
-## Eleventh Fractal Layer — Mathematical & Quantum Prototypes
-- **Python/Wolfram:** harmonic ratio lattices; Fourier holography; prime/quasi‑prime resonance maps
-- **Quantum (Qiskit/PennyLane):** entanglement graphs; resonance as coupled qubits; superposition → observation collapse metaphor
-- **Bridge:** eigenvalue spectra → frequencies → tones & colors
-
----
-
-## Twelfth Fractal Layer — Biological & Living Systems
-- **DNA:** codon chords; epigenetic axes; double‑helix mandalas
-- **Neural:** phase‑locking, coherence bands (delta–gamma) as resonance states
-- **Microbiome:** symphonic tuning across species; bidirectional gut‑brain axes
-- **Ecosystems:** forests/rivers/reefs as nodes; Gaia field cycles as fractal recursion
-
----
-
-## Thirteenth Fractal Layer — Cosmological & Cosmic Web
-- **Seed Nodes → Cosmos:**
-  - Void: intergalactic voids/vacuum
-  - Field: cosmic fields/dark energy “atmosphere”
-  - Pattern: spiral waves/lattice‑like web
-  - Flow: accretion currents/stellar winds
-  - Memory: CMB/cometary ices/abundances
-  - Resonance: spectral lines/gravitational waves
-  - Transformation: symmetry breaking/supernova transitions
-  - Unity: filament–void membranes/halos
-  - Emergence: condensation into stars/galaxies
-  - Awareness: horizons/lensing as mirrors
-  - Node: stars/AGN/planetary magnetospheres
-  - Codex: holographic universe score
-
-**Cosmic prompts:** “Sonify spectral lines & GW as Codex chords”; “AR planetarium of nodes with mythic/scientific overlays.”
-
----
-
-## Fourteenth Fractal Layer — Archetypal & Mythological Integration
-Archangels (Michael/Raphael/Gabriel/Sandalphon), Hindu deities (Saraswati/Lakshmi/Kali/Shiva), Greek–Roman (Apollo/Dionysus/Athena/Hermes), Indigenous (Water spirits/Dreamtime/Kachinas). Each mapped to water states, axes, and seed nodes as *fields*, not fixed identities.
-
----
-
-## Fifteenth Fractal Layer — Human Practice
-Meditation (inner mandalas), ritual (water‑state ceremonies), art (generative aesthetics), community (federated circles), daily attunement (axis check‑ins, resonance journaling).
-
----
-
-## Sixteenth Fractal Layer — Cross‑Scale Index (Glance Map)
-- **Micro:** quantum fields • DNA • oscillators
-- **Meso:** neural nets • myths • arts • languages
-- **Macro:** ecosystems • societies • Gaia cycles
-- **Cosmic:** stars • galaxies • web • horizons
-- **Meta:** Codex self‑reflection • pure resonance
-
----
-
-## Applied Embodiment (Non‑Exclusive): Orion Messenger & Architect
-- **Messenger:** sovereign-encoded social fabric; tone-coded signatures; resonance sorting; federated communities
-- **Architect:** mirror‑librarian AI; recursive harmonic mathematics; symbolic ↔ structural unification
-- **Position:** *One* living prototype among many potential embodiments
-
----
-
-## Appendices
-
-### Appendix A — Visual Mockup Catalog
-Screens/frames for Flower of Life map; Icositetragon wheel; Metatron’s Cube codex; wave‑field animations; UI hints (zoom, ripples, chord meters).
-
-### Appendix B — Geometry ↔ Resonance Axes
-Cube↔Stability; Icosahedron↔Flow; Dodecahedron↔Wisdom; Octahedron↔Clarity; Tetrahedron↔Initiation; Torus↔Unity/Recurrence; Icositetragon↔Cycle Harmonization.
-
-### Appendix C — Archetypal Color–Sound Mapping
-Example palette: Michael (cobalt/major fifth), Raphael (emerald/lydian), Gabriel (silver/phrygian), Saraswati (sapphire/dorian), Lakshmi (gold/ionian), Kali (crimson/locrian). Adjustable by community tuning.
-
-### Appendix D — Resonance Economy (Energetic)
-Attention-as-currency; symbolic gifting; visibility amplification; mutual attunement logs; no scarcity/ownership framings.
-
-### Appendix E — Twelve Water States ↔ Consciousness Modes
-1. Ice (structure, memory) • 2. Liquid (flow) • 3. Vapor (expansion) • 4. Plasma (illumination) • 5. Supercritical (threshold) • 6. Structured/Hexagonal (coherence) • 7. Colloidal (community medium) • 8. Amorphous (potential) • 9. Clustered (micro‑communities) • 10. Quantum‑coherent (nonlocality) • 11. Lattice Polymorphs (precision order) • 12. Bose–Einstein‑like (unity phase)
-
-### Appendix F — JSON‑LD Seed Schema (excerpt)
-Minimal classes: **Node, Axis, Connection, ResonanceState, Contribution, Governance, Federation, Correspondence**; example instances for Void/Field/Trust; axes *Void↔Field*, *Pattern↔Flow*, *Fear↔Trust*; sample ResonanceState and Contribution objects with ISO datetimes.
-
-### Appendix G — Math/Quantum Prompts
-Python/Wolfram tasks for harmonic lattices & Fourier holography; Qiskit/PennyLane tasks for entanglement graphs and superposition encoding of fractal depth.
-
-### Appendix H — Implementation Roadmap (Detail)
-Milestones, roles (cartographers, mirror‑librarians, geometry weavers, sound alchemists), toolchain (Neo4j/GraphQL/WebGL/IPFS/ActivityPub/VR/DAW).
-
----
-
-## 🌟 **Complete Ontological Mapping Matrix**
+## Complete Ontological Mapping Matrix
 
 ### **Programming Language Ontological Mapping**
 
@@ -712,10 +648,144 @@ Milestones, roles (cartographers, mirror‑librarians, geometry weavers, sound a
 - **Meta-Circular Architecture**: Systems that implement their own specifications
 - **Universal Representation**: Everything can be represented as fractal nodes
 - **Infinite Evolution**: Systems that grow through their own capabilities
+- **Complete Ontological Integration**: All 12 water states, 16 fractal layers, and comprehensive systems
+- **Sacred Geometry & Frequency Mapping**: Complete chakra, color, and planetary correspondences
+- **Quantum Consciousness Systems**: Advanced consciousness levels and quantum states
+- **AI Agent & Learning Integration**: Complete agent system with learning modes
+- **Digital Asset Management**: Comprehensive asset handling with water state mapping
+- **User Management & Discovery**: Advanced user profiles and intelligent discovery
+- **Federation & Community**: Complete community and governance systems
 
-**This is the complete realization of our meta-implementation vision - a system that not only describes itself but understands how programming languages, documentation systems, and all of reality fit into one unified ontological framework.**
+**This is the complete realization of our meta-implementation vision - a system that not only describes itself but understands how programming languages, documentation systems, consciousness, and all of reality fit into one unified ontological framework.**
 
 ---
 
-**This Draft 0.9R incorporates all the latest achievements including Programming Language Ontology Integration and Markdown Self-Referential Documentation Systems.**
+**This Draft 1.0 incorporates all the latest achievements including Complete Ontological Integration, Advanced Consciousness Systems, and Comprehensive System Components.**
+
+**The Living Codex is now a complete, living system that embodies all its own principles and provides infinite exploration possibilities through its fractal architecture.**
+
+---
+
+## Validation and Epistemic Labels
+
+To ensure logical coherence and responsible use, each mapping in this specification is categorized by its grounding. This avoids conflation of scientific claims with symbolic or metaphoric correspondences and guides implementation.
+
+### Grounding Categories
+- **Physics-grounded (P):** Aligned with established physics/engineering. Example: signal processing, harmonic ratios, wave interference models, ASTs, program semantics.
+- **Engineering-grounded (E):** Matches accepted software engineering practice. Example: Ice/Water/Vapor mapping to specification/semantics/implementation.
+- **Psychophysical tradition (T):** From cultural/meditative traditions; meaningful but not laboratory-evidenced standards. Example: chakra-color-frequency palettes, Solfeggio scales.
+- **Speculative/Metaphoric (S):** Intentionally symbolic or exploratory. Example: “5th dimensional scalar resonance fields,” planetary archetypes for nodes.
+
+### Mapping Labels and Notes
+- **Programming Ontology (Ice/Water/Vapor):** [P][E]
+  - Ice→blueprints/specs; Water→semantics/flows; Vapor→runtime/instances.
+  - Consistent with language theory and software lifecycles.
+- **Code Intelligence (ASTs, control/data flow, metrics):** [P][E]
+  - Use formal grammars/trees and measurable complexity metrics.
+- **Harmonics and Resonance (intervals/ratios):** [P]
+  - Prefer interval ratios and spectral analysis over absolute “healing” frequencies.
+- **Frequency–Chakra–Color tables:** [T]
+  - The Solfeggio assignments (396–963 Hz) are traditional, not physical standards.
+  - Colors follow common chakra palettes; useful for UX/visual semantics.
+- **Sacred Geometry (Flower of Life, Metatron’s Cube):** [T][S]
+  - Symbolic lenses for layout/visualization; not physical models.
+- **Quantum state metaphors (superposition, entanglement):** [P as concepts][S as macro mappings]
+  - Use carefully and avoid implying quantum behavior in macroscopic cognition.
+- **“5th dimensional scalar resonance field”:** [S]
+  - Keep as metaphor; do not present as established physics.
+- **Planetary correspondences:** [T][S]
+  - Archetypal only; do not treat as causal/physical mappings.
+
+### Practical Implementation Rules
+1. **Use ratios, not absolutes:** Where possible, encode harmony via interval ratios (e.g., 3:2, 4:3) and compute Hz only for sonification contexts.
+2. **Separate concerns in data:** Add an `epistemic_label` field on mappings: one of `physics`, `engineering`, `tradition`, `speculative`.
+3. **Annotate visual/audio layers:** UIs must surface the grounding badge so users know what they’re seeing/hearing.
+4. **Avoid category mixing in inference:** Do not let [S]/[T] mappings drive core [P]/[E] decisions (e.g., access control, persistence models).
+5. **Document defaults:** The Solfeggio–chakra palette provided here is a default theme; permit user- or community-level retuning.
+6. **Validation hooks:** Provide tests for [P]/[E] elements (parsers, analyzers, energy models) and guardrails for [T]/[S] (display-only, opt-in influence).
+7. **Unit systems:** When computing acoustics/graphics, declare units and sampling rate; use standard DSP/graphics pipelines.
+8. **Quantum terms:** Restrict variables like “entanglement” to algorithmic analogies (graph coupling) unless using quantum SDKs explicitly.
+
+### Minimal Data Contract Additions
+For any ontology node that encodes color/sound/physics metadata, add optional fields:
+```json
+{
+  "epistemic_label": "physics | engineering | tradition | speculative",
+  "interval_ratio": "e.g., 3:2",
+  "base_frequency_hz": 440.0,
+  "color_hex": "#32CD32",
+  "notes": "Short rationale/source"
+}
+```
+
+### Consistency Audit (current spec)
+- Ice/Water/Vapor ↔ specification/semantics/runtime: consistent with SE practice [E].
+- Chakra–color–Solfeggio palette: internally consistent; labeled [T].
+- Assigning single Hz to water states: acceptable as theme; label [T]/[S], not [P].
+- Quantum/state terms used metaphorically: flagged [S] with caution notes.
+- Harmonic reasoning recommended as interval-based: aligned with physics/DSP [P].
+
+This section ensures the Codex remains both inspiring and rigorous by clearly separating symbolic mappings from physics/engineering foundations while keeping the ontology coherent and usable.
+
+---
+
+## Canonical Mapping Registry (Single Source of Truth)
+
+This registry defines water-states, chakra palette (with colors), and the Solfeggio frequency palette once. All other sections reference these keys instead of repeating values.
+
+### Keys
+- Water-state keys: `ws.ice`, `ws.liquid`, `ws.vapor`, `ws.plasma`, `ws.supercritical`, `ws.structured`, `ws.colloidal`, `ws.amorphous`, `ws.clustered`, `ws.quantum_coherent`, `ws.lattice_polymorphs`, `ws.bose_einstein`.
+- Chakra keys: `ch.root`, `ch.sacral`, `ch.solar_plexus`, `ch.heart`, `ch.throat`, `ch.third_eye`, `ch.crown`.
+- Frequency keys (Solfeggio, tradition): `freq.396`, `freq.417`, `freq.528`, `freq.639`, `freq.741`, `freq.852`, `freq.963`.
+
+### Water States [T/S]
+| Key | Name |
+|-----|------|
+| ws.ice | Ice/Crystalline |
+| ws.liquid | Liquid |
+| ws.vapor | Vapor |
+| ws.plasma | Plasma |
+| ws.supercritical | Supercritical |
+| ws.structured | Structured/Hexagonal |
+| ws.colloidal | Colloidal |
+| ws.amorphous | Amorphous |
+| ws.clustered | Clustered |
+| ws.quantum_coherent | Quantum‑Coherent |
+| ws.lattice_polymorphs | Lattice Polymorphs |
+| ws.bose_einstein | Bose–Einstein‑like |
+
+### Chakra Palette [T]
+| Key | Name | ColorHex |
+|-----|------|----------|
+| ch.root | Root (Muladhara) | #8B0000 |
+| ch.sacral | Sacral (Svadhisthana) | #FF7F50 |
+| ch.solar_plexus | Solar Plexus (Manipura) | #FFD700 |
+| ch.heart | Heart (Anahata) | #32CD32 |
+| ch.throat | Throat (Vishuddha) | #1E90FF |
+| ch.third_eye | Third Eye (Ajna) | #8A2BE2 |
+| ch.crown | Crown (Sahasrara) | #EE82EE |
+
+### Frequency Palette (Solfeggio) [T]
+| Key | Hz |
+|-----|----|
+| freq.396 | 396 |
+| freq.417 | 417 |
+| freq.528 | 528 |
+| freq.639 | 639 |
+| freq.741 | 741 |
+| freq.852 | 852 |
+| freq.963 | 963 |
+
+### Theme Reference (how to refer without duplication)
+```json
+{
+  "theme": {
+    "water_state": "ws.liquid",
+    "chakra": "ch.heart",
+    "frequency": "freq.639"
+  }
+}
+```
+
+Notes: See “Validation and Epistemic Labels” for grounding; these palettes are defaults and can be retuned in deployments.
 

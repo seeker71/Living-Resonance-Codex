@@ -31,6 +31,7 @@ def copy_essential_files(source_dir: Path, target_dir: Path):
     essential_files = [
         "src/core/water_state_storage.py",
         "src/core/minimal_ice_bootstrap.py",
+        "src/core/dependency_manager.py",
         "src/platform/user_management.py",
         "src/platform/contribution_system.py",
         "src/platform/web_interface.py",

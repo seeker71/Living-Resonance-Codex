@@ -4,7 +4,7 @@ FROM python:3.9-slim
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
-ENV ICE_POD_ID=${ICE_POD_ID:-ice-$(date +%s)}
+ENV ICE_POD_ID=ice-pod-001
 ENV ICE_POD_STATE=ICE
 
 # Install system dependencies

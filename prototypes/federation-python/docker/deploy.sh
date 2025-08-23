@@ -37,7 +37,7 @@ check_prerequisites() {
         exit 1
     fi
     
-    if ! command -v docker-compose &> /dev/null; then
+    if ! docker compose version &> /dev/null; then
         echo -e "${RED}❌ Docker Compose not found. Please install Docker Compose first.${NC}"
         exit 1
     fi
@@ -86,15 +86,9 @@ deploy_docker() {
     
     cd docker
     
-    # Update scaling in docker-compose.yml
-    sed -i.bak "s/replicas: [0-9]*/replicas: ${SCALE_ICE}/" docker-compose.yml
-    sed -i.bak "s/replicas: [0-9]*/replicas: ${SCALE_WATER}/" docker-compose.yml
-    sed -i.bak "s/replicas: [0-9]*/replicas: ${SCALE_VAPOR}/" docker-compose.yml
-    sed -i.bak "s/replicas: [0-9]*/replicas: ${SCALE_PLASMA}/" docker-compose.yml
-    
     # Start the ecosystem
     echo -e "${YELLOW}Starting Living Codex ecosystem...${NC}"
-    docker-compose up -d
+    docker compose up -d
     
     # Wait for services to be ready
     echo -e "${YELLOW}Waiting for services to be ready...${NC}"
@@ -142,28 +136,28 @@ check_health_docker() {
     cd docker
     
     # Check ICE bootstrap
-    if docker-compose ps ice-bootstrap | grep -q "Up"; then
+    if docker compose ps ice-bootstrap | grep -q "Up"; then
         echo -e "${GREEN}✅ ICE bootstrap service is running${NC}"
     else
         echo -e "${RED}❌ ICE bootstrap service is not running${NC}"
     fi
     
     # Check WATER services
-    if docker-compose ps water-web | grep -q "Up"; then
+    if docker compose ps water-web | grep -q "Up"; then
         echo -e "${GREEN}✅ WATER web service is running${NC}"
     else
         echo -e "${RED}❌ WATER web service is not running${NC}"
     fi
     
     # Check VAPOR interaction
-    if docker-compose ps vapor-interaction | grep -q "Up"; then
+    if docker compose ps vapor-interaction | grep -q "Up"; then
         echo -e "${GREEN}✅ VAPOR interaction service is running${NC}"
     else
         echo -e "${RED}❌ VAPOR interaction service is not running${NC}"
     fi
     
     # Check PLASMA streaming
-    if docker-compose ps plasma-streaming | grep -q "Up"; then
+    if docker compose ps plasma-streaming | grep -q "Up"; then
         echo -e "${GREEN}✅ PLASMA streaming service is running${NC}"
     else
         echo -e "${RED}❌ PLASMA streaming service is not running${NC}"
@@ -222,16 +216,13 @@ cleanup() {
     echo -e "${YELLOW}🧹 Cleaning up temporary files...${NC}"
     
     if [ "$DEPLOYMENT_TYPE" = "docker" ]; then
-        cd docker
-        rm -f docker-compose.yml.bak
-        cd ..
+        echo -e "${GREEN}✅ Docker deployment cleanup completed${NC}"
     else
         cd docker/k8s
         rm -f living-codex-deployment.yaml.bak
         cd ../..
+        echo -e "${GREEN}✅ Kubernetes deployment cleanup completed${NC}"
     fi
-    
-    echo -e "${GREEN}✅ Cleanup completed${NC}"
 }
 
 # Main deployment flow

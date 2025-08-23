@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Living Codex - Explore Category</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .nav { background: #34495e; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .nav a { color: white; text-decoration: none; margin-right: 20px; padding: 8px 16px; border-radius: 4px; }
+        .nav a:hover { background: #2c3e50; }
+        .breadcrumb { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .breadcrumb a { color: #3498db; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .category-overview { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .components-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .component-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #3498db; }
+        .component-card h3 { margin-top: 0; color: #2c3e50; }
+        .component-card .meta { color: #7f8c8d; font-size: 0.9em; margin-bottom: 15px; }
+        .component-card .description { margin-bottom: 15px; line-height: 1.6; }
+        .component-card .tags { margin-bottom: 15px; }
+        .tag { background: #ecf0f1; padding: 4px 8px; border-radius: 12px; font-size: 0.8em; margin-right: 5px; margin-bottom: 5px; display: inline-block; }
+        .btn { background: #3498db; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn:hover { background: #2980b9; }
+        .btn-secondary { background: #95a5a6; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat { background: #3498db; color: white; padding: 20px; border-radius: 8px; text-align: center; }
+        .stat h3 { margin: 0; font-size: 24px; }
+        .stat p { margin: 5px 0 0 0; opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌌 Living Codex - Explore Category</h1>
+            <p>Discover components and knowledge within the {{ category_name }} category</p>
+        </div>
+        
+        <div class="nav">
+            <a href="{{ url_for('dashboard') }}">🏠 Dashboard</a>
+            <a href="{{ url_for('discover') }}">🔍 Discover</a>
+            <a href="{{ url_for('navigate') }}">🧭 Navigate</a>
+            <a href="{{ url_for('contribute') }}">✍️ Contribute</a>
+            <a href="{{ url_for('explore_ontology') }}">🌌 Ontology</a>
+            <a href="{{ url_for('profile') }}">👤 Profile</a>
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+        
+        <div class="breadcrumb">
+            <a href="{{ url_for('explore_ontology') }}">🌌 Ontology Overview</a> &gt; 
+            <a href="{{ url_for('explore_ontology') }}">{{ category_name }}</a>
+        </div>
+        
+        <div class="category-overview">
+            <h2>{{ category_name }}</h2>
+            <p>{{ category_description }}</p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <h3>{{ category_stats.total_components }}</h3>
+                    <p>Total Components</p>
+                </div>
+                <div class="stat">
+                    <h3>{{ category_stats.active_components }}</h3>
+                    <p>Active Components</p>
+                </div>
+                <div class="stat">
+                    <h3>{{ category_stats.related_categories }}</h3>
+                    <p>Related Categories</p>
+                </div>
+                <div class="stat">
+                    <h3>{{ category_stats.contributors }}</h3>
+                    <p>Contributors</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="components-grid">
+            {% for component in category_components %}
+            <div class="component-card">
+                <h3>{{ component.name }}</h3>
+                <div class="meta">
+                    <strong>Type:</strong> {{ component.type }}<br>
+                    <strong>Status:</strong> <span style="color: {% if component.status == 'active' %}green{% elif component.status == 'development' %}orange{% else %}red{% endif %};">{{ component.status|title }}</span><br>
+                    <strong>Last Updated:</strong> {{ component.last_updated }}<br>
+                    <strong>Contributor:</strong> {{ component.contributor }}
+                </div>
+                
+                <div class="description">
+                    {{ component.description }}
+                </div>
+                
+                <div class="tags">
+                    {% for tag in component.tags %}
+                    <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                
+                <a href="{{ url_for('explore_component', component_id=component.id) }}" class="btn">🔍 Explore Component</a>
+                {% if component.documentation_url %}
+                <a href="{{ component.documentation_url }}" class="btn btn-secondary" target="_blank">📚 Documentation</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if not category_components %}
+        <div style="text-align: center; padding: 40px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h3>🔍 No components found in this category</h3>
+            <p>This category doesn't have any components yet, or they may be under development.</p>
+            <p><a href="{{ url_for('contribute') }}" class="btn">Contribute a component</a> to this category!</p>
+        </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url_for('explore_ontology') }}" class="btn">🌌 Back to Ontology Overview</a>
+            <a href="{{ url_for('navigate') }}" class="btn btn-secondary">🧭 System Navigation</a>
+        </div>
+    </div>
+</body>
+</html>
