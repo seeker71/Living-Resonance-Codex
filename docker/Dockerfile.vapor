@@ -25,7 +25,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy interaction components
-COPY src/platform/ src/platform/
+COPY src/web_platform/ src/web_platform/
 COPY src/core/ src/core/
 
 # Create temporary interaction directories
@@ -44,7 +44,7 @@ TTL_PID=$!\n\
 \n\
 # Start interaction service\n\
 echo "🌐 Starting VAPOR interaction service..."\n\
-python src/platform/vapor_interaction.py\n\
+python src/web_platform/unified_web_interface.py\n\
 \n\
 # Wait for TTL or service termination\n\
 wait $TTL_PID\n\
