@@ -567,6 +567,59 @@ def explore_category(category):
                          content=category_content,
                          interested_users=interested_users)
 
+@app.route('/assets', methods=['GET', 'POST'])
+@login_required
+def assets_page():
+    """Assets manager page with upload form and listing"""
+    message = None
+    if request.method == 'POST':
+        try:
+            if 'file' not in request.files or request.files['file'].filename == '':
+                message = ('error', 'Please choose a file to upload')
+            else:
+                file = request.files['file']
+                tmp_path = assets_dir / f"__upload_{datetime.now().timestamp()}"
+                file.save(str(tmp_path))
+                checksum = hash_file(tmp_path)
+                ext = Path(file.filename).suffix.lstrip('.') or 'bin'
+                stored_name = f"{checksum}.{ext}"
+                dest = assets_dir / stored_name
+                if not dest.exists():
+                    tmp_path.rename(dest)
+                else:
+                    tmp_path.unlink(missing_ok=True)
+                asset_type = request.form.get('type') or detect_asset_type(dest)
+                tags = [t.strip() for t in request.form.get('tags', '').split(',') if t.strip()]
+                meta = find_asset(checksum)
+                if meta:
+                    meta.update({
+                        'original_name': file.filename,
+                        'stored_name': stored_name,
+                        'size': dest.stat().st_size,
+                        'type': asset_type,
+                        'tags': sorted(set(meta.get('tags', []) + tags)),
+                        'updated_at': datetime.now().isoformat(),
+                        'uploader': current_user.id
+                    })
+                else:
+                    meta = {
+                        'id': checksum,
+                        'checksum': checksum,
+                        'original_name': file.filename,
+                        'stored_name': stored_name,
+                        'size': dest.stat().st_size,
+                        'type': asset_type,
+                        'tags': tags,
+                        'created_at': datetime.now().isoformat(),
+                        'uploader': current_user.id
+                    }
+                    assets_index.append(meta)
+                save_assets_index()
+                message = ('success', f"Uploaded {file.filename}")
+        except Exception as e:
+            message = ('error', f"Upload failed: {e}")
+    return render_template('unified_assets.html', assets=assets_index, message=message)
+
 @app.route('/connect/<user_id>')
 @login_required
 def connect_with_user(user_id):
@@ -1038,6 +1091,71 @@ def create_unified_templates():
     # Save the template
     with open(templates_dir / 'unified_index.html', 'w') as f:
         f.write(index_html)
+    
+    # Unified assets template
+    assets_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets - Living Codex</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #eee; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: #4CAF50; }
+        .card { background: #1b1b1b; padding: 20px; border-radius: 10px; margin: 15px 0; }
+        input, select { padding: 8px; border-radius: 6px; border: 1px solid #333; background: #222; color: #eee; }
+        .btn { padding: 10px 16px; border-radius: 6px; border: none; background: #4CAF50; color: white; cursor: pointer; }
+        .btn:hover { opacity: 0.9; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border-bottom: 1px solid #333; padding: 8px; text-align: left; }
+        small { color: #aaa; }
+        .msg { padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+        .success { background: #124d2a; }
+        .error { background: #4d1212; }
+    </style>
+    </head>
+<body>
+ <div class="container">
+  <h1>📁 Digital Assets</h1>
+  {% if message %}
+    <div class="msg {{ message[0] }}">{{ message[1] }}</div>
+  {% endif %}
+  <div class="card">
+    <h3>Upload Asset</h3>
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="file" required> 
+      <select name="type">
+        <option value="">auto-detect</option>
+        <option>image</option><option>video</option><option>audio</option>
+        <option>document</option><option>archive</option><option>code</option><option>data</option>
+      </select>
+      <input type="text" name="tags" placeholder="tags (comma separated)">
+      <button class="btn" type="submit">Upload</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Assets List</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Size</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for a in assets %}
+        <tr>
+          <td><small>{{ a.id[:12] }}…</small></td>
+          <td>{{ a.original_name }}</td>
+          <td>{{ a.type }}</td>
+          <td>{{ a.size }}</td>
+          <td><a class="btn" href="/api/assets/download/{{ a.id }}">Download</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+ </div>
+</body>
+</html>"""
+    with open(templates_dir / 'unified_assets.html', 'w') as f:
+        f.write(assets_html)
     
     print("✅ Unified templates created successfully!")
 
