@@ -90,4 +90,5 @@ __pycache__
 # OS specific
 **/Thumbs.db
 **/.DS_Store
-**/desktop.ini
+
+assets_store/

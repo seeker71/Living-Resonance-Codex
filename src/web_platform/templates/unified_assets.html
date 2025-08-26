@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets - Living Codex</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #eee; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: #4CAF50; }
+        .card { background: #1b1b1b; padding: 20px; border-radius: 10px; margin: 15px 0; }
+        input, select { padding: 8px; border-radius: 6px; border: 1px solid #333; background: #222; color: #eee; }
+        .btn { padding: 10px 16px; border-radius: 6px; border: none; background: #4CAF50; color: white; cursor: pointer; }
+        .btn:hover { opacity: 0.9; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border-bottom: 1px solid #333; padding: 8px; text-align: left; }
+        small { color: #aaa; }
+        .msg { padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+        .success { background: #124d2a; }
+        .error { background: #4d1212; }
+    </style>
+    </head>
+<body>
+ <div class="container">
+  <h1>📁 Digital Assets</h1>
+  {% if message %}
+    <div class="msg {{ message[0] }}">{{ message[1] }}</div>
+  {% endif %}
+  <div class="card">
+    <h3>Upload Asset</h3>
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="file" required> 
+      <select name="type">
+        <option value="">auto-detect</option>
+        <option>image</option><option>video</option><option>audio</option>
+        <option>document</option><option>archive</option><option>code</option><option>data</option>
+      </select>
+      <input type="text" name="tags" placeholder="tags (comma separated)">
+      <button class="btn" type="submit">Upload</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Assets List</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Size</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for a in assets %}
+        <tr>
+          <td><small>{{ a.id[:12] }}…</small></td>
+          <td>{{ a.original_name }}</td>
+          <td>{{ a.type }}</td>
+          <td>{{ a.size }}</td>
+          <td><a class="btn" href="/api/assets/download/{{ a.id }}">Download</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+ </div>
+</body>
+</html>

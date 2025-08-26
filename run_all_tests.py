@@ -8,6 +8,7 @@ It serves as the main entry point for testing the entire Living Codex system.
 """
 
 import sys
+import os
 import subprocess
 from pathlib import Path
 
@@ -33,7 +34,7 @@ def main():
         result = subprocess.run([
             sys.executable, 
             str(test_suites_dir / "run_comprehensive_test_suite.py")
-        ], cwd=script_dir, check=True)
+        ], cwd=script_dir, check=True, env={**os.environ, 'PYTHONPATH': str(script_dir / 'src')})
         
         if result.returncode == 0:
             print("✅ All tests completed successfully!")
