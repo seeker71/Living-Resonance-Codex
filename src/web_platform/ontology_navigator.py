@@ -6,7 +6,7 @@ Provides structured navigation through system components, relationships, and kno
 
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 @dataclass
@@ -213,8 +213,8 @@ class OntologyNavigator:
                 category=component['category'],
                 relationships=component['relationships'],
                 metadata=component['metadata'],
-                created_at=datetime.now(),
-                updated_at=datetime.now()
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc)
             )
         
         # Create relationships

@@ -244,6 +244,20 @@ class ContributionManager:
         
         return sorted(contributions, key=lambda x: x.created_at, reverse=True)
     
+    def get_all_contributions(self) -> List[Contribution]:
+        """Get all contributions from storage"""
+        contributions = []
+        for file_path in self.storage_path.glob("*.json"):
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                contribution = Contribution.from_dict(data)
+                contributions.append(contribution)
+            except Exception as e:
+                print(f"Error reading contribution file {file_path}: {e}")
+        
+        return sorted(contributions, key=lambda x: x.created_at, reverse=True)
+    
     def get_contributions_by_type(self, contribution_type: ContributionType) -> List[Contribution]:
         """Get all contributions of a specific type"""
         contributions = []

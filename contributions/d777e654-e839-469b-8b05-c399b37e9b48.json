@@ -1,0 +1,41 @@
+{
+  "contribution_id": "d777e654-e839-469b-8b05-c399b37e9b48",
+  "user_id": "3424f1dd-1c8c-4510-9ae3-d3957e4befe5",
+  "contribution_type": "code",
+  "metadata": {
+    "title": "Advanced Neural Network Implementation",
+    "description": "Implementation of attention mechanisms and transformer architecture",
+    "tags": [
+      "neural_networks",
+      "attention_mechanisms",
+      "python",
+      "machine_learning"
+    ],
+    "language": "en",
+    "cultural_context": null,
+    "skill_level": "expert",
+    "target_audience": [],
+    "local_relevance": null
+  },
+  "status": "draft",
+  "created_at": "2025-08-26T14:27:14.678140+00:00",
+  "updated_at": "2025-08-26T14:27:14.678141+00:00",
+  "reviewed_by": null,
+  "review_notes": null,
+  "code_content": {
+    "code_content": "import tensorflow as tf\nimport numpy as np\n\nclass AttentionMechanism:\n    def __init__(self):\n        pass\n\n    def forward(self, x):\n        return x",
+    "language": "python",
+    "framework": "tensorflow",
+    "dependencies": [
+      "tensorflow",
+      "numpy",
+      "matplotlib"
+    ],
+    "documentation": null,
+    "tests": null
+  },
+  "content_data": null,
+  "visual_data": null,
+  "translation_data": null,
+  "local_solution_data": null
+}

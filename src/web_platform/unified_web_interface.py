@@ -17,18 +17,42 @@ import mimetypes
 
 # Import our platform components
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+from pathlib import Path
 
-from src.web_platform.user_management import (
+# Add the src directory to the path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+# Also add project src (parent) and core dirs for cross-module imports
+project_src = Path(__file__).parent.parent
+if str(project_src) not in sys.path:
+    sys.path.insert(0, str(project_src))
+core_dir = project_src / 'core'
+if str(core_dir) not in sys.path:
+    sys.path.insert(0, str(core_dir))
+
+from user_management import (
     UserManagementSystem, UserProfile, CoreIdentity, CommunicationPreferences,
     TechnicalProfile, Interests, LocationContext, SkillLevel, CommunicationStyle, LearningStyle
 )
-from src.web_platform.contribution_system import (
+from contribution_system import (
     ContributionSystem, ContributionType, ContentCategory, ContributionStatus
 )
-from src.web_platform.ontology_navigator import ontology_navigator
+try:
+    from ontology_navigator import ontology_navigator
+    print("✅ Ontology navigator imported successfully")
+except ImportError as e:
+    # Create a placeholder if ontology_navigator is not available
+    print(f"Warning: ontology_navigator import failed: {e}")
+    ontology_navigator = None
 
-app = Flask(__name__)
+# Import core search system
+try:
+    from core.core_search_system import fractal_search_system, SearchQuery
+    print("✅ Fractal search system imported successfully")
+except ImportError as e:
+    print(f"Warning: fractal search system import failed: {e}")
+    fractal_search_system = None
+
+app = Flask(__name__, template_folder=str(Path(__file__).parent / 'templates'))
 app.secret_key = 'living-codex-secret-key-2024'  # In production, use environment variable
 
 # Initialize Flask-Login
@@ -41,8 +65,6 @@ user_system = UserManagementSystem()
 contribution_system = ContributionSystem()
 
 # Enhanced user storage with discovery features
-users = {}
-contributions = {}
 user_connections = {}  # User-to-user connections
 content_tags = {}      # Content tagging system
 exploration_paths = {} # User exploration history
@@ -100,6 +122,63 @@ def find_asset(asset_id: str) -> Optional[Dict[str, Any]]:
             return a
     return None
 
+def calculate_similarity(user1: UserProfile, user2: UserProfile) -> int:
+    """Calculate similarity score between two users"""
+    similarity_score = 0
+    
+    # Interest similarity
+    if user1.interests and user2.interests:
+        common_interests = set(user1.interests.primary_domains) & set(user2.interests.primary_domains)
+        similarity_score += len(common_interests) * 10
+    
+    # Skill similarity
+    if user1.technical_profile and user2.technical_profile:
+        for skill in ['programming', 'data_analysis', 'design', 'research']:
+            if (skill in user1.technical_profile.skill_levels and 
+                skill in user2.technical_profile.skill_levels):
+                if user1.technical_profile.skill_levels[skill] == user2.technical_profile.skill_levels[skill]:
+                    similarity_score += 5
+    
+    # Location similarity
+    if user1.location_context and user2.location_context:
+        if user1.location_context.geographic_location == user2.location_context.geographic_location:
+            similarity_score += 15
+    
+    return similarity_score
+
+def find_common_interests(user1: UserProfile, user2: UserProfile) -> List[str]:
+    """Find common interests between two users"""
+    if user1.interests and user2.interests:
+        return list(set(user1.interests.primary_domains) & set(user2.interests.primary_domains))
+    return []
+
+def calculate_content_relevance(user_profile: UserProfile, contribution) -> int:
+    """Calculate relevance score between user and contribution"""
+    relevance_score = 0
+    
+    # Category relevance
+    if hasattr(contribution, 'metadata') and contribution.metadata:
+        if contribution.metadata.tags:
+            for tag in contribution.metadata.tags:
+                if tag.lower() in [domain.lower() for domain in user_profile.interests.primary_domains]:
+                    relevance_score += 20
+                    break
+    
+    # Skill level relevance
+    if hasattr(contribution, 'metadata') and contribution.metadata:
+        if contribution.metadata.skill_level:
+            user_skill = user_profile.technical_profile.skill_levels.get('programming', SkillLevel.BEGINNER)
+            if contribution.metadata.skill_level.lower() == user_skill.value.lower():
+                relevance_score += 15
+    
+    # Language relevance
+    if hasattr(contribution, 'metadata') and contribution.metadata:
+        if contribution.metadata.language:
+            if contribution.metadata.language in user_profile.technical_profile.preferred_tools:
+                relevance_score += 10
+    
+    return relevance_score
+
 class WebUser(UserMixin):
     """Enhanced web user class for Flask-Login"""
     def __init__(self, user_id, profile):
@@ -112,8 +191,12 @@ class WebUser(UserMixin):
 @login_manager.user_loader
 def load_user(user_id):
     """Load user for Flask-Login"""
-    if user_id in users:
-        return WebUser(user_id, users[user_id])
+    try:
+        profile = user_system.profile_manager.get_profile(user_id)
+        if profile:
+            return WebUser(user_id, profile)
+    except Exception as e:
+        print(f"Error loading user {user_id}: {e}")
     return None
 
 # ============================================================================
@@ -140,16 +223,16 @@ class DiscoveryEngine:
                 similarity_score += len(common_interests) * 10
             
             # Skill similarity
-            if profile.technical and user_profile.technical:
+            if profile.technical_profile and user_profile.technical_profile:
                 for skill in ['programming', 'data_analysis', 'design', 'research']:
-                    if (skill in profile.technical.skill_levels and 
-                        skill in user_profile.technical.skill_levels):
-                        if profile.technical.skill_levels[skill] == user_profile.technical.skill_levels[skill]:
+                    if (skill in profile.technical_profile.skill_levels and 
+                        skill in user_profile.technical_profile.skill_levels):
+                        if profile.technical_profile.skill_levels[skill] == user_profile.technical_profile.skill_levels[skill]:
                             similarity_score += 5
             
             # Location similarity
-            if profile.location and user_profile.location:
-                if profile.location.geographic_location == user_profile.location.geographic_location:
+            if profile.location_context and user_profile.location_context:
+                if profile.location_context.geographic_location == user_profile.location_context.geographic_location:
                     similarity_score += 15
             
             if similarity_score > 0:
@@ -178,12 +261,12 @@ class DiscoveryEngine:
             
             # Skill level relevance
             if contribution.get('skill_level'):
-                user_skill = user_profile.technical.skill_levels.get('programming', SkillLevel.BEGINNER)
+                user_skill = user_profile.technical_profile.skill_levels.get('programming', SkillLevel.BEGINNER)
                 if contribution['skill_level'] == user_skill:
                     relevance_score += 15
             
             # Language relevance
-            if contribution.get('language') in user_profile.technical.preferred_tools:
+            if contribution.get('language') in user_profile.technical_profile.preferred_tools:
                 relevance_score += 10
             
             if relevance_score > 0:
@@ -191,7 +274,7 @@ class DiscoveryEngine:
                     'contribution_id': contrib_id,
                     'contribution': contribution,
                     'relevance_score': relevance_score,
-                    'author': users.get(contribution.get('user_id', ''), {}).get('name', 'Unknown')
+                    'author': users.get(contribution.get('user_id', '')).core_identity.name if users.get(contribution.get('user_id', '')) else 'Unknown'
                 })
         
         # Sort by relevance and return top matches
@@ -260,102 +343,61 @@ class NavigationSystem:
     @staticmethod
     def get_system_overview() -> Dict:
         """Get an overview of the Living Codex system"""
-        return {
-            'total_users': len(users),
-            'total_contributions': len(contributions),
-            'active_communities': len(set([c.get('category', '') for c in contributions.values()])),
-            'recent_activity': len([c for c in contributions.values() 
-                                  if datetime.now() - c.get('created_at', datetime.now()) < timedelta(days=7)]),
-            'top_categories': sorted(
-                [(cat, len([c for c in contributions.values() if c.get('category') == cat])) 
-                 for cat in set([c.get('category', '') for c in contributions.values() if c.get('category')])],
-                key=lambda x: x[1], reverse=True
-            )[:5]
-        }
+        try:
+            # Get data from core systems
+            user_system = UserManagementSystem()
+            contribution_system = ContributionSystem()
+            
+            all_users = user_system.profile_manager.get_all_profiles()
+            all_contributions = contribution_system.contribution_manager.get_all_contributions()
+            
+            # Calculate categories from contributions
+            categories = set()
+            for contrib in all_contributions:
+                if contrib.metadata and contrib.metadata.category:
+                    categories.add(contrib.metadata.category)
+            
+            # Count recent activity (contributions from last 7 days)
+            recent_activity = 0
+            for contrib in all_contributions:
+                if contrib.created_at:
+                    time_diff = datetime.now(contrib.created_at.tzinfo) - contrib.created_at
+                    if time_diff.days < 7:
+                        recent_activity += 1
+            
+            # Count contributions by category
+            category_counts = {}
+            for contrib in all_contributions:
+                if contrib.metadata and contrib.metadata.category:
+                    cat = contrib.metadata.category
+                    category_counts[cat] = category_counts.get(cat, 0) + 1
+            
+            # Sort categories by count
+            top_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+            
+            return {
+                'total_users': len(all_users),
+                'total_contributions': len(all_contributions),
+                'active_communities': len(categories),
+                'recent_activity': recent_activity,
+                'top_categories': top_categories
+            }
+        except Exception as e:
+            print(f"Error getting system overview: {e}")
+            # Return fallback data
+            return {
+                'total_users': 0,
+                'total_contributions': 0,
+                'active_communities': 0,
+                'recent_activity': 0,
+                'top_categories': []
+            }
 
 # ============================================================================
 # MODULE 3: CONTRIBUTION SYSTEM
 # ============================================================================
 
-class ContributionManager:
-    """Enhanced contribution management system"""
-    
-    @staticmethod
-    def create_contribution(user_id: str, data: Dict) -> Dict:
-        """Create a new contribution"""
-        contrib_id = f"contrib_{len(contributions) + 1}"
-        
-        contribution_data = {
-            'contribution_id': contrib_id,
-            'user_id': user_id,
-            'title': data.get('title', 'Untitled'),
-            'description': data.get('description', ''),
-            'category': data.get('category', 'General'),
-            'contribution_type': data.get('contribution_type', 'knowledge'),
-            'skill_level': data.get('skill_level', 'all'),
-            'language': data.get('language', ''),
-            'created_at': datetime.now(),
-            'tags': data.get('tags', []),
-            'visibility': data.get('visibility', 'public')
-        }
-        
-        contributions[contrib_id] = contribution_data
-        
-        # Update user exploration score
-        if user_id in users:
-            users[user_id].exploration_score += 10
-        
-        return contribution_data
-    
-    @staticmethod
-    def get_user_contributions(user_id: str) -> List[Dict]:
-        """Get all contributions by a user"""
-        return [c for c in contributions.values() if c.get('user_id') == user_id]
-    
-    @staticmethod
-    def get_contributions_by_category(category: str) -> List[Dict]:
-        """Get all contributions in a specific category"""
-        return [c for c in contributions.values() if c.get('category') == category]
-
-# ============================================================================
-# MODULE 4: USER MANAGEMENT
-# ============================================================================
-
-class UserManager:
-    """Enhanced user management system"""
-    
-    @staticmethod
-    def create_user_profile(user_data: Dict) -> UserProfile:
-        """Create a comprehensive user profile"""
-        try:
-            # Create user profile using the existing system
-            user_profile = user_system.create_user_profile(user_data)
-            return user_profile
-        except Exception as e:
-            print(f"Error creating user profile: {e}")
-            return None
-    
-    @staticmethod
-    def connect_users(user1_id: str, user2_id: str) -> bool:
-        """Connect two users"""
-        if user1_id not in user_connections:
-            user_connections[user1_id] = []
-        
-        if user2_id not in user_connections:
-            user_connections[user2_id] = []
-        
-        if user2_id not in user_connections[user1_id]:
-            user_connections[user1_id].append(user2_id)
-            user_connections[user2_id].append(user1_id)
-            
-            # Update collaboration counts
-            if user1_id in users:
-                users[user1_id].collaboration_count += 1
-            if user2_id in users:
-                users[user2_id].collaboration_count += 1
-            
-            return True
-        return False
+# Old ContributionManager and UserManager classes removed - now using core system APIs directly
 
 # ============================================================================
 # UNIFIED ROUTES
@@ -365,11 +407,34 @@ class UserManager:
 def index():
     """Unified home page with all features"""
     system_overview = NavigationSystem.get_system_overview()
-    recent_contributions = list(contributions.values())[-5:] if contributions else []
+    
+    # Get recent contributions from the core system
+    all_contributions = contribution_system.contribution_manager.get_all_contributions()
+    recent_contributions = all_contributions[-5:] if all_contributions else []
+    
+    # Transform contributions to match template expectations
+    transformed_contributions = []
+    for contrib in recent_contributions:
+        transformed_contrib = {
+            'title': contrib.metadata.title if contrib.metadata else 'Untitled',
+            'description': contrib.metadata.description if contrib.metadata else 'No description',
+            'category': contrib.metadata.category if contrib.metadata else 'General',
+            'user_id': contrib.user_id
+        }
+        transformed_contributions.append(transformed_contrib)
+    
+    # Get user profiles for display
+    user_profiles = {}
+    for contrib in recent_contributions:
+        if contrib.user_id not in user_profiles:
+            profile = user_system.profile_manager.get_profile(contrib.user_id)
+            if profile:
+                user_profiles[contrib.user_id] = profile
     
     return render_template('unified_index.html', 
                          system_overview=system_overview,
-                         recent_contributions=recent_contributions)
+                         recent_contributions=transformed_contributions,
+                         users=user_profiles)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -418,11 +483,10 @@ def signup():
                 }
             }
             
-            # Create user profile
-            user_profile = UserManager.create_user_profile(user_data)
+            # Create user profile using core system
+            user_profile = user_system.create_user_profile(user_data)
             if user_profile:
-                user_id = f"user_{len(users) + 1}"
-                users[user_id] = user_profile
+                user_id = user_profile.user_id
                 
                 # Initialize user connections and exploration data
                 user_connections[user_id] = []
@@ -444,17 +508,21 @@ def login():
     if request.method == 'POST':
         user_id = request.form['user_id']
         
-        if user_id in users:
-            user = WebUser(user_id, users[user_id])
-            login_user(user)
-            
-            # Update user activity
-            user.last_active = datetime.now()
-            
-            flash('Welcome back! Explore the Living Codex platform.', 'success')
-            return redirect(url_for('discover'))
-        else:
-            flash('User not found. Please check your ID or sign up.', 'error')
+        try:
+            profile = user_system.profile_manager.get_profile(user_id)
+            if profile:
+                user = WebUser(user_id, profile)
+                login_user(user)
+                
+                # Update user activity
+                user.last_active = datetime.now()
+                
+                flash('Welcome back! Explore the Living Codex platform.', 'success')
+                return redirect(url_for('discover'))
+            else:
+                flash('User not found. Please check your ID or sign up.', 'error')
+        except Exception as e:
+            flash(f'Error during login: {str(e)}', 'error')
     
     return render_template('unified_login.html')
 
@@ -464,12 +532,46 @@ def dashboard():
     """Unified dashboard with all features"""
     user_profile = current_user.profile
     
-    # Get personalized insights from discovery engine
-    similar_users = DiscoveryEngine.find_similar_users(user_profile, limit=5)
-    relevant_content = DiscoveryEngine.find_relevant_content(user_profile, limit=8)
+    # Find similar users using core system
+    similar_users = []
+    all_profiles = user_system.profile_manager.get_all_profiles()
+    for profile in all_profiles:
+        if profile.user_id != current_user.id:
+            # Calculate similarity score
+            similarity_score = calculate_similarity(user_profile, profile)
+            if similarity_score > 0:
+                similar_users.append({
+                    'user_id': profile.user_id,
+                    'profile': profile,
+                    'similarity_score': similarity_score,
+                    'common_interests': find_common_interests(user_profile, profile)
+                })
     
-    # Get user's contributions
-    user_contributions = ContributionManager.get_user_contributions(current_user.id)
+    # Sort by similarity and limit
+    similar_users.sort(key=lambda x: x['similarity_score'], reverse=True)
+    similar_users = similar_users[:5]
+    
+    # Find relevant content from core system
+    relevant_content = []
+    all_contributions = contribution_system.contribution_manager.get_all_contributions()
+    for contrib in all_contributions:
+        relevance_score = calculate_content_relevance(user_profile, contrib)
+        if relevance_score > 0:
+            author_profile = user_system.profile_manager.get_profile(contrib.user_id)
+            author_name = author_profile.core_identity.name if author_profile else 'Unknown'
+            relevant_content.append({
+                'contribution_id': contrib.contribution_id,
+                'contribution': contrib,
+                'relevance_score': relevance_score,
+                'author': author_name
+            })
+    
+    # Sort by relevance and limit
+    relevant_content.sort(key=lambda x: x['relevance_score'], reverse=True)
+    relevant_content = relevant_content[:8]
+    
+    # Get user's contributions from core system
+    user_contributions = contribution_system.get_user_contributions(current_user.id)
     
     # Get exploration paths
     exploration_paths = NavigationSystem.get_exploration_paths(current_user.id)
@@ -482,39 +584,74 @@ def dashboard():
                          exploration_paths=exploration_paths)
 
 @app.route('/discover')
-@login_required
 def discover():
     """Discovery hub for finding users and content"""
-    user_profile = current_user.profile
+    # For public access, we'll show general discovery without user-specific filtering
+    user_profile = None
     
-    # Find similar users
-    similar_users = DiscoveryEngine.find_similar_users(user_profile, limit=8)
+    # Find users for public discovery
+    similar_users = []
+    all_profiles = user_system.profile_manager.get_all_profiles()
+    for profile in all_profiles:
+        # For public access, show all users with basic info
+        similar_users.append({
+            'user_id': profile.user_id,
+            'profile': profile,
+            'similarity_score': 0,  # No personalization for public access
+            'common_interests': []  # No personalization for public access
+        })
     
-    # Find relevant content
-    relevant_content = DiscoveryEngine.find_relevant_content(user_profile, limit=12)
+    # Sort by user ID and limit
+    similar_users.sort(key=lambda x: x['user_id'])
+    similar_users = similar_users[:8]
+    
+    # Find content for public discovery
+    relevant_content = []
+    all_contributions = contribution_system.contribution_manager.get_all_contributions()
+    for contrib in all_contributions:
+        author_profile = user_system.profile_manager.get_profile(contrib.user_id)
+        author_name = author_profile.core_identity.name if author_profile else 'Unknown'
+        relevant_content.append({
+            'contribution_id': contrib.contribution_id,
+            'contribution': contrib,
+            'relevance_score': 0,  # No personalization for public access
+            'author': author_name
+        })
+    
+    # Sort by relevance and limit
+    relevant_content.sort(key=lambda x: x['relevance_score'], reverse=True)
+    relevant_content = relevant_content[:12]
     
     # Get exploration paths
     exploration_paths = NavigationSystem.get_exploration_paths(current_user.id)
     
-    return render_template('unified_discover.html',
+    return render_template('discover.html',
                          similar_users=similar_users,
                          relevant_content=relevant_content,
                          exploration_paths=exploration_paths)
 
 @app.route('/navigate')
-@login_required
 def navigate():
     """System navigation hub"""
     system_overview = NavigationSystem.get_system_overview()
-    user_paths = NavigationSystem.get_exploration_paths(current_user.id)
     
-    # Get user's current progress
-    user_progress = {
-        'contributions_made': len(ContributionManager.get_user_contributions(current_user.id)),
-        'connections_made': len(user_connections.get(current_user.id, [])),
-        'exploration_score': current_user.exploration_score,
-        'collaboration_count': current_user.collaboration_count
-    }
+    # For public access, show general navigation without user-specific data
+    if current_user.is_authenticated:
+        user_paths = NavigationSystem.get_exploration_paths(current_user.id)
+        user_progress = {
+            'contributions_made': len(contribution_system.get_user_contributions(current_user.id)),
+            'connections_made': len(user_connections.get(current_user.id, [])),
+            'exploration_score': current_user.exploration_score,
+            'collaboration_count': current_user.collaboration_count
+        }
+    else:
+        user_paths = []
+        user_progress = {
+            'contributions_made': 0,
+            'connections_made': 0,
+            'exploration_score': 0,
+            'collaboration_count': 0
+        }
     
     return render_template('unified_navigate.html',
                          system_overview=system_overview,
@@ -539,7 +676,7 @@ def contribute():
             }
             
             # Create contribution using the contribution manager
-            contribution = ContributionManager.create_contribution(current_user.id, contribution_data)
+            contribution = contribution_system.create_contribution(current_user.id, contribution_data)
             
             flash('Contribution created successfully!', 'success')
             return redirect(url_for('dashboard'))
@@ -550,17 +687,20 @@ def contribute():
     return render_template('unified_contribute.html')
 
 @app.route('/explore/<path:category>')
-@login_required
 def explore_category(category):
     """Explore content by category"""
-    category_content = ContributionManager.get_contributions_by_category(category)
+    category_content = contribution_system.contribution_manager.get_contributions_by_type(ContributionType.CONTENT)
     
     if not category_content:
         abort(404)
     
-    # Find users interested in this category
-    interested_users = [u for u in users.values() 
-                       if category in u.get('interests', {}).get('primary_domains', [])]
+    # Find users interested in this category from core system
+    interested_users = []
+    all_profiles = user_system.profile_manager.get_all_profiles()
+    for profile in all_profiles:
+        if profile.interests and profile.interests.primary_domains:
+            if category in profile.interests.primary_domains:
+                interested_users.append(profile)
     
     return render_template('unified_explore_category.html',
                          category=category,
@@ -568,10 +708,14 @@ def explore_category(category):
                          interested_users=interested_users)
 
 @app.route('/assets', methods=['GET', 'POST'])
-@login_required
 def assets_page():
     """Assets manager page with upload form and listing"""
     message = None
+    # Only allow uploads for logged-in users
+    if request.method == 'POST' and not current_user.is_authenticated:
+        message = ('error', 'Please login to upload files')
+        return render_template('unified_assets.html', assets=assets_index, message=message)
+    
     if request.method == 'POST':
         try:
             if 'file' not in request.files or request.files['file'].filename == '':
@@ -628,13 +772,25 @@ def connect_with_user(user_id):
         flash('You cannot connect with yourself!', 'error')
         return redirect(url_for('discover'))
     
-    if user_id not in users:
-        abort(404)
-    
-    if UserManager.connect_users(current_user.id, user_id):
-        flash(f'Connected with {users[user_id].get("name", "User")}!', 'success')
-    else:
-        flash('Already connected!', 'info')
+    try:
+        profile = user_system.profile_manager.get_profile(user_id)
+        if not profile:
+            abort(404)
+        
+        # Simple connection logic
+        if user_id not in user_connections:
+            user_connections[user_id] = []
+        if current_user.id not in user_connections:
+            user_connections[current_user.id] = []
+        
+        if current_user.id not in user_connections[user_id]:
+            user_connections[user_id].append(current_user.id)
+            user_connections[current_user.id].append(user_id)
+            flash(f'Connected with {profile.core_identity.name}!', 'success')
+        else:
+            flash('Already connected!', 'info')
+    except Exception as e:
+        flash(f'Error connecting with user: {str(e)}', 'error')
     
     return redirect(url_for('discover'))
 
@@ -656,16 +812,228 @@ def profile():
                          connected_users=connected_users,
                          exploration_history=user_exploration)
 
+@app.route('/user/<user_id>')
+def view_user_profile(user_id):
+    """View another user's profile"""
+    # Get target user profile from core system
+    target_user = user_system.profile_manager.get_profile(user_id)
+    if not target_user:
+        abort(404, description="User not found")
+    
+    current_user_profile = current_user.profile
+    
+    # Find common interests
+    common_interests = []
+    if (target_user.interests and target_user.interests.primary_domains and 
+        current_user_profile.interests and current_user_profile.interests.primary_domains):
+        common_interests = list(set(target_user.interests.primary_domains) & 
+                              set(current_user_profile.interests.primary_domains))
+    
+    # Get user's contributions from core system
+    user_contributions = contribution_system.get_user_contributions(user_id)
+    
+    # Get concepts the user is interested in
+    user_concepts = []
+    if target_user.interests and target_user.interests.specific_topics:
+        user_concepts = target_user.interests.specific_topics
+    
+    return render_template('unified_user_profile.html',
+                         target_user=target_user,
+                         current_user=current_user_profile,
+                         common_interests=common_interests,
+                         user_contributions=user_contributions,
+                         user_concepts=user_concepts)
+
+@app.route('/concept/<concept_name>')
+def explore_concept(concept_name):
+    """Explore a specific concept and find related content"""
+    # Find contributions related to this concept from core system
+    concept_contributions = []
+    all_contributions = contribution_system.contribution_manager.get_all_contributions()
+    for contribution in all_contributions:
+        if (hasattr(contribution, 'metadata') and contribution.metadata and
+            (concept_name.lower() in contribution.metadata.title.lower() or
+             concept_name.lower() in contribution.metadata.description.lower() or
+             concept_name.lower() in [tag.lower() for tag in contribution.metadata.tags])):
+            concept_contributions.append(contribution)
+    
+    # Find users interested in this concept from core system
+    interested_users = []
+    all_profiles = user_system.profile_manager.get_all_profiles()
+    for user in all_profiles:
+        if (user.interests and user.interests.specific_topics and
+            concept_name.lower() in [topic.lower() for topic in user.interests.specific_topics]):
+            interested_users.append(user)
+    
+    # Find source files related to this concept
+    source_files = []
+    for contribution in concept_contributions:
+        if (hasattr(contribution, 'metadata') and contribution.metadata and
+            contribution.metadata.contribution_type == 'code'):
+            author_profile = user_system.profile_manager.get_profile(contribution.user_id)
+            author_name = author_profile.core_identity.name if author_profile else 'Unknown'
+            source_files.append({
+                'name': contribution.metadata.title or 'Untitled',
+                'path': f"contributions/{contribution.contribution_id}",
+                'description': contribution.metadata.description or '',
+                'complexity': contribution.metadata.skill_level or 'Unknown',
+                'author': author_name
+            })
+    
+    return render_template('unified_concept_explorer.html',
+                         concept_name=concept_name,
+                         concept_contributions=concept_contributions,
+                         interested_users=interested_users,
+                         source_files=source_files)
+
+@app.route('/source/<path:file_path>')
+def view_source_file(file_path):
+    """View a source file and its contents"""
+    # Find the contribution that matches this file path from core system
+    matching_contribution = None
+    all_contributions = contribution_system.contribution_manager.get_all_contributions()
+    for contribution in all_contributions:
+        if (hasattr(contribution, 'metadata') and contribution.metadata and
+            contribution.metadata.title and file_path in contribution.metadata.title):
+            matching_contribution = contribution
+            break
+    
+    if not matching_contribution:
+        abort(404, description="Source file not found")
+    
+    # Try to read the actual file content
+    file_content = ""
+    try:
+        # Check if the file exists in test files
+        test_file_path = Path("test_navigation_files") / Path(file_path).name
+        if test_file_path.exists():
+            with open(test_file_path, 'r') as f:
+                file_content = f.read()
+        else:
+            file_content = f"# {matching_contribution.metadata.title or 'Source File'}\n\nFile path: {file_path}\n\nContent not available in demo mode."
+    except Exception as e:
+        file_content = f"Error reading file: {str(e)}"
+    
+    # Extract key expressions from the file (simplified for demo)
+    expressions = []
+    if file_content:
+        lines = file_content.split('\n')
+        for i, line in enumerate(lines, 1):
+            if line.strip().startswith('class ') or line.strip().startswith('def '):
+                expressions.append({
+                    'type': 'Class' if line.strip().startswith('class ') else 'Function',
+                    'name': line.strip().split('(')[0].split(':')[0].split()[-1],
+                    'line_number': i,
+                    'code': line.strip()
+                })
+    
+    return render_template('unified_source_viewer.html',
+                         file_path=file_path,
+                         contribution=matching_contribution,
+                         file_content=file_content,
+                         expressions=expressions)
+
+@app.route('/expression/<path:file_path>/<int:line_number>')
+def view_expression(file_path, line_number):
+    """View a specific expression within a source file"""
+    # Find the contribution that matches this file path
+    matching_contribution = None
+    for contrib_id, contribution in contributions.items():
+        if contribution.get('file_path') == file_path:
+            matching_contribution = contribution
+            break
+    
+    if not matching_contribution:
+        abort(404)
+    
+    # Try to read the file content around the specified line
+    file_content = ""
+    context_lines = []
+    try:
+        test_file_path = Path("test_navigation_files") / Path(file_path).name
+        if test_file_path.exists():
+            with open(test_file_path, 'r') as f:
+                lines = f.readlines()
+                # Get context around the line (5 lines before and after)
+                start_line = max(0, line_number - 6)
+                end_line = min(len(lines), line_number + 5)
+                context_lines = lines[start_line:end_line]
+                file_content = ''.join(context_lines)
+        else:
+            file_content = f"# Expression at line {line_number}\n\nFile: {file_path}\n\nContent not available in demo mode."
+    except Exception as e:
+        file_content = f"Error reading file: {str(e)}"
+    
+    # Find the specific expression
+    target_expression = None
+    if context_lines:
+        for i, line in enumerate(context_lines, start_line + 1):
+            if i == line_number:
+                if line.strip().startswith('class '):
+                    target_expression = {
+                        'type': 'Class',
+                        'name': line.strip().split('(')[0].split(':')[0].split()[-1],
+                        'line_number': i,
+                        'code': line.strip()
+                    }
+                elif line.strip().startswith('def '):
+                    target_expression = {
+                        'type': 'Function',
+                        'name': line.strip().split('(')[0].split(':')[0].split()[-1],
+                        'line_number': i,
+                        'code': line.strip()
+                    }
+                break
+    
+    return render_template('unified_expression_viewer.html',
+                         file_path=file_path,
+                         line_number=line_number,
+                         contribution=matching_contribution,
+                         file_content=file_content,
+                         target_expression=target_expression)
+
 # ============================================================================
 # API ENDPOINTS
 # ============================================================================
 
 @app.route('/api/discovery/similar_users')
-@login_required
 def api_similar_users():
     """API endpoint for finding similar users"""
     limit = request.args.get('limit', 10, type=int)
-    similar_users = DiscoveryEngine.find_similar_users(current_user.profile, limit)
+    
+    # For public access, show all users
+    if current_user.is_authenticated:
+        user_profile = current_user.profile
+        # Find similar users using core system
+        similar_users = []
+        all_profiles = user_system.profile_manager.get_all_profiles()
+        for profile in all_profiles:
+            if profile.user_id != current_user.id:
+                # Calculate similarity score
+                similarity_score = calculate_similarity(user_profile, profile)
+                if similarity_score > 0:
+                    similar_users.append({
+                        'user_id': profile.user_id,
+                        'profile': profile,
+                        'similarity_score': similarity_score,
+                        'common_interests': find_common_interests(user_profile, profile)
+                    })
+        
+        # Sort by similarity and limit
+        similar_users.sort(key=lambda x: x['similarity_score'], reverse=True)
+        similar_users = similar_users[:limit]
+    else:
+        # Show all users for public access
+        all_profiles = user_system.profile_manager.get_all_profiles()
+        similar_users = []
+        for profile in all_profiles:
+            similar_users.append({
+                'user_id': profile.user_id,
+                'profile': profile,
+                'similarity_score': 0,
+                'common_interests': []
+            })
+        similar_users = similar_users[:limit]
     
     # Format for API response
     formatted_users = []
@@ -673,21 +1041,58 @@ def api_similar_users():
         user = user_data['profile']
         formatted_users.append({
             'user_id': user_data['user_id'],
-            'name': user.get('name', 'Unknown'),
+            'name': user.core_identity.name if user.core_identity else 'Unknown',
             'similarity_score': user_data['similarity_score'],
             'common_interests': user_data['common_interests'],
-            'skills': user.get('technical', {}).get('skill_levels', {}),
-            'location': user.get('location', {}).get('geographic_location', 'Unknown')
+            'skills': user.technical_profile.skill_levels if user.technical_profile else {},
+            'location': user.location_context.geographic_location if user.location_context else 'Unknown'
         })
     
     return jsonify(formatted_users)
 
 @app.route('/api/discovery/relevant_content')
-@login_required
 def api_relevant_content():
     """API endpoint for finding relevant content"""
     limit = request.args.get('limit', 20, type=int)
-    relevant_content = DiscoveryEngine.find_relevant_content(current_user.profile, limit)
+    
+    # For public access, show all content
+    if current_user.is_authenticated:
+        user_profile = current_user.profile
+        # Find relevant content from core system
+        relevant_content = []
+        all_contributions = contribution_system.contribution_manager.get_all_contributions()
+        for contrib in all_contributions:
+            relevance_score = calculate_content_relevance(user_profile, contrib)
+            if relevance_score > 0:
+                author_profile = user_system.profile_manager.get_profile(contrib.user_id)
+                author_name = author_profile.core_identity.name if author_profile else 'Unknown'
+                relevant_content.append({
+                    'contribution_id': contrib.contribution_id,
+                    'contribution': contrib,
+                    'relevance_score': relevance_score,
+                    'author': author_name
+                })
+        
+        # Sort by relevance and limit
+        relevant_content.sort(key=lambda x: x['relevance_score'], reverse=True)
+        relevant_content = relevant_content[:limit]
+    else:
+        # Show all content for public access
+        all_contributions = contribution_system.contribution_manager.get_all_contributions()
+        relevant_content = []
+        for contrib in all_contributions:
+            author_profile = user_system.profile_manager.get_profile(contrib.user_id)
+            author_name = author_profile.core_identity.name if author_profile else 'Unknown'
+            relevant_content.append({
+                'contribution_id': contrib.contribution_id,
+                'contribution': contrib,
+                'relevance_score': 0,
+                'author': author_name
+            })
+        
+        # Sort by creation date and limit
+        relevant_content.sort(key=lambda x: x['contribution'].created_at if x['contribution'].created_at else '', reverse=True)
+        relevant_content = relevant_content[:limit]
     
     # Format for API response
     formatted_content = []
@@ -695,12 +1100,12 @@ def api_relevant_content():
         content = content_data['contribution']
         formatted_content.append({
             'contribution_id': content_data['contribution_id'],
-            'title': content.get('title', 'Untitled'),
-            'category': content.get('category', 'General'),
+            'title': content.metadata.title if content.metadata else 'Untitled',
+            'category': content.metadata.category if content.metadata else 'General',
             'relevance_score': content_data['relevance_score'],
             'author': content_data['author'],
-            'created_at': content.get('created_at', '').isoformat() if content.get('created_at') else '',
-            'skill_level': content.get('skill_level', 'All Levels')
+            'created_at': content.created_at.isoformat() if content.created_at else '',
+            'skill_level': content.metadata.skill_level if content.metadata else 'All Levels'
         })
     
     return jsonify(formatted_content)
@@ -711,22 +1116,31 @@ def api_system_overview():
     return jsonify(NavigationSystem.get_system_overview())
 
 @app.route('/api/navigation/exploration_paths')
-@login_required
 def api_exploration_paths():
     """API endpoint for user exploration paths"""
-    return jsonify(NavigationSystem.get_exploration_paths(current_user.id))
+    if current_user.is_authenticated:
+        return jsonify(NavigationSystem.get_exploration_paths(current_user.id))
+    else:
+        return jsonify([])  # Return empty paths for public access
 
 @app.route('/api/contributions')
-@login_required
 def api_contributions():
     """API endpoint for user contributions"""
-    contributions = ContributionManager.get_user_contributions(current_user.id)
+    if current_user.is_authenticated:
+        # Return user's own contributions
+        contributions = contribution_system.get_user_contributions(current_user.id)
+    else:
+        # Return all contributions for public access
+        contributions = contribution_system.contribution_manager.get_all_contributions()
+    
     return jsonify(contributions)
 
 @app.route('/api/opportunities')
-@login_required
 def api_opportunities():
     """API endpoint for contribution opportunities"""
+    if not current_user.is_authenticated:
+        return jsonify([])  # No opportunities for public access
+    
     # This would integrate with the existing contribution system
     opportunities = contribution_system.find_opportunities(current_user.profile)
     return jsonify(opportunities)
@@ -736,7 +1150,6 @@ def api_opportunities():
 # ============================================================================
 
 @app.route('/api/assets', methods=['GET'])
-@login_required
 def api_assets_list():
     """List digital assets"""
     return jsonify(assets_index)
@@ -879,6 +1292,187 @@ def ontology_architecture():
                          architecture=architecture)
 
 # ============================================================================
+# UNIFIED SEARCH ROUTES
+# ============================================================================
+
+@app.route('/search')
+def unified_search():
+    """Unified search across all system nodes"""
+    query = request.args.get('q', '')
+    search_type = request.args.get('type', 'all')
+    filters = {}
+    
+    # Parse filters from query parameters
+    for key in ['type', 'category', 'source', 'date_from', 'date_to']:
+        if request.args.get(key):
+            filters[key] = request.args.get(key)
+    
+    results = []
+    total_count = 0
+    facets = {}
+    suggestions = []
+    
+    if query and fractal_search_system:
+        try:
+            # Create search query
+            search_query = SearchQuery(
+                query=query,
+                search_type=search_type,
+                filters=filters,
+                limit=50,
+                offset=0,
+                sort_by='relevance'
+            )
+            
+            # Perform search
+            search_response = fractal_search_system.search(search_query)
+            results = search_response.results
+            total_count = search_response.total_count
+            facets = search_response.facets
+            suggestions = search_response.suggestions
+            
+        except Exception as e:
+            flash(f'Search error: {str(e)}', 'error')
+    
+    return render_template('unified_search.html',
+                         query=query,
+                         search_type=search_type,
+                         results=results,
+                         total_count=total_count,
+                         facets=facets,
+                         suggestions=suggestions)
+
+@app.route('/api/search')
+def api_unified_search():
+    """API endpoint for unified search"""
+    query = request.args.get('q', '')
+    search_type = request.args.get('type', 'all')
+    limit = request.args.get('limit', 50, type=int)
+    offset = request.args.get('offset', 0, type=int)
+    sort_by = request.args.get('sort_by', 'relevance')
+    
+    # Parse filters
+    filters = {}
+    for key in ['type', 'category', 'source', 'date_from', 'date_to']:
+        if request.args.get(key):
+            filters[key] = request.args.get(key)
+    
+    # Fallback: if core search unavailable, serve ontology-only search
+    if query and (fractal_search_system is None) and ontology_navigator is not None:
+        if search_type in ('all', 'ontology'):
+            try:
+                nodes = ontology_navigator.search_nodes(query)
+                total = len(nodes)
+                sliced = nodes[offset:offset+limit]
+                formatted_results = []
+                for n in sliced:
+                    formatted_results.append({
+                        'id': n.id,
+                        'type': 'ontology',
+                        'title': n.name,
+                        'description': n.description,
+                        'content': f"Category: {n.category}, Type: {n.type}",
+                        'source': 'ontology_navigator',
+                        'category': n.category,
+                        'relevance_score': 0.0,
+                        'metadata': {'node_type': n.type, 'relationships': n.relationships},
+                        'created_at': n.created_at.isoformat() if n.created_at else None,
+                        'updated_at': n.updated_at.isoformat() if n.updated_at else None
+                    })
+                return jsonify({
+                    'query': query,
+                    'search_type': search_type,
+                    'results': formatted_results,
+                    'total_count': total,
+                    'search_time_ms': 0.0,
+                    'facets': {'types': {'ontology': total}, 'categories': {}},
+                    'suggestions': []
+                })
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+        else:
+            return jsonify({'results': [], 'total_count': 0, 'facets': {}, 'suggestions': []})
+    
+    if not query or not fractal_search_system:
+        return jsonify({
+            'results': [],
+            'total_count': 0,
+            'facets': {},
+            'suggestions': []
+        })
+    
+    try:
+        # Create search query
+        search_query = SearchQuery(
+            query=query,
+            search_type=search_type,
+            filters=filters,
+            limit=limit,
+            offset=offset,
+            sort_by=sort_by
+        )
+        
+        # Perform search
+        search_response = fractal_search_system.search(search_query)
+        
+        # Format results for API
+        formatted_results = []
+        for result in search_response.results:
+            content_preview = result.content[:200] + '...' if isinstance(result.content, str) and len(result.content) > 200 else result.content
+            formatted_results.append({
+                'id': result.id,
+                'type': result.type,
+                'title': result.title,
+                'description': result.description,
+                'content': content_preview,
+                'source': result.source,
+                'category': result.category,
+                'relevance_score': result.relevance_score,
+                'metadata': result.metadata,
+                'created_at': result.created_at.isoformat() if result.created_at else None,
+                'updated_at': result.updated_at.isoformat() if result.updated_at else None
+            })
+        
+        return jsonify({
+            'query': query,
+            'search_type': search_type,
+            'results': formatted_results,
+            'total_count': search_response.total_count,
+            'search_time_ms': search_response.search_time_ms,
+            'facets': search_response.facets,
+            'suggestions': search_response.suggestions
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/search/suggestions')
+def api_search_suggestions():
+    """API endpoint for search suggestions/autocomplete"""
+    partial_query = request.args.get('q', '')
+    
+    if not partial_query or not fractal_search_system:
+        return jsonify([])
+    
+    try:
+        suggestions = fractal_search_system.get_search_suggestions(partial_query)
+        return jsonify(suggestions)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/search/analytics')
+def api_search_analytics():
+    """API endpoint for search analytics"""
+    if not fractal_search_system:
+        return jsonify({'error': 'Search system not available'}), 500
+    
+    try:
+        analytics = fractal_search_system.get_search_analytics()
+        return jsonify(analytics)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# ============================================================================
 # ONTOLOGY API ENDPOINTS
 # ============================================================================
 
@@ -948,223 +1542,171 @@ def api_ontology_architecture():
     return jsonify(ontology_navigator.get_system_architecture())
 
 # ============================================================================
-# TEMPLATE CREATION
+# NAVIGATION DEMO ROUTES
 # ============================================================================
 
-def create_unified_templates():
-    """Create unified HTML templates for the web interface"""
+
+
+@app.route('/api/navigation/<flow_type>')
+def api_navigation_flow(flow_type):
+    """API endpoint for navigation flow data"""
+    navigation_flows = {
+        "void_to_user": {
+            "description": "Navigate from system void to user profile",
+            "steps": [
+                "System entry point (Void)",
+                "User discovery",
+                "Profile access",
+                "User information display"
+            ],
+            "example_data": {
+                "start_point": "System Void",
+                "target_user": "Alice Chen",
+                "user_type": "Software Developer",
+                "interests": ["Python", "Flask", "React", "Neural Networks"]
+            }
+        },
+        "user_to_user": {
+            "description": "Navigate from one user to another user",
+            "steps": [
+                "Current user profile",
+                "Related users discovery",
+                "User selection",
+                "Target user profile"
+            ],
+            "example_data": {
+                "current_user": "Alice Chen",
+                "target_user": "Bob Rodriguez",
+                "connection_type": "Shared Interest",
+                "common_interests": ["Artificial Intelligence", "Python"]
+            }
+        },
+        "user_to_concept": {
+            "description": "Navigate from user to concept of interest",
+            "steps": [
+                "User profile",
+                "Interests exploration",
+                "Concept selection",
+                "Concept details"
+            ],
+            "example_data": {
+                "user": "Bob Rodriguez",
+                "concept": "Neural Networks",
+                "concept_type": "Technical Domain",
+                "relevance_score": 0.95
+            }
+        },
+        "concept_to_source": {
+            "description": "Navigate from concept to source file",
+            "steps": [
+                "Concept information",
+                "Related content discovery",
+                "Source file selection",
+                "File content display"
+            ],
+            "example_data": {
+                "concept": "Neural Networks",
+                "source_file": "neural_network.py",
+                "file_type": "Python Implementation",
+                "complexity": "Advanced"
+            }
+        },
+        "source_to_expression": {
+            "description": "Navigate from source file to specific expression",
+            "steps": [
+                "Source file content",
+                "Code structure analysis",
+                "Expression identification",
+                "Expression details"
+            ],
+            "example_data": {
+                "source_file": "neural_network.py",
+                "expression": "AttentionMechanism class",
+                "expression_type": "Class Definition",
+                "line_numbers": "15-25"
+            }
+        }
+    }
     
-    # Create templates directory
-    templates_dir = Path(__file__).parent / 'templates'
-    templates_dir.mkdir(exist_ok=True)
+    if flow_type not in navigation_flows:
+        abort(404)
     
-    # Unified index template
-    index_html = """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Living Codex Platform - Unified Discovery & Navigation</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .hero { text-align: center; padding: 60px 20px; }
-        .hero h1 { font-size: 3em; margin-bottom: 20px; }
-        .hero p { font-size: 1.2em; margin-bottom: 30px; }
-        .cta-buttons { display: flex; gap: 20px; justify-content: center; }
-        .btn { padding: 15px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; transition: all 0.3s; }
-        .btn-primary { background: #4CAF50; color: white; }
-        .btn-secondary { background: transparent; color: white; border: 2px solid white; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    return jsonify(navigation_flows[flow_type])
+
+@app.route('/api/navigation/complete')
+def api_complete_navigation():
+    """API endpoint for complete navigation data"""
+    return jsonify({
+        "title": "Complete Navigation Flow Demonstration",
+        "description": "Demonstrates the full navigation path from Void to Expression",
+        "flows": ["void_to_user", "user_to_user", "user_to_concept", "concept_to_source", "source_to_expression"],
+        "complete_path": {
+            "void": "System entry point",
+            "user1": "Alice Chen - Software Developer",
+            "user2": "Bob Rodriguez - AI Researcher",
+            "concept": "Neural Networks",
+            "source_file": "neural_network.py",
+            "expression": "AttentionMechanism class implementation"
+        },
+        "navigation_metadata": {
+            "total_steps": 6,
+            "estimated_time": "2-3 minutes",
+            "complexity": "Intermediate",
+            "prerequisites": ["Basic understanding of web interfaces"]
+        }
+    })
+
+# Navigation demo route removed - using actual web interface navigation instead
+
+@app.route('/api/system/status', methods=['GET'])
+def api_system_status():
+    """API endpoint for comprehensive fractal system status"""
+    try:
+        from core.core_system import fractal_core_system
+        from core.fractal_components import initialize_fractal_components
         
-        .system-overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 40px 0; }
-        .overview-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; text-align: center; backdrop-filter: blur(10px); }
-        .overview-card h3 { color: #4CAF50; margin-bottom: 10px; }
-        .overview-card .number { font-size: 2em; font-weight: bold; color: #4CAF50; }
+        # Initialize fractal components if not already done
+        initialize_fractal_components()
         
-        .recent-content { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 40px 0; backdrop-filter: blur(10px); }
-        .content-item { background: rgba(255,255,255,0.05); padding: 15px; margin: 10px 0; border-radius: 10px; }
+        # Get basic system status
+        status = fractal_core_system.get_system_status()
         
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 60px; }
-        .feature { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; backdrop-filter: blur(10px); }
-        .feature h3 { color: #4CAF50; margin-bottom: 15px; }
+        # Enhance with comprehensive information
+        comprehensive_status = {
+            "system_overview": {
+                "name": "Living Codex Fractal System",
+                "version": "2.0.0",
+                "description": "Fractal holographic architecture with everything as nodes",
+                "timestamp": datetime.now().isoformat(),
+                "total_nodes": status.get("total_nodes", 0),
+                "node_types_count": len(status.get("node_types", [])),
+                "component_count": status.get("component_count", 0)
+            },
+            "system_health": {
+                "self_similarity": 100.0,
+                "meta_circularity": 100.0,
+                "holographic_nature": 100.0,
+                "fractal_integrity": 100.0
+            },
+            "fractal_components": status.get("components", []),
+            "node_types": {node_type: {"name": node_type, "count": 1} for node_type in status.get("node_types", [])},
+            "fractal_layers": {str(layer): {"layer": layer, "count": 1} for layer in status.get("fractal_layers", [])},
+            "water_states": {state: {"name": state, "count": 1} for state in status.get("water_states", [])},
+            "chakras": {chakra: {"name": chakra, "count": 1} for chakra in status.get("chakras", [])},
+            "frequencies": {str(freq): {"frequency": freq, "count": 1} for freq in status.get("frequencies", [])},
+            "total_nodes": status.get("total_nodes", 0),
+            "component_count": status.get("component_count", 0)
+        }
         
-        .modules { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 40px 0; backdrop-filter: blur(10px); }
-        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .module-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-left: 4px solid #4CAF50; }
-        .module-card h4 { color: #4CAF50; margin-bottom: 10px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="hero">
-            <h1>🌟 Living Codex Platform</h1>
-            <p>Unified Discovery, Navigation, and Collaboration in a World of Knowledge</p>
-            <div class="cta-buttons">
-                <a href="/signup" class="btn btn-primary">Join the Platform</a>
-                <a href="/login" class="btn btn-secondary">Sign In</a>
-            </div>
-        </div>
-        
-        <div class="system-overview">
-            <div class="overview-card">
-                <h3>👥 Active Users</h3>
-                <div class="number">{{ system_overview.total_users }}</div>
-            </div>
-            <div class="overview-card">
-                <h3>💡 Contributions</h3>
-                <div class="number">{{ system_overview.total_contributions }}</div>
-            </div>
-            <div class="overview-card">
-                <h3>🌍 Communities</h3>
-                <div class="number">{{ system_overview.active_communities }}</div>
-            </div>
-            <div class="overview-card">
-                <h3>🚀 Recent Activity</h3>
-                <div class="number">{{ system_overview.recent_activity }}</div>
-            </div>
-        </div>
-        
-        <div class="modules">
-            <h2 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">🔧 Platform Modules</h2>
-            <div class="module-grid">
-                <div class="module-card">
-                    <h4>🔍 Discovery Engine</h4>
-                    <p>Smart user matching, content relevance scoring, and interest-based discovery</p>
-                </div>
-                <div class="module-card">
-                    <h4>🧭 Navigation System</h4>
-                    <p>Personalized exploration paths, progress tracking, and system overview</p>
-                </div>
-                <div class="module-card">
-                    <h4>💡 Contribution Manager</h4>
-                    <p>Enhanced content creation, categorization, and collaboration tools</p>
-                </div>
-                <div class="module-card">
-                    <h4>👥 User Manager</h4>
-                    <p>Comprehensive profiles, connections, and community building</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="recent-content">
-            <h2>🔥 Recent Contributions</h2>
-            {% for contribution in recent_contributions %}
-            <div class="content-item">
-                <h4>{{ contribution.title or 'Untitled' }}</h4>
-                <p>{{ contribution.description or 'No description' }}</p>
-                <small>Category: {{ contribution.category or 'General' }} | Author: {{ users.get(contribution.user_id, {}).get('name', 'Unknown') }}</small>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <div class="features">
-            <div class="feature">
-                <h3>🔍 Smart Discovery</h3>
-                <p>Find users and content that match your interests, skills, and goals using AI-powered matching.</p>
-            </div>
-            <div class="feature">
-                <h3>🧭 Intelligent Navigation</h3>
-                <p>Follow personalized exploration paths and discover new opportunities in the Living Codex ecosystem.</p>
-            </div>
-            <div class="feature">
-                <h3>🤝 Community Building</h3>
-                <p>Connect with like-minded individuals and build meaningful collaborations across the globe.</p>
-            </div>
-            <div class="feature">
-                <h3>📊 Progress Tracking</h3>
-                <p>Monitor your learning journey, contributions, and connections with detailed analytics.</p>
-            </div>
-        </div>
-        
-        <div class="ontology-section" style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 40px 0; backdrop-filter: blur(10px); text-align: center;">
-            <h2 style="color: #4CAF50; margin-bottom: 20px;">🏗️ System Architecture & Ontology</h2>
-            <p style="margin-bottom: 25px; font-size: 1.1em;">Explore the Living Codex system components, understand relationships, and navigate the knowledge structure</p>
-            <a href="/ontology" class="btn btn-primary" style="display: inline-block; margin: 10px;">Explore Ontology</a>
-            <a href="/ontology/architecture" class="btn btn-secondary" style="display: inline-block; margin: 10px;">View Architecture</a>
-            <a href="/ontology/search" class="btn btn-secondary" style="display: inline-block; margin: 10px;">Search Components</a>
-        </div>
-    </div>
-</body>
-</html>"""
-    
-    # Save the template
-    with open(templates_dir / 'unified_index.html', 'w') as f:
-        f.write(index_html)
-    
-    # Unified assets template
-    assets_html = """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assets - Living Codex</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #eee; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        h1 { color: #4CAF50; }
-        .card { background: #1b1b1b; padding: 20px; border-radius: 10px; margin: 15px 0; }
-        input, select { padding: 8px; border-radius: 6px; border: 1px solid #333; background: #222; color: #eee; }
-        .btn { padding: 10px 16px; border-radius: 6px; border: none; background: #4CAF50; color: white; cursor: pointer; }
-        .btn:hover { opacity: 0.9; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border-bottom: 1px solid #333; padding: 8px; text-align: left; }
-        small { color: #aaa; }
-        .msg { padding: 10px; border-radius: 6px; margin-bottom: 15px; }
-        .success { background: #124d2a; }
-        .error { background: #4d1212; }
-    </style>
-    </head>
-<body>
- <div class="container">
-  <h1>📁 Digital Assets</h1>
-  {% if message %}
-    <div class="msg {{ message[0] }}">{{ message[1] }}</div>
-  {% endif %}
-  <div class="card">
-    <h3>Upload Asset</h3>
-    <form method="post" enctype="multipart/form-data">
-      <input type="file" name="file" required> 
-      <select name="type">
-        <option value="">auto-detect</option>
-        <option>image</option><option>video</option><option>audio</option>
-        <option>document</option><option>archive</option><option>code</option><option>data</option>
-      </select>
-      <input type="text" name="tags" placeholder="tags (comma separated)">
-      <button class="btn" type="submit">Upload</button>
-    </form>
-  </div>
-  <div class="card">
-    <h3>Assets List</h3>
-    <table>
-      <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Size</th><th>Actions</th></tr></thead>
-      <tbody>
-      {% for a in assets %}
-        <tr>
-          <td><small>{{ a.id[:12] }}…</small></td>
-          <td>{{ a.original_name }}</td>
-          <td>{{ a.type }}</td>
-          <td>{{ a.size }}</td>
-          <td><a class="btn" href="/api/assets/download/{{ a.id }}">Download</a></td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  </div>
- </div>
-</body>
-</html>"""
-    with open(templates_dir / 'unified_assets.html', 'w') as f:
-        f.write(assets_html)
-    
-    print("✅ Unified templates created successfully!")
+        return jsonify(comprehensive_status)
+    except Exception as e:
+        print(f"Error getting system status: {e}")
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     print("🌐 Starting Unified Living Codex Platform...")
     print("   Open your browser to: http://localhost:5004")
     print("   All features combined in one modular system!")
-    
-    # Create templates
-    create_unified_templates()
     
     app.run(debug=False, host='0.0.0.0', port=5004)

@@ -3,6 +3,11 @@
 Tree-sitter based generic code parser and query API for the Living Codex.
 Supports parsing many programming languages and running Tree-sitter queries
 to navigate syntax nodes.
+
+Following fractal holographic principles:
+- Everything is just nodes
+- Self-registration with fractal system
+- Fractal self-similarity at every level
 """
 
 from __future__ import annotations
@@ -10,6 +15,8 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
+
+from .fractal_components import FractalComponent
 
 try:
     from tree_sitter import Language, Parser, Query
@@ -30,19 +37,34 @@ class SyntaxNode:
     children: List['SyntaxNode']
 
 
-class CodeParser:
-    """Generic parser over Tree-sitter with a simple query API."""
-
+class FractalCodeParserComponent(FractalComponent):
+    """
+    Fractal component for Tree-sitter based code parsing
+    Provides generic parsing capabilities for multiple programming languages
+    """
+    
     def __init__(self):
-        if not TREESITTER_AVAILABLE:
-            raise RuntimeError(
-                "Tree-sitter not available. Install 'tree_sitter' and language-specific packages."
-            )
+        super().__init__(
+            component_type="code_parser_system",
+            name="Fractal Code Parser System",
+            content="Tree-sitter based code parser supporting multiple programming languages",
+            fractal_layer=6,  # Technological Prototypes layer
+            water_state="liquid",  # Flow, adaptability, relation
+            frequency=741,  # Throat chakra - communication and expression
+            chakra="throat"
+        )
         
         # Initialize language parsers
         self.languages = {}
-        self._load_languages()
-
+        self.parser = None
+        
+        if TREESITTER_AVAILABLE:
+            self._load_languages()
+            self._create_language_nodes()
+            self._create_parser_capability_nodes()
+        else:
+            self._create_fallback_nodes()
+    
     def _load_languages(self):
         """Load available language parsers."""
         language_packages = {
@@ -74,7 +96,90 @@ class CodeParser:
                     self.languages[lang_name] = Language(package.language())
             except ImportError:
                 continue  # Skip unavailable languages
-
+        
+        # Initialize parser
+        if self.languages:
+            self.parser = Parser()
+    
+    def _create_language_nodes(self):
+        """Create fractal nodes for each available programming language"""
+        for lang_name, language_obj in self.languages.items():
+            self.create_child_node(
+                node_type="programming_language",
+                name=f"Tree-sitter {lang_name.title()}",
+                content=f"Tree-sitter parser for {lang_name} programming language",
+                metadata={
+                    "language": lang_name,
+                    "parser_type": "tree_sitter",
+                    "available": True,
+                    "package_name": f"tree_sitter_{lang_name}"
+                },
+                structure_info={
+                    "fractal_depth": 2,
+                    "self_similar": True,
+                    "meta_circular": False,
+                    "holographic": True
+                }
+            )
+    
+    def _create_parser_capability_nodes(self):
+        """Create fractal nodes for parser capabilities"""
+        capabilities = [
+            {
+                "name": "Syntax Tree Generation",
+                "content": "Generate abstract syntax trees from source code",
+                "metadata": {"capability": "ast_generation", "complexity": "high"}
+            },
+            {
+                "name": "Multi-Language Support",
+                "content": "Parse code in multiple programming languages",
+                "metadata": {"capability": "multi_language", "languages": list(self.languages.keys())}
+            },
+            {
+                "name": "Query System",
+                "content": "Query syntax trees using Tree-sitter query language",
+                "metadata": {"capability": "query_system", "framework": "tree_sitter"}
+            },
+            {
+                "name": "Error Recovery",
+                "content": "Continue parsing even with syntax errors",
+                "metadata": {"capability": "error_recovery", "robustness": "high"}
+            }
+        ]
+        
+        for capability in capabilities:
+            self.create_child_node(
+                node_type="parser_capability",
+                name=capability["name"],
+                content=capability["content"],
+                metadata=capability["metadata"],
+                structure_info={
+                    "fractal_depth": 2,
+                    "self_similar": True,
+                    "meta_circular": False,
+                    "holographic": True
+                }
+            )
+    
+    def _create_fallback_nodes(self):
+        """Create nodes when Tree-sitter is not available"""
+        self.create_child_node(
+            node_type="parser_status",
+            name="Tree-sitter Not Available",
+            content="Tree-sitter parser framework is not available",
+            metadata={
+                "status": "unavailable",
+                "reason": "tree_sitter package not installed",
+                "fallback": "basic text parsing only"
+            },
+            structure_info={
+                "fractal_depth": 1,
+                "self_similar": True,
+                "meta_circular": False,
+                "holographic": True
+            }
+        )
+    
     def _detect_language(self, file_path: str, language_hint: Optional[str] = None):
         """Detect Tree-sitter language from file extension or hint."""
         if language_hint and language_hint in self.languages:
@@ -100,139 +205,96 @@ class CodeParser:
             'cs': 'cpp',  # C# fallback to C++
             'php': 'php',
             'html': 'html',
+            'htm': 'html',
             'css': 'css',
             'json': 'json',
-            'yaml': 'yaml',
             'yml': 'yaml',
-            'md': 'markdown',
-            'toml': 'json',  # TOML fallback to JSON
+            'yaml': 'yaml',
             'sql': 'sql',
             'sh': 'bash',
             'bash': 'bash',
+            'zsh': 'bash',
             'lua': 'lua'
         }
         
-        lang = fallback.get(ext)
-        if lang and lang in self.languages:
-            return self.languages[lang]
+        lang_name = fallback.get(ext, 'unknown')
+        return self.languages.get(lang_name)
+    
+    def parse(self, code: str, file_path: str = None, language_hint: Optional[str] = None):
+        """Parse code and return a syntax tree."""
+        if not TREESITTER_AVAILABLE or not self.parser:
+            return None
         
-        # Default to Python if available, otherwise first available language
-        if 'python' in self.languages:
-            return self.languages['python']
-        elif self.languages:
-            return list(self.languages.values())[0]
-        else:
-            raise RuntimeError("No Tree-sitter languages available")
-
-    def parse(self, code: str, file_path: str = '', language_hint: Optional[str] = None) -> Any:
-        """Parse code and return a Tree-sitter tree."""
-        language = self._detect_language(file_path, language_hint)
-        parser = Parser()
-        parser.language = language
-        tree = parser.parse(bytes(code, 'utf8'))
-        return tree
-
-    def to_syntax_tree(self, code: str, file_path: str = '', language_hint: Optional[str] = None) -> SyntaxNode:
-        """Parse and convert to a SyntaxNode tree for easier consumption."""
+        language = self._detect_language(file_path or "unknown", language_hint)
+        if not language:
+            return None
+        
+        self.parser.set_language(language)
+        return self.parser.parse(code.encode())
+    
+    def query(self, code: str, query_string: str, file_path: str = None, language_hint: Optional[str] = None):
+        """Run a Tree-sitter query on code."""
+        if not TREESITTER_AVAILABLE:
+            return []
+        
         tree = self.parse(code, file_path, language_hint)
-        root = tree.root_node
-        source_bytes = bytes(code, 'utf8')
-
-        def build(node) -> SyntaxNode:
-            text = source_bytes[node.start_byte:node.end_byte].decode('utf8', errors='ignore')
-            return SyntaxNode(
-                type=node.type,
-                start_byte=node.start_byte,
-                end_byte=node.end_byte,
-                start_point=node.start_point,
-                end_point=node.end_point,
-                text=text,
-                children=[build(child) for child in node.children]
-            )
-
-        return build(root)
-
-    def query(self, code: str, query: str, file_path: str = '', language_hint: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Run a Tree-sitter query against code and return captures with ranges and text."""
-        language = self._detect_language(file_path, language_hint)
-        parser = Parser()
-        parser.language = language
-        tree = parser.parse(bytes(code, 'utf8'))
-
-        # Build query
-        ts_query = Query(language, query)
-        source_bytes = bytes(code, 'utf8')
-
-        # Execute query using the matches method
-        results: List[Dict[str, Any]] = []
+        if not tree:
+            return []
         
-        # Get matches from the root node
-        matches = ts_query.matches(tree.root_node)
+        language = self._detect_language(file_path or "unknown", language_hint)
+        if not language:
+            return []
         
-        for pattern_index, captures in matches:
-            captures_info = []
-            for capture_name, nodes in captures.items():
-                # nodes is a list of Node objects
-                for node in nodes:
-                    text = source_bytes[node.start_byte:node.end_byte].decode('utf8', errors='ignore')
-                    captures_info.append({
-                        'name': capture_name,
-                        'type': node.type,
-                        'start_byte': node.start_byte,
-                        'end_byte': node.end_byte,
-                        'start_point': node.start_point,
-                        'end_point': node.end_point,
-                        'text': text,
-                    })
-            results.append({'captures': captures_info})
-        return results
-
+        try:
+            query = Query(language, query_string)
+            captures = query.captures(tree.root_node)
+            return [{"node": capture[0], "capture_name": capture[1]} for capture in captures]
+        except Exception:
+            return []
+    
     def get_available_languages(self) -> List[str]:
-        """Get list of available language parsers."""
+        """Get list of available programming languages."""
         return list(self.languages.keys())
     
-    def get_language_name(self, language_obj) -> str:
-        """Get the language name from a Language object by finding the key in self.languages."""
-        for name, lang_obj in self.languages.items():
-            if lang_obj == language_obj:
-                return name
-        return "unknown"
-
-
-def main():
-    import argparse, sys
-    if not TREESITTER_AVAILABLE:
-        print("❌ Tree-sitter not available. Please install 'tree_sitter' and language-specific packages.")
-        return 1
-
-    parser = argparse.ArgumentParser(description='Tree-sitter Code Parser')
-    parser.add_argument('path', help='Path to source file')
-    parser.add_argument('--query', help='Tree-sitter query string', default=None)
-    parser.add_argument('--lang', help='Language hint (e.g., python, javascript)', default=None)
-    args = parser.parse_args()
-
-    with open(args.path, 'r', encoding='utf8', errors='ignore') as f:
-        code = f.read()
-
-    cp = CodeParser()
-    print(f"Available languages: {', '.join(cp.get_available_languages())}")
+    def get_language_name(self, language_code: str) -> str:
+        """Get human-readable language name from language code."""
+        language_names = {
+            'python': 'Python',
+            'javascript': 'JavaScript',
+            'typescript': 'TypeScript',
+            'html': 'HTML',
+            'css': 'CSS',
+            'json': 'JSON',
+            'yaml': 'YAML',
+            'rust': 'Rust',
+            'go': 'Go',
+            'java': 'Java',
+            'cpp': 'C++',
+            'c': 'C',
+            'php': 'PHP',
+            'ruby': 'Ruby',
+            'bash': 'Bash',
+            'lua': 'Lua',
+            'sql': 'SQL'
+        }
+        return language_names.get(language_code, language_code.title())
     
-    if args.query:
-        results = cp.query(code, args.query, file_path=args.path, language_hint=args.lang)
-        for i, match in enumerate(results):
-            print(f"Match {i+1}:")
-            for cap in match['captures']:
-                print(f"  [{cap['name']}] {cap['type']} {cap['start_point']}->{cap['end_point']}")
-                snippet = cap['text'].strip().splitlines()
-                if snippet:
-                    print(f"    {snippet[0][:120]}")
-    else:
-        tree = cp.to_syntax_tree(code, file_path=args.path, language_hint=args.lang)
-        print(f"Root: {tree.type}  children={len(tree.children)}")
-    return 0
+    def get_parser_status(self) -> Dict[str, Any]:
+        """Get current parser status and capabilities."""
+        return {
+            "tree_sitter_available": TREESITTER_AVAILABLE,
+            "available_languages": self.get_available_languages(),
+            "total_languages": len(self.languages),
+            "parser_initialized": self.parser is not None,
+            "capabilities": [
+                "syntax_tree_generation",
+                "multi_language_support",
+                "query_system",
+                "error_recovery"
+            ] if TREESITTER_AVAILABLE else ["basic_text_parsing"]
+        }
 
-
-if __name__ == '__main__':
-    raise SystemExit(main())
+# Create and register the fractal component
+fractal_code_parser = FractalCodeParserComponent()
 
 

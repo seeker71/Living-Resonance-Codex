@@ -92,7 +92,7 @@
             <div class="content-item">
                 <h4>{{ contribution.title or 'Untitled' }}</h4>
                 <p>{{ contribution.description or 'No description' }}</p>
-                <small>Category: {{ contribution.category or 'General' }} | Author: {{ users.get(contribution.user_id, {}).get('name', 'Unknown') }}</small>
+                <small>Category: {{ contribution.category or 'General' }} | Author: {{ users.get(contribution.user_id, {}).core_identity.name if users.get(contribution.user_id) else 'Unknown' }}</small>
             </div>
             {% endfor %}
         </div>
@@ -116,12 +116,26 @@
             </div>
         </div>
         
+        <div class="search-section" style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 40px 0; backdrop-filter: blur(10px); text-align: center;">
+            <h2 style="color: #4CAF50; margin-bottom: 20px;">🔍 Unified Search Across All Nodes</h2>
+            <p style="margin-bottom: 25px; font-size: 1.1em;">Search across users, content, code, assets, and ontology components in one unified interface</p>
+            <a href="/search" class="btn btn-primary" style="display: inline-block; margin: 10px;">Start Searching</a>
+            <a href="/discover" class="btn btn-secondary" style="display: inline-block; margin: 10px;">Browse Discovery</a>
+        </div>
+        
         <div class="ontology-section" style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 40px 0; backdrop-filter: blur(10px); text-align: center;">
             <h2 style="color: #4CAF50; margin-bottom: 20px;">🏗️ System Architecture & Ontology</h2>
             <p style="margin-bottom: 25px; font-size: 1.1em;">Explore the Living Codex system components, understand relationships, and navigate the knowledge structure</p>
             <a href="/ontology" class="btn btn-primary" style="display: inline-block; margin: 10px;">Explore Ontology</a>
             <a href="/ontology/architecture" class="btn btn-secondary" style="display: inline-block; margin: 10px;">View Architecture</a>
             <a href="/ontology/search" class="btn btn-secondary" style="display: inline-block; margin: 10px;">Search Components</a>
+        </div>
+        
+        <div class="navigation-demo-section" style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; margin: 40px 0; backdrop-filter: blur(10px); text-align: center;">
+            <h2 style="color: #4CAF50; margin-bottom: 20px;">🧭 Complete Navigation Demo</h2>
+            <p style="margin-bottom: 25px; font-size: 1.1em;">Experience the full navigation flow from Void to User to User to Concept to Source File to Expression</p>
+            <a href="/navigation-demo" class="btn btn-primary" style="display: inline-block; margin: 10px;">Start Navigation Demo</a>
+            <a href="/demo/void-to-user" class="btn btn-secondary" style="display: inline-block; margin: 10px;">Step-by-Step Demo</a>
         </div>
     </div>
 </body>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Living Codex Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .nav-links { text-align: center; margin: 30px 0; }
+        .nav-links a { margin: 0 15px; color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .profile-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); }
+        .profile-section h2 { color: #4CAF50; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        
+        .user-info { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .user-info h3 { color: #4CAF50; margin-bottom: 15px; }
+        
+        .interests-list, .skills-list { list-style: none; padding: 0; }
+        .interests-list li, .skills-list li { background: rgba(255,255,255,0.1); padding: 8px 12px; margin: 5px 0; border-radius: 6px; }
+        
+        .concepts-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; }
+        .concept-card { background: rgba(255,255,255,0.05); padding: 20px; margin: 15px 0; border-radius: 10px; border-left: 4px solid #4CAF50; }
+        .concept-card h4 { color: #4CAF50; margin-bottom: 10px; }
+        
+        .btn { padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; transition: all 0.3s; display: inline-block; margin: 5px; }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn-secondary { background: transparent; color: white; border: 2px solid white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .common-interests { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin: 20px 0; }
+        .common-interests h3 { color: #4CAF50; margin-bottom: 15px; }
+        .interest-badge { background: #4CAF50; color: white; padding: 5px 15px; border-radius: 20px; display: inline-block; margin: 5px; }
+        
+        .contributions-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; }
+        .contribution-card { background: rgba(255,255,255,0.05); padding: 20px; margin: 15px 0; border-radius: 10px; }
+        .contribution-card h4 { color: #4CAF50; margin-bottom: 10px; }
+        
+        @media (max-width: 768px) {
+            .profile-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👤 User Profile</h1>
+            <p>Explore {{ target_user.core_identity.name }}'s profile and interests</p>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/discover">🔍 Discover</a>
+            <a href="/navigate">🧭 Navigate</a>
+            <a href="/contribute">💡 Contribute</a>
+            <a href="/profile">👤 My Profile</a>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+        
+        <div class="profile-grid">
+            <!-- User Information -->
+            <div class="profile-section">
+                <h2>👤 Basic Information</h2>
+                <div class="user-info">
+                    <h3>{{ target_user.core_identity.name }}</h3>
+                    <p><strong>User ID:</strong> {{ target_user.user_id }}</p>
+                    <p><strong>Pronouns:</strong> {{ target_user.core_identity.pronouns }}</p>
+                    <p><strong>Cultural Background:</strong> {{ target_user.core_identity.cultural_background }}</p>
+                    <p><strong>Life Experience:</strong> {{ target_user.core_identity.life_experience }}</p>
+                    <p><strong>Location:</strong> {{ target_user.location_context.geographic_location }}</p>
+                    <p><strong>Timezone:</strong> {{ target_user.location_context.timezone }}</p>
+                </div>
+            </div>
+            
+            <!-- Technical Profile -->
+            <div class="profile-section">
+                <h2>🔧 Technical Skills</h2>
+                <div class="user-info">
+                    <h3>Skill Levels</h3>
+                    {% if target_user.technical_profile and target_user.technical_profile.skill_levels %}
+                        <ul class="skills-list">
+                            {% for skill, level in target_user.technical_profile.skill_levels.items() %}
+                            <li><strong>{{ skill.replace('_', ' ').title() }}:</strong> {{ level.value.title() }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No skill levels specified</p>
+                    {% endif %}
+                    
+                    <h3>Preferred Tools</h3>
+                    {% if target_user.technical_profile and target_user.technical_profile.preferred_tools %}
+                        <ul class="skills-list">
+                            {% for tool in target_user.technical_profile.preferred_tools %}
+                            <li>{{ tool }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No preferred tools specified</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Common Interests -->
+        {% if common_interests %}
+        <div class="common-interests">
+            <h3>🤝 Common Interests</h3>
+            <p>You and {{ target_user.core_identity.name }} share these interests:</p>
+            {% for interest in common_interests %}
+            <span class="interest-badge">{{ interest.replace('_', ' ').title() }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- User's Interests -->
+        <div class="profile-section">
+            <h2>💡 Interests & Expertise</h2>
+            <div class="user-info">
+                <h3>Primary Domains</h3>
+                {% if target_user.interests and target_user.interests.primary_domains %}
+                    <ul class="interests-list">
+                        {% for domain in target_user.interests.primary_domains %}
+                        <li>{{ domain.replace('_', ' ').title() }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No primary domains specified</p>
+                {% endif %}
+                
+                <h3>Specific Topics</h3>
+                {% if target_user.interests and target_user.interests.specific_topics %}
+                    <ul class="interests-list">
+                        {% for topic in target_user.interests.specific_topics %}
+                        <li>{{ topic }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No specific topics specified</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Concepts the User is Interested In -->
+        {% if user_concepts %}
+        <div class="concepts-section">
+            <h2>🧠 Concepts of Interest</h2>
+            <p>Explore concepts that {{ target_user.core_identity.name }} is interested in:</p>
+            {% for concept in user_concepts %}
+            <div class="concept-card">
+                <h4>{{ concept }}</h4>
+                <p>Click below to explore this concept and find related content and source files.</p>
+                <a href="/concept/{{ concept }}" class="btn btn-primary">Explore {{ concept }}</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- User's Contributions -->
+        {% if user_contributions %}
+        <div class="contributions-section">
+            <h2>💡 Contributions</h2>
+            <p>{{ target_user.core_identity.name }}'s contributions to the Living Codex:</p>
+            {% for contribution in user_contributions %}
+            <div class="contribution-card">
+                <h4>{{ contribution.get('title', 'Untitled') }}</h4>
+                <p>{{ contribution.get('description', 'No description available') }}</p>
+                <p><strong>Category:</strong> {{ contribution.get('category', 'General') }}</p>
+                <p><strong>Type:</strong> {{ contribution.get('contribution_type', 'Unknown') }}</p>
+                <p><strong>Status:</strong> {{ contribution.get('status', 'Unknown') }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="/discover" class="btn btn-secondary">← Back to Discovery</a>
+            <a href="/connect/{{ target_user.user_id }}" class="btn btn-primary">Connect with {{ target_user.core_identity.name }}</a>
+        </div>
+    </div>
+</body>
+</html>

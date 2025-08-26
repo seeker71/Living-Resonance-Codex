@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concept Explorer - Living Codex Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .nav-links { text-align: center; margin: 30px 0; }
+        .nav-links a { margin: 0 15px; color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .concept-header { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; text-align: center; }
+        .concept-header h2 { color: #4CAF50; margin-bottom: 15px; font-size: 2em; }
+        .concept-description { font-size: 1.2em; opacity: 0.9; }
+        
+        .exploration-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+        .exploration-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); }
+        .exploration-section h3 { color: #4CAF50; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        
+        .source-files-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; }
+        .source-file-card { background: rgba(255,255,255,0.05); padding: 20px; margin: 15px 0; border-radius: 10px; border-left: 4px solid #4CAF50; }
+        .source-file-card h4 { color: #4CAF50; margin-bottom: 10px; }
+        .file-path { font-family: monospace; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 5px; margin: 10px 0; }
+        
+        .user-card, .content-card { background: rgba(255,255,255,0.05); padding: 20px; margin: 15px 0; border-radius: 10px; }
+        .user-card h4, .content-card h4 { color: #4CAF50; margin-bottom: 10px; }
+        
+        .btn { padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; transition: all 0.3s; display: inline-block; margin: 5px; }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn-secondary { background: transparent; color: white; border: 2px solid white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .navigation-progress { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; text-align: center; }
+        .progress-steps { display: flex; justify-content: center; align-items: center; margin: 30px 0; flex-wrap: wrap; }
+        .step { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center; margin: 0 10px; min-width: 150px; }
+        .step-number { background: #4CAF50; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; }
+        .step-title { font-weight: bold; margin-bottom: 5px; }
+        .step-description { font-size: 0.9em; opacity: 0.8; }
+        .arrow { color: #4CAF50; font-size: 1.5em; margin: 0 15px; }
+        
+        @media (max-width: 768px) {
+            .exploration-grid { grid-template-columns: 1fr; }
+            .progress-steps { flex-direction: column; }
+            .step { margin: 10px 0; }
+            .arrow { transform: rotate(90deg); margin: 10px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Concept Explorer</h1>
+            <p>Explore the concept of "{{ concept_name }}" and discover related content</p>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/discover">🔍 Discover</a>
+            <a href="/navigate">🧭 Navigate</a>
+            <a href="/contribute">💡 Contribute</a>
+            <a href="/profile">👤 Profile</a>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+        
+        <!-- Concept Header -->
+        <div class="concept-header">
+            <h2>{{ concept_name }}</h2>
+            <p class="concept-description">
+                Explore this concept to find related content, source files, and users with similar interests.
+                Navigate from concept to source code to specific expressions.
+            </p>
+        </div>
+        
+        <!-- Navigation Progress -->
+        <div class="navigation-progress">
+            <h3>🧭 Navigation Progress</h3>
+            <div class="progress-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Void</div>
+                    <div class="step-description">System entry</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">User</div>
+                    <div class="step-description">Alice Chen</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">User</div>
+                    <div class="step-description">Bob Rodriguez</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Concept</div>
+                    <div class="step-description">{{ concept_name }}</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Source Files</div>
+                    <div class="step-description">Code implementations</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Expressions</div>
+                    <div class="step-description">Specific code</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="exploration-grid">
+            <!-- Users Interested in This Concept -->
+            <div class="exploration-section">
+                <h3>👥 Users Interested in {{ concept_name }}</h3>
+                {% if interested_users %}
+                    {% for user in interested_users %}
+                    <div class="user-card">
+                        <h4>{{ user.core_identity.name }}</h4>
+                        <p><strong>User ID:</strong> {{ user.user_id }}</p>
+                        <p><strong>Location:</strong> {{ user.location_context.geographic_location }}</p>
+                        <p><strong>Expertise:</strong> 
+                            {% if user.technical_profile and user.technical_profile.skill_levels %}
+                                {% for skill, level in user.technical_profile.skill_levels.items() %}
+                                    {{ skill.replace('_', ' ').title() }}: {{ level.value.title() }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </p>
+                        <a href="/user/{{ user.user_id }}" class="btn btn-primary">View Profile</a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No users found specifically interested in this concept.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Related Content -->
+            <div class="exploration-section">
+                <h3>💡 Related Content</h3>
+                {% if concept_contributions %}
+                    {% for contribution in concept_contributions %}
+                    <div class="content-card">
+                        <h4>{{ contribution.get('title', 'Untitled') }}</h4>
+                        <p>{{ contribution.get('description', 'No description available') }}</p>
+                        <p><strong>Category:</strong> {{ contribution.get('category', 'General') }}</p>
+                        <p><strong>Type:</strong> {{ contribution.get('contribution_type', 'Unknown') }}</p>
+                        <p><strong>Author:</strong> 
+                            {% if contribution.get('user_id') in users %}
+                                {{ users[contribution.get('user_id')].core_identity.name }}
+                            {% else %}
+                                Unknown
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No related content found for this concept.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Source Files Section -->
+        {% if source_files %}
+        <div class="source-files-section">
+            <h3>📁 Source Files Implementing {{ concept_name }}</h3>
+            <p>Navigate from concept to source code implementations:</p>
+            {% for source_file in source_files %}
+            <div class="source-file-card">
+                <h4>{{ source_file.name }}</h4>
+                <div class="file-path">{{ source_file.path }}</div>
+                <p>{{ source_file.description }}</p>
+                <p><strong>Type:</strong> {{ source_file.type }}</p>
+                <p><strong>Complexity:</strong> {{ source_file.complexity }}</p>
+                <p><strong>Author:</strong> {{ source_file.author }}</p>
+                <a href="/source/{{ source_file.path }}" class="btn btn-primary">View Source Code</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="source-files-section">
+            <h3>📁 Source Files</h3>
+            <p>No source files found for this concept yet.</p>
+        </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="/discover" class="btn btn-secondary">← Back to Discovery</a>
+            <a href="/navigate" class="btn btn-primary">Continue Navigation</a>
+        </div>
+    </div>
+</body>
+</html>

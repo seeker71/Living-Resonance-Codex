@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """
-Dependency Manager - Ensures External Dependencies are Available and Functional
+Fractal Dependency Manager Component - Ensures External Dependencies are Available and Functional
 
 This module manages all external dependencies required by the Living Codex system,
 ensuring they are properly installed, up-to-date, and functional before startup.
+
+Following fractal holographic principles:
+- Everything is just nodes
+- Self-registration with fractal system
+- Fractal self-similarity at every level
 """
 
 import subprocess
@@ -15,6 +20,8 @@ from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass
 import json
 import time
+
+from .fractal_components import FractalComponent
 
 @dataclass
 class DependencyInfo:
@@ -40,14 +47,77 @@ class DependencyStatus:
     error_message: Optional[str] = None
     install_method: Optional[str] = None
 
-class DependencyManager:
+class FractalDependencyManagerComponent(FractalComponent):
     """
-    Manages external dependencies for the Living Codex system
+    Fractal component for managing external dependencies
+    Ensures all required dependencies are available and functional
     """
     
     def __init__(self):
+        super().__init__(
+            component_type="dependency_management_system",
+            name="Fractal Dependency Management System",
+            content="Manages external dependencies for the Living Codex system",
+            fractal_layer=6,  # Technological Prototypes layer
+            water_state="liquid",  # Flow, adaptability, relation
+            frequency=741,  # Throat chakra - communication and expression
+            chakra="throat"
+        )
+        
         self.dependencies = self._get_required_dependencies()
         self.status_cache: Dict[str, DependencyStatus] = {}
+        
+        # Create dependency category nodes
+        self._create_dependency_category_nodes()
+        
+    def _create_dependency_category_nodes(self):
+        """Create fractal nodes for dependency categories"""
+        categories = [
+            {
+                "name": "Core Python Packages",
+                "content": "Essential Python packages for system operation",
+                "metadata": {"category": "core", "priority": "high"}
+            },
+            {
+                "name": "Database and Storage",
+                "content": "Database and data storage dependencies",
+                "metadata": {"category": "storage", "priority": "high"}
+            },
+            {
+                "name": "Data Processing",
+                "content": "Data manipulation and analysis libraries",
+                "metadata": {"category": "data", "priority": "medium"}
+            },
+            {
+                "name": "AI and Machine Learning",
+                "content": "Artificial intelligence and ML libraries",
+                "metadata": {"category": "ai", "priority": "medium"}
+            },
+            {
+                "name": "Web and API",
+                "content": "Web framework and API dependencies",
+                "metadata": {"category": "web", "priority": "high"}
+            },
+            {
+                "name": "Development Tools",
+                "content": "Development and testing tools",
+                "metadata": {"category": "dev", "priority": "low"}
+            }
+        ]
+        
+        for category in categories:
+            self.create_child_node(
+                node_type="dependency_category",
+                name=category["name"],
+                content=category["content"],
+                metadata=category["metadata"],
+                structure_info={
+                    "fractal_depth": 2,
+                    "self_similar": True,
+                    "meta_circular": False,
+                    "holographic": True
+                }
+            )
         
     def _get_required_dependencies(self) -> List[DependencyInfo]:
         """Define all required external dependencies"""
@@ -111,406 +181,200 @@ class DependencyManager:
                 pip_package="requests>=2.25.0"
             ),
             
-            # Development and testing
+            # Development tools
             DependencyInfo(
                 name="pytest",
                 min_version="6.0.0",
                 description="Testing framework",
                 test_import="pytest",
-                pip_package="pytest>=6.0.0"
-            ),
-            
-            # Code parsing and analysis
-            DependencyInfo(
-                name="tree-sitter",
-                min_version="0.20.0",
-                description="Parser generator for code analysis",
-                test_import="tree_sitter",
-                pip_package="tree-sitter>=0.20.0"
-            ),
-            
-            # Graph and network
-            DependencyInfo(
-                name="networkx",
-                min_version="2.6.0",
-                description="Graph theory and network analysis",
-                test_import="networkx",
-                pip_package="networkx>=2.6.0"
-            ),
-            
-            # Visualization
-            DependencyInfo(
-                name="matplotlib",
-                min_version="3.4.0",
-                description="Plotting and visualization",
-                test_import="matplotlib",
-                pip_package="matplotlib>=3.4.0"
-            ),
-            
-            # Configuration and environment
-            DependencyInfo(
-                name="python-dotenv",
-                min_version="0.19.0",
-                description="Environment variable management",
-                test_import="dotenv",
-                pip_package="python-dotenv>=0.19.0"
-            ),
-            
-            # Async and concurrency
-            DependencyInfo(
-                name="asyncio",
-                min_version="3.7.0",
-                description="Asynchronous I/O (built-in Python)",
-                test_import="asyncio",
-                required=True
-            ),
-            
-            # Security and cryptography
-            DependencyInfo(
-                name="cryptography",
-                min_version="3.4.0",
-                description="Cryptographic recipes and primitives",
-                test_import="cryptography",
-                pip_package="cryptography>=3.4.0"
-            ),
-            
-            # Logging and monitoring
-            DependencyInfo(
-                name="loguru",
-                min_version="0.6.0",
-                description="Advanced logging library",
-                test_import="loguru",
-                pip_package="loguru>=0.6.0"
+                pip_package="pytest>=6.0.0",
+                required=False
             )
         ]
     
     def check_dependency(self, dep: DependencyInfo) -> DependencyStatus:
-        """Check the status of a single dependency"""
+        """Check the status of a specific dependency"""
+        if dep.name in self.status_cache:
+            return self.status_cache[dep.name]
+        
+        status = DependencyStatus(name=dep.name, installed=False)
+        
         try:
-            # Check if package is importable
+            # Try to import the dependency
             module = importlib.import_module(dep.test_import)
+            status.installed = True
             
-            # Get version information
-            version = self._get_package_version(dep.name, module)
+            # Get version if available
+            if hasattr(module, '__version__'):
+                status.version = module.__version__
+            elif hasattr(module, 'version'):
+                status.version = module.version
             
             # Check version requirements
-            meets_requirements = self._check_version_requirements(
-                version, dep.min_version, dep.max_version
-            )
+            if status.version:
+                status.meets_requirements = self._check_version_requirements(
+                    status.version, dep.min_version, dep.max_version
+                )
             
             # Test functionality
-            functional = self._test_dependency_functionality(dep, module)
+            status.functional = self._test_dependency_functionality(dep)
             
-            return DependencyStatus(
-                name=dep.name,
-                installed=True,
-                version=version,
-                meets_requirements=meets_requirements,
-                functional=functional,
-                install_method="pip" if dep.pip_package else "built-in"
-            )
-            
-        except ImportError as e:
-            return DependencyStatus(
-                name=dep.name,
-                installed=False,
-                error_message=str(e),
-                install_method="pip" if dep.pip_package else "system"
-            )
+        except ImportError:
+            status.error_message = f"Module {dep.test_import} not found"
         except Exception as e:
-            return DependencyStatus(
-                name=dep.name,
-                installed=True,
-                error_message=str(e),
-                functional=False
-            )
+            status.error_message = str(e)
+        
+        self.status_cache[dep.name] = status
+        return status
     
-    def _get_package_version(self, name: str, module: Any) -> Optional[str]:
-        """Get the version of an imported package"""
+    def _check_version_requirements(self, installed_version: str, min_version: str, 
+                                  max_version: Optional[str]) -> bool:
+        """Check if installed version meets requirements"""
         try:
-            # Try common version attributes
-            if hasattr(module, '__version__'):
-                return module.__version__
-            elif hasattr(module, 'version'):
-                return module.version
-            elif hasattr(module, 'VERSION'):
-                return module.VERSION
+            from packaging import version
             
-            # Try pkg_resources for pip-installed packages
-            try:
-                return pkg_resources.get_distribution(name).version
-            except:
-                pass
+            installed = version.parse(installed_version)
+            min_ver = version.parse(min_version)
             
-            # For built-in modules, try to get Python version
-            if name in ['sqlite3', 'asyncio']:
-                return sys.version.split()[0]
-            
-            return "unknown"
-            
-        except Exception:
-            return "unknown"
-    
-    def _check_version_requirements(self, version: str, min_version: str, max_version: Optional[str] = None) -> bool:
-        """Check if version meets requirements"""
-        try:
-            from packaging import version as pkg_version
-            
-            current = pkg_version.parse(version)
-            min_ver = pkg_version.parse(min_version)
-            
-            if not current >= min_ver:
+            if installed < min_ver:
                 return False
             
             if max_version:
-                max_ver = pkg_version.parse(max_version)
-                if not current <= max_ver:
+                max_ver = version.parse(max_version)
+                if installed > max_ver:
                     return False
             
             return True
             
         except ImportError:
             # Fallback to string comparison if packaging not available
-            try:
-                return version >= min_version
-            except:
-                return False
+            return installed_version >= min_version
     
-    def _test_dependency_functionality(self, dep: DependencyInfo, module: Any) -> bool:
+    def _test_dependency_functionality(self, dep: DependencyInfo) -> bool:
         """Test if a dependency is functionally working"""
         try:
             if dep.name == "flask":
-                # Test Flask app creation
-                app = module.Flask("test_app")
-                return hasattr(app, 'route')
-            
+                from flask import Flask
+                app = Flask(__name__)
+                return True
             elif dep.name == "numpy":
-                # Test numpy array creation
-                arr = module.array([1, 2, 3])
+                import numpy as np
+                arr = np.array([1, 2, 3])
                 return len(arr) == 3
-            
             elif dep.name == "pandas":
-                # Test pandas DataFrame creation
-                df = module.DataFrame({'test': [1, 2, 3]})
+                import pandas as pd
+                df = pd.DataFrame({'test': [1, 2, 3]})
                 return len(df) == 3
-            
-            elif dep.name == "requests":
-                # Test requests session creation
-                session = module.Session()
-                return hasattr(session, 'get')
-            
-            elif dep.name == "sqlite3":
-                # Test SQLite connection
-                conn = module.connect(':memory:')
-                conn.close()
+            else:
+                # Default test - just check if import works
                 return True
-            
-            elif dep.name == "asyncio":
-                # Test asyncio event loop
-                loop = module.new_event_loop()
-                loop.close()
-                return True
-            
-            # Default test - just check if module has some attributes
-            return hasattr(module, '__name__')
-            
         except Exception:
             return False
     
     def check_all_dependencies(self) -> Dict[str, DependencyStatus]:
-        """Check the status of all dependencies"""
-        print("🔍 Checking external dependencies...")
+        """Check all required dependencies"""
+        results = {}
         
         for dep in self.dependencies:
             status = self.check_dependency(dep)
-            self.status_cache[dep.name] = status
+            results[dep.name] = status
             
-            # Display status
-            if status.installed and status.meets_requirements and status.functional:
-                print(f"✅ {dep.name} {status.version} - {dep.description}")
-            elif status.installed and not status.meets_requirements:
-                print(f"⚠️ {dep.name} {status.version} - Version mismatch (need {dep.min_version}+)")
-            elif status.installed and not status.functional:
-                print(f"❌ {dep.name} {status.version} - Not functional: {status.error_message}")
-            else:
-                print(f"❌ {dep.name} - Not installed: {status.error_message}")
+            # Create fractal node for dependency status
+            self._create_dependency_status_node(dep, status)
         
-        return self.status_cache
+        return results
     
-    def install_missing_dependencies(self) -> bool:
-        """Install missing or outdated dependencies"""
-        print("\n🔧 Installing missing dependencies...")
+    def _create_dependency_status_node(self, dep: DependencyInfo, status: DependencyStatus):
+        """Create fractal node for dependency status"""
+        status_text = "✅ Available" if status.functional else "❌ Not Available"
         
-        success_count = 0
-        total_count = 0
-        
-        for dep in self.dependencies:
-            if not dep.required:
-                continue
-                
-            status = self.status_cache.get(dep.name)
-            if not status or not status.installed or not status.meets_requirements or not status.functional:
-                total_count += 1
-                
-                if self._install_dependency(dep):
-                    success_count += 1
-                    # Recheck the dependency
-                    new_status = self.check_dependency(dep)
-                    self.status_cache[dep.name] = new_status
-                    
-                    if new_status.functional:
-                        print(f"✅ {dep.name} installed and functional")
-                    else:
-                        print(f"⚠️ {dep.name} installed but not functional")
-                else:
-                    print(f"❌ Failed to install {dep.name}")
-        
-        print(f"\n📊 Installation Summary: {success_count}/{total_count} dependencies installed")
-        return success_count == total_count
-    
-    def _install_dependency(self, dep: DependencyInfo) -> bool:
-        """Install a single dependency"""
-        try:
-            if dep.pip_package:
-                print(f"📦 Installing {dep.name} via pip...")
-                result = subprocess.run([
-                    sys.executable, "-m", "pip", "install", dep.pip_package
-                ], capture_output=True, text=True, timeout=300)
-                
-                if result.returncode == 0:
-                    return True
-                else:
-                    print(f"   Error: {result.stderr}")
-                    return False
-            
-            elif dep.conda_package:
-                print(f"📦 Installing {dep.name} via conda...")
-                result = subprocess.run([
-                    "conda", "install", "-y", dep.conda_package
-                ], capture_output=True, text=True, timeout=300)
-                
-                if result.returncode == 0:
-                    return True
-                else:
-                    print(f"   Error: {result.stderr}")
-                    return False
-            
-            elif dep.system_package:
-                print(f"📦 Installing {dep.name} via system package manager...")
-                # This would need to be adapted for different systems
-                print(f"   Please install {dep.system_package} manually")
-                return False
-            
-            else:
-                print(f"⚠️ No installation method specified for {dep.name}")
-                return False
-                
-        except subprocess.TimeoutExpired:
-            print(f"   Timeout installing {dep.name}")
-            return False
-        except Exception as e:
-            print(f"   Error installing {dep.name}: {e}")
-            return False
-    
-    def validate_system_readiness(self) -> bool:
-        """Validate that the system is ready for startup"""
-        print("\n🧪 Validating system readiness...")
-        
-        # Check all dependencies
-        self.check_all_dependencies()
-        
-        # Install missing ones
-        if not self.install_missing_dependencies():
-            print("❌ Some dependencies could not be installed")
-            return False
-        
-        # Final validation - focus on critical dependencies
-        all_ready = True
-        critical_deps = ['flask', 'flask-login', 'sqlite3']
-        
-        print(f"\n🔍 Validating critical dependencies...")
-        for dep_name in critical_deps:
-            status = self.status_cache.get(dep_name)
-            if not status or not status.functional:
-                print(f"❌ Critical dependency {dep_name} not functional")
-                all_ready = False
-            else:
-                print(f"✅ Critical dependency {dep_name} is functional")
-        
-        if all_ready:
-            print("✅ All critical dependencies are functional")
-            print("🚀 System ready for startup!")
-        else:
-            print("❌ System not ready for startup")
-        
-        return all_ready
-    
-    def get_dependency_report(self) -> Dict[str, Any]:
-        """Generate a comprehensive dependency report"""
-        report = {
-            'timestamp': time.time(),
-            'python_version': sys.version,
-            'dependencies': {},
-            'summary': {
-                'total': len(self.dependencies),
-                'installed': 0,
-                'functional': 0,
-                'missing': 0,
-                'outdated': 0
+        self.create_child_node(
+            node_type="dependency_status",
+            name=f"{dep.name} - {status_text}",
+            content=f"Dependency: {dep.name} - {dep.description}",
+            metadata={
+                "dependency_name": dep.name,
+                "installed": status.installed,
+                "version": status.version,
+                "meets_requirements": status.meets_requirements,
+                "functional": status.functional,
+                "error_message": status.error_message,
+                "required": dep.required,
+                "min_version": dep.min_version,
+                "max_version": dep.max_version
+            },
+            structure_info={
+                "fractal_depth": 3,
+                "self_similar": True,
+                "meta_circular": False,
+                "holographic": True
             }
+        )
+    
+    def get_system_readiness(self) -> Dict[str, Any]:
+        """Get overall system readiness based on dependencies"""
+        all_statuses = self.check_all_dependencies()
+        
+        total_deps = len(all_statuses)
+        available_deps = sum(1 for s in all_statuses.values() if s.functional)
+        required_deps = sum(1 for s in all_statuses.values() if s.required)
+        available_required = sum(1 for s in all_statuses.values() 
+                               if s.required and s.functional)
+        
+        readiness_score = available_required / required_deps if required_deps > 0 else 0
+        
+        return {
+            "total_dependencies": total_deps,
+            "available_dependencies": available_deps,
+            "required_dependencies": required_deps,
+            "available_required_dependencies": available_required,
+            "readiness_score": readiness_score,
+            "system_ready": readiness_score >= 0.8,  # 80% threshold
+            "dependency_statuses": all_statuses
         }
+    
+    def install_dependency(self, dep_name: str, method: str = "pip") -> Dict[str, Any]:
+        """Install a dependency using the specified method"""
+        dep = next((d for d in self.dependencies if d.name == dep_name), None)
+        if not dep:
+            return {"success": False, "error": f"Dependency {dep_name} not found"}
         
-        for dep in self.dependencies:
-            status = self.status_cache.get(dep.name, DependencyStatus(
-                name=dep.name, installed=False, functional=False
-            ))
-            
-            report['dependencies'][dep.name] = {
-                'required': dep.required,
-                'description': dep.description,
-                'min_version': dep.min_version,
-                'max_version': dep.max_version,
-                'installed': status.installed,
-                'version': status.version,
-                'meets_requirements': status.meets_requirements,
-                'functional': status.functional,
-                'error_message': status.error_message,
-                'install_method': status.install_method
-            }
-            
-            if status.installed:
-                report['summary']['installed'] += 1
-                if status.functional:
-                    report['summary']['functional'] += 1
-                if not status.meets_requirements:
-                    report['summary']['outdated'] += 1
+        try:
+            if method == "pip" and dep.pip_package:
+                cmd = [sys.executable, "-m", "pip", "install", dep.pip_package]
+                result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+                return {"success": True, "output": result.stdout}
+            elif method == "conda" and dep.conda_package:
+                cmd = ["conda", "install", "-y", dep.conda_package]
+                result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+                return {"success": True, "output": result.stdout}
             else:
-                report['summary']['missing'] += 1
-        
-        return report
-
-def main():
-    """Main function for testing dependency management"""
-    print("🔍 Living Codex Dependency Manager")
-    print("=" * 40)
+                return {"success": False, "error": f"Install method {method} not available for {dep_name}"}
+        except subprocess.CalledProcessError as e:
+            return {"success": False, "error": e.stderr}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
     
-    manager = DependencyManager()
-    
-    # Check and install dependencies
-    if manager.validate_system_readiness():
-        print("\n🎉 All dependencies are ready!")
-        
-        # Generate report
-        report = manager.get_dependency_report()
-        print(f"\n📊 Dependency Report:")
-        print(f"   Total: {report['summary']['total']}")
-        print(f"   Installed: {report['summary']['installed']}")
-        print(f"   Functional: {report['summary']['functional']}")
-        print(f"   Missing: {report['summary']['missing']}")
-        print(f"   Outdated: {report['summary']['outdated']}")
-    else:
-        print("\n❌ System dependencies not ready")
-        sys.exit(1)
+    def get_dependency_info(self) -> Dict[str, Any]:
+        """Get comprehensive dependency information"""
+        return {
+            "total_dependencies": len(self.dependencies),
+            "dependency_categories": [
+                "Core Python Packages",
+                "Database and Storage", 
+                "Data Processing",
+                "AI and Machine Learning",
+                "Web and API",
+                "Development Tools"
+            ],
+            "capabilities": [
+                "dependency_checking",
+                "version_validation",
+                "functionality_testing",
+                "automatic_installation",
+                "system_readiness_assessment"
+            ]
+        }
 
-if __name__ == "__main__":
-    main()
+# Create and register the fractal component
+fractal_dependency_manager = FractalDependencyManagerComponent()

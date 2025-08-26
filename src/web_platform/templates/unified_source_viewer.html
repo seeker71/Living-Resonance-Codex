@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Source Code Viewer - Living Codex Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .nav-links { text-align: center; margin: 30px 0; }
+        .nav-links a { margin: 0 15px; color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .file-info { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+        .file-info h2 { color: #4CAF50; margin-bottom: 20px; }
+        .file-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .detail-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; }
+        .detail-label { font-weight: bold; color: #4CAF50; margin-bottom: 5px; }
+        
+        .source-code { background: rgba(0,0,0,0.3); padding: 25px; border-radius: 15px; margin: 30px 0; }
+        .source-code h3 { color: #4CAF50; margin-bottom: 20px; }
+        .code-content { background: rgba(0,0,0,0.5); padding: 20px; border-radius: 10px; overflow-x: auto; }
+        .code-content pre { margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; line-height: 1.4; }
+        
+        .expressions-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; }
+        .expression-card { background: rgba(255,255,255,0.05); padding: 20px; margin: 15px 0; border-radius: 10px; border-left: 4px solid #4CAF50; }
+        .expression-card h4 { color: #4CAF50; margin-bottom: 10px; }
+        .expression-type { background: #4CAF50; color: white; padding: 5px 10px; border-radius: 15px; display: inline-block; margin: 10px 0; font-size: 0.9em; }
+        .line-number { font-family: monospace; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 5px; margin: 10px 0; }
+        
+        .navigation-progress { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; text-align: center; }
+        .progress-steps { display: flex; justify-content: center; align-items: center; margin: 30px 0; flex-wrap: wrap; }
+        .step { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center; margin: 0 10px; min-width: 120px; }
+        .step-number { background: #4CAF50; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: bold; font-size: 0.9em; }
+        .step-title { font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+        .step-description { font-size: 0.8em; opacity: 0.8; }
+        .arrow { color: #4CAF50; font-size: 1.2em; margin: 0 10px; }
+        .current-step { background: rgba(76, 175, 80, 0.2); border: 2px solid #4CAF50; }
+        
+        .btn { padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; transition: all 0.3s; display: inline-block; margin: 5px; }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn-secondary { background: transparent; color: white; border: 2px solid white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        @media (max-width: 768px) {
+            .progress-steps { flex-direction: column; }
+            .step { margin: 10px 0; }
+            .arrow { transform: rotate(90deg); margin: 10px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 Source Code Viewer</h1>
+            <p>Explore source code and navigate to specific expressions</p>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/discover">🔍 Discover</a>
+            <a href="/navigate">🧭 Navigate</a>
+            <a href="/contribute">💡 Contribute</a>
+            <a href="/profile">👤 Profile</a>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+        
+        <!-- File Information -->
+        <div class="file-info">
+            <h2>{{ contribution.get('title', 'Source File') }}</h2>
+            <div class="file-details">
+                <div class="detail-item">
+                    <div class="detail-label">File Path</div>
+                    <div>{{ file_path }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Category</div>
+                    <div>{{ contribution.get('category', 'Unknown') }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Type</div>
+                    <div>{{ contribution.get('contribution_type', 'Unknown') }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Complexity</div>
+                    <div>{{ contribution.get('complexity', 'Unknown') }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Author</div>
+                    <div>
+                        {% if contribution.get('user_id') in users %}
+                            {{ users[contribution.get('user_id')].core_identity.name }}
+                        {% else %}
+                            Unknown
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Progress -->
+        <div class="navigation-progress">
+            <h3>🧭 Navigation Progress</h3>
+            <div class="progress-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Void</div>
+                    <div class="step-description">System entry</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">User</div>
+                    <div class="step-description">Alice Chen</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">User</div>
+                    <div class="step-description">Bob Rodriguez</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Concept</div>
+                    <div class="step-description">Neural Networks</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step current-step">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Source Files</div>
+                    <div class="step-description">Code implementations</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Expressions</div>
+                    <div class="step-description">Specific code</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Source Code Content -->
+        <div class="source-code">
+            <h3>📝 Source Code</h3>
+            <div class="code-content">
+                <pre>{{ file_content }}</pre>
+            </div>
+        </div>
+        
+        <!-- Expressions Found -->
+        {% if expressions %}
+        <div class="expressions-section">
+            <h3>🧠 Code Expressions Found</h3>
+            <p>Navigate from source file to specific expressions:</p>
+            {% for expression in expressions %}
+            <div class="expression-card">
+                <h4>{{ expression.name }}</h4>
+                <div class="expression-type">{{ expression.type }}</div>
+                <div class="line-number">Line {{ expression.line_number }}</div>
+                <div class="code-content" style="margin: 15px 0;">
+                    <pre>{{ expression.code }}</pre>
+                </div>
+                <a href="/expression/{{ file_path }}/{{ expression.line_number }}" class="btn btn-primary">View Expression Details</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="expressions-section">
+            <h3>🧠 Code Expressions</h3>
+            <p>No class or function definitions found in this file.</p>
+        </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="/discover" class="btn btn-secondary">← Back to Discovery</a>
+            <a href="/navigate" class="btn btn-primary">Continue Navigation</a>
+        </div>
+    </div>
+</body>
+</html>

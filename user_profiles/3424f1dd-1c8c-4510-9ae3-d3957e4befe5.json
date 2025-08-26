@@ -1,0 +1,70 @@
+{
+  "user_id": "3424f1dd-1c8c-4510-9ae3-d3957e4befe5",
+  "core_identity": {
+    "name": "Bob Rodriguez",
+    "pronouns": "he/him",
+    "cultural_background": "Latino American",
+    "belief_system": "Scientific",
+    "life_experience": "Academic researcher",
+    "created_at": "2025-08-26T14:27:14.677727+00:00"
+  },
+  "communication": {
+    "primary_language": "English",
+    "secondary_languages": [
+      "Spanish"
+    ],
+    "communication_style": "formal",
+    "learning_style": "reading",
+    "accessibility_needs": []
+  },
+  "technical_profile": {
+    "skill_levels": {
+      "programming": "expert",
+      "data_analysis": "expert",
+      "research": "expert",
+      "mathematics": "expert"
+    },
+    "learning_path": [],
+    "preferred_tools": [
+      "Python",
+      "TensorFlow",
+      "PyTorch",
+      "Jupyter"
+    ],
+    "contribution_areas": [
+      "artificial_intelligence",
+      "machine_learning",
+      "research"
+    ]
+  },
+  "interests": {
+    "primary_domains": [
+      "artificial_intelligence",
+      "machine_learning",
+      "research"
+    ],
+    "specific_topics": [
+      "Neural Networks",
+      "Deep Learning",
+      "Attention Mechanisms",
+      "Transformers"
+    ],
+    "expertise_levels": {
+      "Neural Networks": "expert",
+      "Deep Learning": "expert",
+      "Python": "expert",
+      "Mathematics": "expert"
+    },
+    "passion_areas": []
+  },
+  "location_context": {
+    "geographic_location": "Boston, MA",
+    "timezone": "EST",
+    "cultural_context": "Academic",
+    "community_connections": [],
+    "local_challenges": [],
+    "local_resources": []
+  },
+  "created_at": "2025-08-26T14:27:14.677733+00:00",
+  "updated_at": "2025-08-26T14:27:14.677734+00:00"
+}

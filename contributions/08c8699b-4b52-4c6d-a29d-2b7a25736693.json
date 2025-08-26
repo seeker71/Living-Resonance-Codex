@@ -1,0 +1,41 @@
+{
+  "contribution_id": "08c8699b-4b52-4c6d-a29d-2b7a25736693",
+  "user_id": "eea479de-ff77-4d88-a65f-9b24727eec9d",
+  "contribution_type": "code",
+  "metadata": {
+    "title": "Flask Web Application Framework",
+    "description": "Modern web application framework with RESTful API support",
+    "tags": [
+      "flask",
+      "python",
+      "web_development",
+      "api"
+    ],
+    "language": "en",
+    "cultural_context": null,
+    "skill_level": "intermediate",
+    "target_audience": [],
+    "local_relevance": null
+  },
+  "status": "draft",
+  "created_at": "2025-08-26T14:27:14.678348+00:00",
+  "updated_at": "2025-08-26T14:27:14.678349+00:00",
+  "reviewed_by": null,
+  "review_notes": null,
+  "code_content": {
+    "code_content": "from flask import Flask\n\napp = Flask(__name__)\n\n@app.route(\"/\")\ndef hello():\n    return \"Hello, World!\"\n\nif __name__ == \"__main__\":\n    app.run()",
+    "language": "python",
+    "framework": "flask",
+    "dependencies": [
+      "flask",
+      "flask-restful",
+      "sqlalchemy"
+    ],
+    "documentation": null,
+    "tests": null
+  },
+  "content_data": null,
+  "visual_data": null,
+  "translation_data": null,
+  "local_solution_data": null
+}

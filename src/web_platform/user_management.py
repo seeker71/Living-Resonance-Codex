@@ -63,7 +63,10 @@ class CoreIdentity:
     def from_dict(cls, data: Dict[str, Any]) -> 'CoreIdentity':
         """Create from dictionary"""
         if 'created_at' in data:
-            data['created_at'] = datetime.fromisoformat(data['created_at'])
+            dt = datetime.fromisoformat(data['created_at'])
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            data['created_at'] = dt
         return cls(**data)
 
 @dataclass
@@ -229,9 +232,15 @@ class UserProfile:
         """Create profile from dictionary"""
         # Convert ISO strings back to datetime objects
         if 'created_at' in data:
-            data['created_at'] = datetime.fromisoformat(data['created_at'])
+            dt = datetime.fromisoformat(data['created_at'])
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            data['created_at'] = dt
         if 'updated_at' in data:
-            data['updated_at'] = datetime.fromisoformat(data['updated_at'])
+            dt = datetime.fromisoformat(data['updated_at'])
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            data['updated_at'] = dt
         
         # Reconstruct nested objects using their from_dict methods
         data['core_identity'] = CoreIdentity.from_dict(data['core_identity'])
@@ -272,7 +281,10 @@ class VaporState:
     def from_dict(cls, data: Dict[str, Any]) -> 'VaporState':
         """Create from dictionary"""
         if 'created_at' in data:
-            data['created_at'] = datetime.fromisoformat(data['created_at'])
+            dt = datetime.fromisoformat(data['created_at'])
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            data['created_at'] = dt
         return cls(**data)
 
 class ProfileManager:
@@ -310,6 +322,20 @@ class ProfileManager:
         except Exception as e:
             print(f"Error retrieving profile: {e}")
             return None
+    
+    def get_all_profiles(self) -> List[UserProfile]:
+        """Get all user profiles from storage"""
+        profiles = []
+        for file_path in self.storage_path.glob("*.json"):
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                profile = UserProfile.from_dict(data)
+                profiles.append(profile)
+            except Exception as e:
+                print(f"Error reading profile file {file_path}: {e}")
+        
+        return profiles
     
     def update_profile(self, profile: UserProfile) -> bool:
         """Update existing user profile"""

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Living Codex - Unified Search</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .nav-links { text-align: center; margin: 30px 0; }
+        .nav-links a { margin: 0 15px; color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .search-box { text-align: center; margin: 30px 0; }
+        .search-box input { padding: 15px; border: none; border-radius: 25px; font-size: 16px; width: 400px; margin-right: 10px; }
+        .search-box button { padding: 15px 25px; background: #4CAF50; color: white; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; }
+        
+        .search-options { text-align: center; margin: 20px 0; }
+        .search-options select, .search-options input { padding: 8px; margin: 0 5px; border: none; border-radius: 15px; }
+        
+        .search-stats { text-align: center; margin: 20px 0; opacity: 0.8; }
+        
+        .facets-section { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+        .facets-section h3 { color: #4CAF50; margin-bottom: 15px; }
+        .facets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .facet-group { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; }
+        .facet-group h4 { color: #4CAF50; margin-bottom: 10px; }
+        .facet-item { margin: 5px 0; }
+        .facet-item a { color: white; text-decoration: none; }
+        .facet-item a:hover { color: #4CAF50; }
+        .facet-count { opacity: 0.7; font-size: 0.9em; }
+        
+        .results-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+        .results-section h3 { color: #4CAF50; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+        .result-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-left: 4px solid #4CAF50; }
+        .result-card .type-badge { display: inline-block; padding: 4px 8px; background: #4CAF50; color: white; border-radius: 12px; font-size: 0.8em; margin-bottom: 10px; }
+        .result-card h4 { color: #4CAF50; margin-bottom: 15px; }
+        .result-card .description { margin-bottom: 15px; opacity: 0.9; }
+        .result-card .content { margin-bottom: 15px; opacity: 0.8; font-size: 0.9em; }
+        .result-card .metadata { font-size: 0.8em; opacity: 0.7; margin-bottom: 10px; }
+        .result-card .relevance { font-size: 0.9em; color: #4CAF50; }
+        
+        .suggestions-section { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+        .suggestions-section h3 { color: #4CAF50; margin-bottom: 15px; }
+        .suggestions-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .suggestion-item { background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: all 0.3s; }
+        .suggestion-item:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
+        
+        .no-results { text-align: center; opacity: 0.8; font-style: italic; }
+        
+        .btn { padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; transition: all 0.3s; display: inline-block; margin: 5px; }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Unified Search</h1>
+            <p>Search across all Living Codex system nodes: users, content, code, assets, and ontology</p>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/">🏠 Home</a>
+            <a href="/discover">🔍 Discover</a>
+            <a href="/navigate">🧭 Navigate</a>
+            <a href="/ontology">🏛️ Ontology</a>
+            <a href="/assets">📁 Assets</a>
+            <a href="/signup">📝 Sign Up</a>
+            <a href="/login">🔐 Login</a>
+        </div>
+        
+        <div class="search-box">
+            <form action="/search" method="GET">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search across all system nodes..." required>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        
+        {% if query %}
+        <div class="search-options">
+            <form action="/search" method="GET">
+                <input type="hidden" name="q" value="{{ query }}">
+                <select name="type">
+                    <option value="all" {% if search_type == 'all' %}selected{% endif %}>All Types</option>
+                    <option value="users" {% if search_type == 'users' %}selected{% endif %}>Users</option>
+                    <option value="content" {% if search_type == 'content' %}selected{% endif %}>Content</option>
+                    <option value="code" {% if search_type == 'code' %}selected{% endif %}>Code</option>
+                    <option value="assets" {% if search_type == 'assets' %}selected{% endif %}>Assets</option>
+                    <option value="ontology" {% if search_type == 'ontology' %}selected{% endif %}>Ontology</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+        </div>
+        
+        <div class="search-stats">
+            {% if total_count > 0 %}
+                <p>Found {{ total_count }} results for "{{ query }}"</p>
+            {% else %}
+                <p>No results found for "{{ query }}"</p>
+            {% endif %}
+        </div>
+        
+        {% if facets and total_count > 0 %}
+        <div class="facets-section">
+            <h3>Search Facets</h3>
+            <div class="facets-grid">
+                {% if facets.types %}
+                <div class="facet-group">
+                    <h4>Types</h4>
+                    {% for type_name, count in facets.types.items() %}
+                    <div class="facet-item">
+                        <a href="/search?q={{ query }}&type={{ type_name }}">{{ type_name|title }}</a>
+                        <span class="facet-count">({{ count }})</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if facets.categories %}
+                <div class="facet-group">
+                    <h4>Categories</h4>
+                    {% for category, count in facets.categories.items() %}
+                    <div class="facet-item">
+                        <a href="/search?q={{ query }}&category={{ category }}">{{ category|title }}</a>
+                        <span class="facet-count">({{ count }})</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if facets.sources %}
+                <div class="facet-group">
+                    <h4>Sources</h4>
+                    {% for source, count in facets.sources.items() %}
+                    <div class="facet-item">
+                        <a href="/search?q={{ query }}&source={{ source }}">{{ source|title }}</a>
+                        <span class="facet-count">({{ count }})</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if facets.date_ranges %}
+                <div class="facet-group">
+                    <h4>Date Ranges</h4>
+                    {% for range_name, count in facets.date_ranges.items() %}
+                    {% if count > 0 %}
+                    <div class="facet-item">
+                        <span>{{ range_name|replace('_', ' ')|title }}</span>
+                        <span class="facet-count">({{ count }})</span>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if results %}
+        <div class="results-section">
+            <h3>Search Results</h3>
+            <div class="result-grid">
+                {% for result in results %}
+                <div class="result-card">
+                    <div class="type-badge">{{ result.type|title }}</div>
+                    <h4>{{ result.title }}</h4>
+                    <div class="description">{{ result.description }}</div>
+                    <div class="content">{{ result.content[:200] }}{% if result.content|length > 200 %}...{% endif %}</div>
+                    <div class="metadata">
+                        <strong>Source:</strong> {{ result.source|title }} | 
+                        <strong>Category:</strong> {{ result.category|title }}
+                        {% if result.created_at %}
+                        | <strong>Created:</strong> {{ result.created_at.strftime('%Y-%m-%d') if result.created_at else 'Unknown' }}
+                        {% endif %}
+                    </div>
+                    <div class="relevance">
+                        <strong>Relevance:</strong> {{ "%.1f"|format(result.relevance_score) }}
+                    </div>
+                    <div style="margin-top: 15px;">
+                        {% if result.type == 'user' %}
+                            <a href="/user/{{ result.id }}" class="btn btn-primary">View Profile</a>
+                        {% elif result.type == 'content' %}
+                            <a href="/concept/{{ result.metadata.contribution_type }}" class="btn btn-primary">View Content</a>
+                        {% elif result.type == 'code' %}
+                            <a href="/source/{{ result.metadata.file_path }}" class="btn btn-primary">View Code</a>
+                        {% elif result.type == 'asset' %}
+                            <a href="/assets" class="btn btn-primary">View Asset</a>
+                        {% elif result.type == 'ontology' %}
+                            <a href="/ontology/component/{{ result.id }}" class="btn btn-primary">View Component</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if suggestions %}
+        <div class="suggestions-section">
+            <h3>Search Suggestions</h3>
+            <div class="suggestions-list">
+                {% for suggestion in suggestions %}
+                <div class="suggestion-item" onclick="window.location.href='/search?q={{ suggestion }}'">
+                    {{ suggestion }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if not results and query %}
+        <div class="no-results">
+            <p>No results found for "{{ query }}". Try:</p>
+            <ul style="text-align: left; display: inline-block;">
+                <li>Using different keywords</li>
+                <li>Checking spelling</li>
+                <li>Using broader terms</li>
+                <li>Searching in specific categories</li>
+            </ul>
+        </div>
+        {% endif %}
+        
+        {% endif %}
+    </div>
+    
+    <script>
+        // Add search suggestions functionality
+        const searchInput = document.querySelector('input[name="q"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value;
+                if (query.length >= 2) {
+                    fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(suggestions => {
+                            // Could implement dropdown suggestions here
+                            console.log('Suggestions:', suggestions);
+                        })
+                        .catch(error => console.error('Error fetching suggestions:', error));
+                }
+            });
+        }
+    </script>
+</body>
+</html>

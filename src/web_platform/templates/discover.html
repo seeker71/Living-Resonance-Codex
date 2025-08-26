@@ -60,11 +60,11 @@
                     {% for user_data in similar_users %}
                     <div class="user-card">
                         <span class="similarity-score">{{ user_data.similarity_score }}% Match</span>
-                        <h3>{{ user_data.profile.identity.name or 'Anonymous User' }}</h3>
-                        <p><strong>Location:</strong> {{ user_data.profile.location.geographic_location or 'Unknown' }}</p>
+                        <h3>{{ user_data.profile.core_identity.name or 'Anonymous User' }}</h3>
+                        <p><strong>Location:</strong> {{ user_data.profile.location_context.geographic_location or 'Unknown' }}</p>
                         <p><strong>Skills:</strong> 
-                            {% if user_data.profile.technical and user_data.profile.technical.skill_levels %}
-                                {% for skill, level in user_data.profile.technical.skill_levels.items() %}
+                            {% if user_data.profile.technical_profile and user_data.profile.technical_profile.skill_levels %}
+                                {% for skill, level in user_data.profile.technical_profile.skill_levels.items() %}
                                     {{ skill }}: {{ level.value }}{% if not loop.last %}, {% endif %}
                                 {% endfor %}
                             {% else %}
@@ -75,7 +75,7 @@
                         <p><strong>Common Interests:</strong> {{ user_data.common_interests|join(', ') }}</p>
                         {% endif %}
                         <a href="/connect/{{ user_data.user_id }}" class="btn btn-primary">Connect</a>
-                        <a href="#" class="btn btn-secondary">View Profile</a>
+                        <a href="/user/{{ user_data.user_id }}" class="btn btn-secondary">View Profile</a>
                     </div>
                     {% endfor %}
                 {% else %}

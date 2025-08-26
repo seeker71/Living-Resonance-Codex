@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Living Codex Ontology - Search</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .nav-links { text-align: center; margin: 30px 0; }
+        .nav-links a { margin: 0 15px; color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .search-box { text-align: center; margin: 30px 0; }
+        .search-box input { padding: 15px; border: none; border-radius: 25px; font-size: 16px; width: 400px; margin-right: 10px; }
+        .search-box button { padding: 15px 25px; background: #4CAF50; color: white; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; }
+        
+        .results-section { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+        .results-section h3 { color: #4CAF50; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .result-card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; border-left: 4px solid #4CAF50; }
+        .result-card h4 { color: #4CAF50; margin-bottom: 15px; }
+        .result-card .type { font-size: 0.9em; opacity: 0.8; margin-bottom: 10px; }
+        .result-card .description { margin-bottom: 15px; opacity: 0.9; }
+        .result-card .category { font-size: 0.9em; opacity: 0.8; margin-bottom: 10px; }
+        
+        .btn { padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; transition: all 0.3s; display: inline-block; margin: 5px; }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .no-results { text-align: center; opacity: 0.8; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Ontology Search</h1>
+            <p>Search for components, categories, or descriptions in the Living Codex system</p>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/">🏠 Home</a>
+            <a href="/ontology">🏛️ Ontology Overview</a>
+            <a href="/ontology/architecture">🏛️ Architecture</a>
+            <a href="/signup">📝 Sign Up</a>
+            <a href="/login">🔐 Login</a>
+        </div>
+        
+        <div class="search-box">
+            <form action="/ontology/search" method="GET">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search for components, categories, or descriptions..." required>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        
+        {% if query %}
+        <div class="results-section">
+            <h3>Search Results for "{{ query }}"</h3>
+            {% if results %}
+                <div class="result-grid">
+                    {% for result in results %}
+                    <div class="result-card">
+                        <h4>{{ result.name }}</h4>
+                        <div class="type"><strong>Type:</strong> {{ result.type }}</div>
+                        <div class="category"><strong>Category:</strong> {{ result.category }}</div>
+                        <div class="description">{{ result.description }}</div>
+                        <div style="margin-top: 15px;">
+                            <a href="/ontology/component/{{ result.id }}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <p>No results found for "{{ query }}". Try a different search term.</p>
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expression Viewer - Living Codex Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        
+        .nav-links { text-align: center; margin: 30px 0; }
+        .nav-links a { margin: 0 15px; color: #4CAF50; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .expression-header { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; text-align: center; }
+        .expression-header h2 { color: #4CAF50; margin-bottom: 15px; font-size: 2em; }
+        .expression-type { background: #4CAF50; color: white; padding: 8px 16px; border-radius: 20px; display: inline-block; margin: 15px 0; font-size: 1.1em; }
+        
+        .file-context { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+        .file-context h3 { color: #4CAF50; margin-bottom: 20px; }
+        .file-path { font-family: monospace; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin: 15px 0; font-size: 1.1em; }
+        
+        .expression-details { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-bottom: 30px; }
+        .expression-details h3 { color: #4CAF50; margin-bottom: 20px; }
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .detail-item { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; }
+        .detail-label { font-weight: bold; color: #4CAF50; margin-bottom: 5px; }
+        
+        .code-context { background: rgba(0,0,0,0.3); padding: 25px; border-radius: 15px; margin: 30px 0; }
+        .code-context h3 { color: #4CAF50; margin-bottom: 20px; }
+        .code-content { background: rgba(0,0,0,0.5); padding: 20px; border-radius: 10px; overflow-x: auto; }
+        .code-content pre { margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; line-height: 1.4; }
+        .highlighted-line { background: rgba(76, 175, 80, 0.3); border-left: 4px solid #4CAF50; padding-left: 10px; }
+        
+        .navigation-progress { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); margin-top: 30px; text-align: center; }
+        .progress-steps { display: flex; justify-content: center; align-items: center; margin: 30px 0; flex-wrap: wrap; }
+        .step { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: center; margin: 0 10px; min-width: 120px; }
+        .step-number { background: #4CAF50; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-weight: bold; font-size: 0.9em; }
+        .step-title { font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+        .step-description { font-size: 0.8em; opacity: 0.8; }
+        .arrow { color: #4CAF50; font-size: 1.2em; margin: 0 10px; }
+        .completed-step { background: rgba(76, 175, 80, 0.2); border: 2px solid #4CAF50; }
+        .current-step { background: rgba(76, 175, 80, 0.4); border: 2px solid #4CAF50; }
+        
+        .achievement { background: rgba(76, 175, 80, 0.2); padding: 25px; border-radius: 15px; text-align: center; margin: 30px 0; border: 2px solid #4CAF50; }
+        .achievement h3 { color: #4CAF50; margin-bottom: 15px; }
+        .achievement-icon { font-size: 3em; margin-bottom: 15px; }
+        
+        .btn { padding: 12px 24px; text-decoration: none; border-radius: 25px; font-weight: bold; transition: all 0.3s; display: inline-block; margin: 5px; }
+        .btn-primary { background: #4CAF50; color: white; }
+        .btn-secondary { background: transparent; color: white; border: 2px solid white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        @media (max-width: 768px) {
+            .progress-steps { flex-direction: column; }
+            .step { margin: 10px 0; }
+            .arrow { transform: rotate(90deg); margin: 10px 0; }
+            .detail-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Expression Viewer</h1>
+            <p>Explore specific code expressions and complete the navigation journey</p>
+        </div>
+        
+        <div class="nav-links">
+            <a href="/dashboard">📊 Dashboard</a>
+            <a href="/discover">🔍 Discover</a>
+            <a href="/navigate">🧭 Navigate</a>
+            <a href="/contribute">💡 Contribute</a>
+            <a href="/profile">👤 Profile</a>
+            <a href="/logout">🚪 Logout</a>
+        </div>
+        
+        <!-- Expression Header -->
+        <div class="expression-header">
+            <h2>{{ target_expression.name if target_expression else 'Expression' }}</h2>
+            {% if target_expression %}
+            <div class="expression-type">{{ target_expression.type }}</div>
+            <p>Found at line {{ line_number }} in {{ file_path }}</p>
+            {% else %}
+            <p>Expression details not available</p>
+            {% endif %}
+        </div>
+        
+        <!-- File Context -->
+        <div class="file-context">
+            <h3>📁 File Context</h3>
+            <div class="file-path">{{ file_path }}</div>
+            <p><strong>Contribution:</strong> {{ contribution.get('title', 'Untitled') }}</p>
+            <p><strong>Category:</strong> {{ contribution.get('category', 'Unknown') }}</p>
+            <p><strong>Type:</strong> {{ contribution.get('contribution_type', 'Unknown') }}</p>
+        </div>
+        
+        <!-- Expression Details -->
+        {% if target_expression %}
+        <div class="expression-details">
+            <h3>🔍 Expression Details</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Name</div>
+                    <div>{{ target_expression.name }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Type</div>
+                    <div>{{ target_expression.type }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Line Number</div>
+                    <div>{{ target_expression.line_number }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">File</div>
+                    <div>{{ file_path }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Navigation Progress -->
+        <div class="navigation-progress">
+            <h3>🧭 Navigation Progress</h3>
+            <div class="progress-steps">
+                <div class="step completed-step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Void</div>
+                    <div class="step-description">System entry</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step completed-step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">User</div>
+                    <div class="step-description">Alice Chen</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step completed-step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">User</div>
+                    <div class="step-description">Bob Rodriguez</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step completed-step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Concept</div>
+                    <div class="step-description">Neural Networks</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step completed-step">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Source Files</div>
+                    <div class="step-description">Code implementations</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="step current-step">
+                    <div class="step-number">6</div>
+                    <div class="step-title">Expressions</div>
+                    <div class="step-description">Specific code</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Code Context -->
+        <div class="code-context">
+            <h3>📝 Code Context</h3>
+            <p>Showing code around line {{ line_number }} (highlighted line contains the expression):</p>
+            <div class="code-content">
+                <pre>{% if target_expression %}
+{% for i, line in enumerate(file_content.split('\n'), 1) %}
+{% if i == target_expression.line_number %}<span class="highlighted-line">{{ line }}</span>{% else %}{{ line }}{% endif %}
+{% endfor %}
+{% else %}
+{{ file_content }}
+{% endif %}</pre>
+            </div>
+        </div>
+        
+        <!-- Achievement -->
+        <div class="achievement">
+            <div class="achievement-icon">🎉</div>
+            <h3>Navigation Complete!</h3>
+            <p>Congratulations! You have successfully navigated the complete flow:</p>
+            <p><strong>Void → User → User → Concept → Source File → Expression</strong></p>
+            <p>You've demonstrated the Living Codex's ability to provide seamless navigation through complex knowledge structures, from high-level concepts down to specific code implementations.</p>
+        </div>
+        
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="/source/{{ file_path }}" class="btn btn-secondary">← Back to Source File</a>
+            <a href="/discover" class="btn btn-primary">Start New Navigation</a>
+        </div>
+    </div>
+</body>
+</html>

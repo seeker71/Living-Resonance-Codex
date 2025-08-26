@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """
-Digital Asset Manager - Living Codex
+Fractal Digital Asset Manager Component - Living Codex
 Manages digital assets including images, documents, videos, audio, and other media files.
 Provides storage, metadata extraction, content hashing, and retrieval capabilities.
+
+Following fractal holographic principles:
+- Everything is just nodes
+- Self-registration with fractal system
+- Fractal self-similarity at every level
 """
 
 import os
@@ -17,6 +22,8 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
 import logging
+
+from .fractal_components import FractalComponent
 
 # Image processing
 try:
@@ -45,8 +52,6 @@ try:
     PYPDF2_AVAILABLE = True
 except ImportError:
     PYPDF2_AVAILABLE = False
-
-from .database_persistence_system import DatabasePersistenceSystem, DatabaseNode, QueryFilter, QueryOptions
 
 logger = logging.getLogger(__name__)
 
@@ -99,110 +104,193 @@ class DigitalAsset:
     asset_id: str
     original_filename: str
     asset_type: AssetType
+    file_path: str
     content_hash: str
-    storage_path: str
     metadata: AssetMetadata
     status: AssetStatus
     created_at: datetime
     updated_at: datetime
-    access_count: int = 0
-    last_accessed: Optional[datetime] = None
-    thumbnail_path: Optional[str] = None
-    preview_available: bool = False
+    tags: List[str] = None
+    parent_id: Optional[str] = None
+    children: List[str] = None
     
-    def to_database_node(self) -> DatabaseNode:
-        """Convert to DatabaseNode for storage"""
-        # Convert metadata to dict with proper datetime serialization
-        metadata_dict = asdict(self.metadata)
-        if metadata_dict.get('creation_date'):
-            metadata_dict['creation_date'] = self.metadata.creation_date.isoformat()
-        if metadata_dict.get('modification_date'):
-            metadata_dict['modification_date'] = self.metadata.modification_date.isoformat()
+    def __post_init__(self):
+        if self.tags is None:
+            self.tags = []
+        if self.children is None:
+            self.children = []
+
+class FractalDigitalAssetManagerComponent(FractalComponent):
+    """
+    Fractal component for digital asset management
+    Manages digital assets with metadata extraction and content hashing
+    """
+    
+    def __init__(self):
+        super().__init__(
+            component_type="digital_asset_management_system",
+            name="Fractal Digital Asset Management System",
+            content="Digital asset management system for images, documents, videos, and other media",
+            fractal_layer=6,  # Technological Prototypes layer
+            water_state="liquid",  # Flow, adaptability, relation
+            frequency=741,  # Throat chakra - communication and expression
+            chakra="throat"
+        )
         
-        content = {
-            "original_filename": self.original_filename,
-            "asset_type": self.asset_type.value,
-            "content_hash": self.content_hash,
-            "storage_path": self.storage_path,
-            "status": self.status.value,
-            "access_count": self.access_count,
-            "last_accessed": self.last_accessed.isoformat() if self.last_accessed else None,
-            "thumbnail_path": self.thumbnail_path,
-            "preview_available": self.preview_available,
-            "metadata": metadata_dict
+        # Initialize storage paths
+        self.base_storage_path = Path("digital_assets")
+        self.base_storage_path.mkdir(exist_ok=True)
+        
+        # Asset type storage paths
+        self.asset_type_paths = {
+            AssetType.IMAGE: self.base_storage_path / "images",
+            AssetType.DOCUMENT: self.base_storage_path / "documents",
+            AssetType.VIDEO: self.base_storage_path / "videos",
+            AssetType.AUDIO: self.base_storage_path / "audio",
+            AssetType.ARCHIVE: self.base_storage_path / "archives",
+            AssetType.CODE: self.base_storage_path / "code",
+            AssetType.DATA: self.base_storage_path / "data"
         }
         
-        return DatabaseNode(
-            node_id=self.asset_id,
-            node_type="digital_asset",
-            name=self.original_filename,
-            content=json.dumps(content),
-            realm="digital",
-            water_state="solid",  # Digital assets are "solid" data
-            energy_level=800,  # High energy for valuable digital content
-            transformation_cost=200,  # Moderate cost to modify
-            parent_id=None,
-            children=None,
-            metadata={
-                "asset_type": self.asset_type.value,
-                "mime_type": self.metadata.mime_type,
-                "file_size": self.metadata.file_size,
-                "content_hash": self.content_hash
+        # Create storage directories
+        for path in self.asset_type_paths.values():
+            path.mkdir(exist_ok=True)
+        
+        # Create asset type capability nodes
+        self._create_asset_type_capability_nodes()
+        
+        # Create processing capability nodes
+        self._create_processing_capability_nodes()
+    
+    def _create_asset_type_capability_nodes(self):
+        """Create fractal nodes for supported asset types"""
+        for asset_type in AssetType:
+            if asset_type == AssetType.UNKNOWN:
+                continue
+                
+            self.create_child_node(
+                node_type="asset_type_support",
+                name=f"{asset_type.value.title()} Asset Support",
+                content=f"Support for {asset_type.value} assets",
+                metadata={
+                    "asset_type": asset_type.value,
+                    "storage_path": str(self.asset_type_paths[asset_type]),
+                    "supported": True
+                },
+                structure_info={
+                    "fractal_depth": 2,
+                    "self_similar": True,
+                    "meta_circular": False,
+                    "holographic": True
+                }
+            )
+    
+    def _create_processing_capability_nodes(self):
+        """Create fractal nodes for processing capabilities"""
+        capabilities = [
+            {
+                "name": "Image Processing",
+                "content": "Image metadata extraction and processing",
+                "metadata": {"available": PILLOW_AVAILABLE, "library": "Pillow"}
             },
-            structure_info=None,
-            created_at=self.created_at,
-            updated_at=self.updated_at
-        )
-
-class AssetTypeDetector:
-    """Detects asset types based on file extensions and MIME types"""
+            {
+                "name": "Audio Processing",
+                "content": "Audio metadata extraction and processing",
+                "metadata": {"available": MUTAGEN_AVAILABLE, "library": "mutagen"}
+            },
+            {
+                "name": "Video Processing",
+                "content": "Video metadata extraction and processing",
+                "metadata": {"available": OPENCV_AVAILABLE, "library": "OpenCV"}
+            },
+            {
+                "name": "Document Processing",
+                "content": "Document metadata extraction and processing",
+                "metadata": {"available": PYPDF2_AVAILABLE, "library": "PyPDF2"}
+            },
+            {
+                "name": "Content Hashing",
+                "content": "SHA-256 content hashing for deduplication",
+                "metadata": {"algorithm": "SHA-256", "purpose": "deduplication"}
+            },
+            {
+                "name": "Metadata Extraction",
+                "content": "Automatic metadata extraction from assets",
+                "metadata": {"feature": "auto_extraction", "scope": "comprehensive"}
+            }
+        ]
+        
+        for capability in capabilities:
+            self.create_child_node(
+                node_type="processing_capability",
+                name=capability["name"],
+                content=capability["content"],
+                metadata=capability["metadata"],
+                structure_info={
+                    "fractal_depth": 2,
+                    "self_similar": True,
+                    "meta_circular": False,
+                    "holographic": True
+                }
+            )
     
-    TYPE_MAPPING = {
-        # Images
-        '.jpg': AssetType.IMAGE, '.jpeg': AssetType.IMAGE, '.png': AssetType.IMAGE,
-        '.gif': AssetType.IMAGE, '.bmp': AssetType.IMAGE, '.tiff': AssetType.IMAGE,
-        '.webp': AssetType.IMAGE, '.svg': AssetType.IMAGE, '.ico': AssetType.IMAGE,
-        
-        # Documents
-        '.pdf': AssetType.DOCUMENT, '.doc': AssetType.DOCUMENT, '.docx': AssetType.DOCUMENT,
-        '.txt': AssetType.DOCUMENT, '.rtf': AssetType.DOCUMENT, '.odt': AssetType.DOCUMENT,
-        '.xls': AssetType.DOCUMENT, '.xlsx': AssetType.DOCUMENT, '.ppt': AssetType.DOCUMENT,
-        '.pptx': AssetType.DOCUMENT, '.csv': AssetType.DOCUMENT,
-        
-        # Videos
-        '.mp4': AssetType.VIDEO, '.avi': AssetType.VIDEO, '.mkv': AssetType.VIDEO,
-        '.mov': AssetType.VIDEO, '.wmv': AssetType.VIDEO, '.flv': AssetType.VIDEO,
-        '.webm': AssetType.VIDEO, '.m4v': AssetType.VIDEO,
-        
-        # Audio
-        '.mp3': AssetType.AUDIO, '.wav': AssetType.AUDIO, '.flac': AssetType.AUDIO,
-        '.aac': AssetType.AUDIO, '.ogg': AssetType.AUDIO, '.wma': AssetType.AUDIO,
-        '.m4a': AssetType.AUDIO,
-        
-        # Archives
-        '.zip': AssetType.ARCHIVE, '.rar': AssetType.ARCHIVE, '.7z': AssetType.ARCHIVE,
-        '.tar': AssetType.ARCHIVE, '.gz': AssetType.ARCHIVE, '.bz2': AssetType.ARCHIVE,
-        
-        # Code
-        '.py': AssetType.CODE, '.js': AssetType.CODE, '.html': AssetType.CODE,
-        '.css': AssetType.CODE, '.java': AssetType.CODE, '.cpp': AssetType.CODE,
-        '.c': AssetType.CODE, '.h': AssetType.CODE, '.php': AssetType.CODE,
-        '.rb': AssetType.CODE, '.go': AssetType.CODE, '.rs': AssetType.CODE,
-        
-        # Data
-        '.json': AssetType.DATA, '.xml': AssetType.DATA, '.yaml': AssetType.DATA,
-        '.yml': AssetType.DATA, '.sql': AssetType.DATA, '.db': AssetType.DATA,
-    }
+    def add_asset(self, file_path: str, tags: List[str] = None, parent_id: Optional[str] = None) -> Dict[str, Any]:
+        """Add a new digital asset to the system"""
+        try:
+            file_path = Path(file_path)
+            if not file_path.exists():
+                return {"success": False, "error": f"File not found: {file_path}"}
+            
+            # Determine asset type
+            asset_type = self._detect_asset_type(file_path)
+            
+            # Generate content hash
+            content_hash = self._generate_content_hash(file_path)
+            
+            # Extract metadata
+            metadata = self._extract_metadata(file_path, asset_type)
+            
+            # Generate asset ID
+            asset_id = f"{asset_type.value}_{content_hash[:8]}"
+            
+            # Copy file to appropriate storage location
+            storage_path = self._store_asset_file(file_path, asset_type, content_hash)
+            
+            # Create asset object
+            asset = DigitalAsset(
+                asset_id=asset_id,
+                original_filename=file_path.name,
+                asset_type=asset_type,
+                file_path=str(storage_path),
+                content_hash=content_hash,
+                metadata=metadata,
+                status=AssetStatus.READY,
+                created_at=datetime.now(),
+                updated_at=datetime.now(),
+                tags=tags or [],
+                parent_id=parent_id,
+                children=[]
+            )
+            
+            # Create fractal node for the asset
+            self._create_asset_node(asset)
+            
+            return {
+                "success": True,
+                "asset_id": asset_id,
+                "asset_type": asset_type.value,
+                "content_hash": content_hash,
+                "file_size": metadata.file_size
+            }
+            
+        except Exception as e:
+            logger.error(f"Error adding asset {file_path}: {e}")
+            return {"success": False, "error": str(e)}
     
-    @classmethod
-    def detect_type(cls, filename: str, mime_type: str = None) -> AssetType:
-        """Detect asset type from filename and optional MIME type"""
-        # Try extension first
-        ext = Path(filename).suffix.lower()
-        if ext in cls.TYPE_MAPPING:
-            return cls.TYPE_MAPPING[ext]
+    def _detect_asset_type(self, file_path: Path) -> AssetType:
+        """Detect the type of asset based on file extension and content"""
+        mime_type, _ = mimetypes.guess_type(str(file_path))
         
-        # Try MIME type
         if mime_type:
             if mime_type.startswith('image/'):
                 return AssetType.IMAGE
@@ -210,550 +298,208 @@ class AssetTypeDetector:
                 return AssetType.VIDEO
             elif mime_type.startswith('audio/'):
                 return AssetType.AUDIO
-            elif mime_type in ['application/pdf', 'application/msword', 'text/plain']:
+            elif mime_type.startswith('application/pdf'):
                 return AssetType.DOCUMENT
-            elif mime_type.startswith('application/') and 'zip' in mime_type:
-                return AssetType.ARCHIVE
             elif mime_type.startswith('text/'):
-                return AssetType.CODE
+                if file_path.suffix.lower() in ['.py', '.js', '.html', '.css', '.java', '.cpp']:
+                    return AssetType.CODE
+                else:
+                    return AssetType.DOCUMENT
+        
+        # Fallback based on extension
+        ext = file_path.suffix.lower()
+        if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff']:
+            return AssetType.IMAGE
+        elif ext in ['.mp4', '.avi', '.mov', '.wmv', '.flv']:
+            return AssetType.VIDEO
+        elif ext in ['.mp3', '.wav', '.flac', '.aac']:
+            return AssetType.AUDIO
+        elif ext in ['.pdf', '.doc', '.docx', '.txt']:
+            return AssetType.DOCUMENT
+        elif ext in ['.zip', '.rar', '.7z', '.tar', '.gz']:
+            return AssetType.ARCHIVE
+        elif ext in ['.py', '.js', '.html', '.css', '.java', '.cpp']:
+            return AssetType.CODE
+        elif ext in ['.csv', '.json', '.xml', '.yaml', '.yml']:
+            return AssetType.DATA
         
         return AssetType.UNKNOWN
-
-class MetadataExtractor:
-    """Extracts metadata from various file types"""
     
-    @staticmethod
-    def extract_image_metadata(file_path: str) -> Dict[str, Any]:
-        """Extract metadata from image files"""
-        if not PILLOW_AVAILABLE:
-            return {}
+    def _generate_content_hash(self, file_path: Path) -> str:
+        """Generate SHA-256 hash of file content"""
+        hash_sha256 = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_sha256.update(chunk)
+        return hash_sha256.hexdigest()
+    
+    def _extract_metadata(self, file_path: Path, asset_type: AssetType) -> AssetMetadata:
+        """Extract metadata from the asset file"""
+        file_size = file_path.stat().st_size
+        mime_type, _ = mimetypes.guess_type(str(file_path))
         
+        metadata = AssetMetadata(
+            file_size=file_size,
+            mime_type=mime_type or "application/octet-stream",
+            creation_date=datetime.fromtimestamp(file_path.stat().st_ctime),
+            modification_date=datetime.fromtimestamp(file_path.stat().st_mtime)
+        )
+        
+        # Extract type-specific metadata
+        if asset_type == AssetType.IMAGE and PILLOW_AVAILABLE:
+            metadata = self._extract_image_metadata(file_path, metadata)
+        elif asset_type == AssetType.AUDIO and MUTAGEN_AVAILABLE:
+            metadata = self._extract_audio_metadata(file_path, metadata)
+        elif asset_type == AssetType.VIDEO and OPENCV_AVAILABLE:
+            metadata = self._extract_video_metadata(file_path, metadata)
+        elif asset_type == AssetType.DOCUMENT and PYPDF2_AVAILABLE:
+            metadata = self._extract_document_metadata(file_path, metadata)
+        
+        return metadata
+    
+    def _extract_image_metadata(self, file_path: Path, metadata: AssetMetadata) -> AssetMetadata:
+        """Extract metadata from image files"""
         try:
             with Image.open(file_path) as img:
-                metadata = {
-                    'dimensions': img.size,
-                    'mode': img.mode,
-                    'format': img.format
-                }
+                metadata.dimensions = img.size
+                metadata.color_space = img.mode
                 
                 # Extract EXIF data
                 if hasattr(img, '_getexif') and img._getexif():
-                    exif_dict = {}
-                    for tag_id, value in img._getexif().items():
-                        tag = ExifTags.TAGS.get(tag_id, tag_id)
-                        exif_dict[tag] = value
-                    metadata['exif'] = exif_dict
-                
-                return metadata
+                    exif = img._getexif()
+                    if exif:
+                        metadata.exif_data = {}
+                        for tag_id, value in exif.items():
+                            tag = ExifTags.TAGS.get(tag_id, tag_id)
+                            metadata.exif_data[tag] = value
         except Exception as e:
-            logger.warning(f"Failed to extract image metadata from {file_path}: {e}")
-            return {}
+            logger.warning(f"Could not extract image metadata: {e}")
+        
+        return metadata
     
-    @staticmethod
-    def extract_audio_metadata(file_path: str) -> Dict[str, Any]:
+    def _extract_audio_metadata(self, file_path: Path, metadata: AssetMetadata) -> AssetMetadata:
         """Extract metadata from audio files"""
-        if not MUTAGEN_AVAILABLE:
-            return {}
-        
         try:
-            audio_file = mutagen.File(file_path)
-            if audio_file is None:
-                return {}
-            
-            metadata = {
-                'duration': getattr(audio_file.info, 'length', 0),
-                'bitrate': getattr(audio_file.info, 'bitrate', 0),
-                'channels': getattr(audio_file.info, 'channels', 0),
-                'sample_rate': getattr(audio_file.info, 'sample_rate', 0)
-            }
-            
-            # Extract tags
-            if audio_file.tags:
-                for key, value in audio_file.tags.items():
-                    if isinstance(value, list) and value:
-                        metadata[key] = str(value[0])
-                    else:
-                        metadata[key] = str(value)
-            
-            return metadata
+            audio = mutagen.File(str(file_path))
+            if audio:
+                if hasattr(audio, 'info'):
+                    if hasattr(audio.info, 'length'):
+                        metadata.duration = audio.info.length
+                    if hasattr(audio.info, 'bitrate'):
+                        metadata.bitrate = audio.info.bitrate
+                
+                # Extract tags
+                if hasattr(audio, 'tags'):
+                    for key, value in audio.tags.items():
+                        if key.lower() in ['title', 'artist', 'album']:
+                            if key.lower() == 'title':
+                                metadata.title = str(value[0]) if value else None
+                            elif key.lower() == 'artist':
+                                metadata.author = str(value[0]) if value else None
         except Exception as e:
-            logger.warning(f"Failed to extract audio metadata from {file_path}: {e}")
-            return {}
+            logger.warning(f"Could not extract audio metadata: {e}")
+        
+        return metadata
     
-    @staticmethod
-    def extract_video_metadata(file_path: str) -> Dict[str, Any]:
+    def _extract_video_metadata(self, file_path: Path, metadata: AssetMetadata) -> AssetMetadata:
         """Extract metadata from video files"""
-        if not OPENCV_AVAILABLE:
-            return {}
-        
         try:
-            cap = cv2.VideoCapture(file_path)
-            if not cap.isOpened():
-                return {}
-            
-            fps = cap.get(cv2.CAP_PROP_FPS)
-            frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            
-            metadata = {
-                'dimensions': (width, height),
-                'fps': fps,
-                'frame_count': frame_count,
-                'duration': frame_count / fps if fps > 0 else 0
-            }
-            
-            cap.release()
-            return metadata
+            cap = cv2.VideoCapture(str(file_path))
+            if cap.isOpened():
+                metadata.dimensions = (
+                    int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                    int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                )
+                metadata.duration = cap.get(cv2.CAP_PROP_FRAME_COUNT) / cap.get(cv2.CAP_PROP_FPS)
+                cap.release()
         except Exception as e:
-            logger.warning(f"Failed to extract video metadata from {file_path}: {e}")
-            return {}
+            logger.warning(f"Could not extract video metadata: {e}")
+        
+        return metadata
     
-    @staticmethod
-    def extract_document_metadata(file_path: str) -> Dict[str, Any]:
+    def _extract_document_metadata(self, file_path: Path, metadata: AssetMetadata) -> AssetMetadata:
         """Extract metadata from document files"""
-        metadata = {}
-        
-        if file_path.lower().endswith('.pdf') and PYPDF2_AVAILABLE:
-            try:
-                with open(file_path, 'rb') as file:
-                    pdf_reader = PyPDF2.PdfReader(file)
-                    metadata.update({
-                        'page_count': len(pdf_reader.pages),
-                        'title': pdf_reader.metadata.get('/Title', ''),
-                        'author': pdf_reader.metadata.get('/Author', ''),
-                        'subject': pdf_reader.metadata.get('/Subject', ''),
-                        'creator': pdf_reader.metadata.get('/Creator', ''),
-                        'producer': pdf_reader.metadata.get('/Producer', ''),
-                        'creation_date': pdf_reader.metadata.get('/CreationDate', ''),
-                        'modification_date': pdf_reader.metadata.get('/ModDate', '')
-                    })
-            except Exception as e:
-                logger.warning(f"Failed to extract PDF metadata from {file_path}: {e}")
-        
-        return metadata
-
-class DigitalAssetManager:
-    """Main digital asset management system"""
-    
-    def __init__(self, database: DatabasePersistenceSystem, storage_root: str = "digital_assets"):
-        self.database = database
-        self.storage_root = Path(storage_root)
-        self.storage_root.mkdir(parents=True, exist_ok=True)
-        
-        # Create subdirectories for different asset types
-        for asset_type in AssetType:
-            (self.storage_root / asset_type.value).mkdir(parents=True, exist_ok=True)
-        
-        # Create thumbnails directory
-        (self.storage_root / "thumbnails").mkdir(parents=True, exist_ok=True)
-        
-        logger.info(f"✅ DigitalAssetManager initialized with storage: {self.storage_root}")
-    
-    def calculate_content_hash(self, file_path: str) -> str:
-        """Calculate SHA-256 hash of file content"""
-        hash_sha256 = hashlib.sha256()
         try:
-            with open(file_path, "rb") as f:
-                for chunk in iter(lambda: f.read(4096), b""):
-                    hash_sha256.update(chunk)
-            return hash_sha256.hexdigest()
+            if file_path.suffix.lower() == '.pdf':
+                with open(file_path, 'rb') as f:
+                    pdf = PyPDF2.PdfReader(f)
+                    metadata.author = pdf.metadata.get('/Author', None)
+                    metadata.title = pdf.metadata.get('/Title', None)
+                    metadata.description = pdf.metadata.get('/Subject', None)
         except Exception as e:
-            logger.error(f"Failed to calculate hash for {file_path}: {e}")
-            return ""
-    
-    def extract_metadata(self, file_path: str, asset_type: AssetType) -> AssetMetadata:
-        """Extract comprehensive metadata from file"""
-        file_stat = os.stat(file_path)
-        mime_type, _ = mimetypes.guess_type(file_path)
-        
-        # Basic metadata
-        metadata = AssetMetadata(
-            file_size=file_stat.st_size,
-            mime_type=mime_type or "application/octet-stream",
-            creation_date=datetime.fromtimestamp(file_stat.st_ctime),
-            modification_date=datetime.fromtimestamp(file_stat.st_mtime)
-        )
-        
-        # Type-specific metadata extraction
-        type_metadata = {}
-        if asset_type == AssetType.IMAGE:
-            type_metadata = MetadataExtractor.extract_image_metadata(file_path)
-            if 'dimensions' in type_metadata:
-                metadata.dimensions = type_metadata['dimensions']
-            if 'exif' in type_metadata:
-                metadata.exif_data = type_metadata['exif']
-        
-        elif asset_type == AssetType.AUDIO:
-            type_metadata = MetadataExtractor.extract_audio_metadata(file_path)
-            if 'duration' in type_metadata:
-                metadata.duration = type_metadata['duration']
-            if 'bitrate' in type_metadata:
-                metadata.bitrate = type_metadata['bitrate']
-        
-        elif asset_type == AssetType.VIDEO:
-            type_metadata = MetadataExtractor.extract_video_metadata(file_path)
-            if 'dimensions' in type_metadata:
-                metadata.dimensions = type_metadata['dimensions']
-            if 'duration' in type_metadata:
-                metadata.duration = type_metadata['duration']
-        
-        elif asset_type == AssetType.DOCUMENT:
-            type_metadata = MetadataExtractor.extract_document_metadata(file_path)
-        
-        # Store additional metadata in custom_fields
-        metadata.custom_fields.update(type_metadata)
+            logger.warning(f"Could not extract document metadata: {e}")
         
         return metadata
     
-    def generate_thumbnail(self, asset: DigitalAsset) -> Optional[str]:
-        """Generate thumbnail for supported asset types"""
-        if asset.asset_type == AssetType.IMAGE and PILLOW_AVAILABLE:
-            try:
-                thumbnail_path = self.storage_root / "thumbnails" / f"{asset.asset_id}_thumb.jpg"
-                
-                with Image.open(asset.storage_path) as img:
-                    img.thumbnail((200, 200), Image.Resampling.LANCZOS)
-                    img.convert('RGB').save(thumbnail_path, 'JPEG', quality=85)
-                
-                return str(thumbnail_path)
-            except Exception as e:
-                logger.warning(f"Failed to generate thumbnail for {asset.asset_id}: {e}")
+    def _store_asset_file(self, file_path: Path, asset_type: AssetType, content_hash: str) -> Path:
+        """Store the asset file in the appropriate directory"""
+        storage_dir = self.asset_type_paths[asset_type]
+        extension = file_path.suffix
+        new_filename = f"{content_hash}{extension}"
+        storage_path = storage_dir / new_filename
         
-        return None
-    
-    def add_asset(self, file_path: str, tags: List[str] = None, 
-                  custom_metadata: Dict[str, Any] = None) -> Optional[DigitalAsset]:
-        """Add a new digital asset to the system"""
-        if not os.path.exists(file_path):
-            logger.error(f"File not found: {file_path}")
-            return None
-        
-        try:
-            # Calculate content hash
-            content_hash = self.calculate_content_hash(file_path)
-            if not content_hash:
-                return None
-            
-            # Check for duplicates
-            existing = self.find_asset_by_hash(content_hash)
-            if existing:
-                logger.info(f"Asset already exists with hash {content_hash}: {existing.original_filename}")
-                return existing
-            
-            # Detect asset type
-            original_filename = os.path.basename(file_path)
-            mime_type, _ = mimetypes.guess_type(file_path)
-            asset_type = AssetTypeDetector.detect_type(original_filename, mime_type)
-            
-            # Generate unique asset ID
-            asset_id = f"asset_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{content_hash[:8]}"
-            
-            # Determine storage path
-            file_extension = Path(file_path).suffix
-            storage_filename = f"{asset_id}{file_extension}"
-            storage_path = self.storage_root / asset_type.value / storage_filename
-            
-            # Copy file to storage
+        # Copy file if it doesn't exist
+        if not storage_path.exists():
             shutil.copy2(file_path, storage_path)
-            
-            # Extract metadata
-            metadata = self.extract_metadata(str(storage_path), asset_type)
-            
-            # Add custom metadata and tags
-            if tags:
-                metadata.tags.extend(tags)
-            if custom_metadata:
-                metadata.custom_fields.update(custom_metadata)
-            
-            # Create digital asset
-            asset = DigitalAsset(
-                asset_id=asset_id,
-                original_filename=original_filename,
-                asset_type=asset_type,
-                content_hash=content_hash,
-                storage_path=str(storage_path),
-                metadata=metadata,
-                status=AssetStatus.PROCESSING,
-                created_at=datetime.now(),
-                updated_at=datetime.now()
-            )
-            
-            # Generate thumbnail if possible
-            thumbnail_path = self.generate_thumbnail(asset)
-            if thumbnail_path:
-                asset.thumbnail_path = thumbnail_path
-                asset.preview_available = True
-            
-            # Mark as ready
-            asset.status = AssetStatus.READY
-            asset.updated_at = datetime.now()
-            
-            # Store in database
-            db_node = asset.to_database_node()
-            result = self.database.operations.create_node(db_node)
-            
-            if result.success:
-                logger.info(f"✅ Asset added successfully: {asset_id} ({original_filename})")
-                return asset
-            else:
-                logger.error(f"Failed to store asset in database: {getattr(result, 'error_message', 'Unknown error')}")
-                # Clean up storage
-                if storage_path.exists():
-                    storage_path.unlink()
-                return None
-                
-        except Exception as e:
-            logger.error(f"Failed to add asset {file_path}: {e}")
-            return None
+        
+        return storage_path
+    
+    def _create_asset_node(self, asset: DigitalAsset):
+        """Create fractal node for the digital asset"""
+        self.create_child_node(
+            node_type="digital_asset",
+            name=asset.original_filename,
+            content=f"Digital asset: {asset.original_filename}",
+            metadata={
+                "asset_id": asset.asset_id,
+                "asset_type": asset.asset_type.value,
+                "file_size": asset.metadata.file_size,
+                "mime_type": asset.metadata.mime_type,
+                "content_hash": asset.content_hash,
+                "status": asset.status.value,
+                "tags": asset.tags,
+                "parent_id": asset.parent_id
+            },
+            structure_info={
+                "fractal_depth": 3,
+                "self_similar": True,
+                "meta_circular": False,
+                "holographic": True
+            }
+        )
     
     def get_asset(self, asset_id: str) -> Optional[DigitalAsset]:
-        """Retrieve an asset by ID"""
-        try:
-            result = self.database.operations.query_nodes(
-                [QueryFilter("node_id", "=", asset_id)],
-                QueryOptions(limit=1)
-            )
-            
-            if result.success and result.data:
-                return self._node_to_asset(result.data[0])
-            
-        except Exception as e:
-            logger.error(f"Failed to get asset {asset_id}: {e}")
-        
+        """Get an asset by ID"""
+        # This would query the fractal system for the asset
+        # For now, return None as this is a simplified implementation
         return None
     
-    def find_asset_by_hash(self, content_hash: str) -> Optional[DigitalAsset]:
-        """Find asset by content hash"""
-        try:
-            # Search by content hash in the content JSON
-            result = self.database.operations.query_nodes(
-                [QueryFilter("content", "LIKE", f'%"content_hash": "{content_hash}"%')],
-                QueryOptions(limit=1)
-            )
-            
-            if result.success and result.data:
-                return self._node_to_asset(result.data[0])
-                
-        except Exception as e:
-            logger.error(f"Failed to find asset by hash {content_hash}: {e}")
-        
-        return None
-    
-    def search_assets(self, query: str = "", asset_type: AssetType = None, 
-                     tags: List[str] = None, limit: int = 50) -> List[DigitalAsset]:
-        """Search for assets based on various criteria"""
-        filters = [QueryFilter("node_type", "=", "digital_asset")]
-        
-        if asset_type:
-            filters.append(QueryFilter("content", "LIKE", f'%"asset_type": "{asset_type.value}"%'))
-        
-        if query:
-            filters.append(QueryFilter("name", "LIKE", f"%{query}%"))
-        
-        try:
-            result = self.database.operations.query_nodes(filters, QueryOptions(limit=limit))
-            
-            if result.success and result.data:
-                assets = [self._node_to_asset(node) for node in result.data]
-                
-                # Filter by tags if specified
-                if tags:
-                    assets = [asset for asset in assets if asset and 
-                             any(tag in asset.metadata.tags for tag in tags)]
-                
-                return [asset for asset in assets if asset is not None]
-                
-        except Exception as e:
-            logger.error(f"Failed to search assets: {e}")
-        
+    def search_assets(self, query: str = None, asset_type: AssetType = None, tags: List[str] = None) -> List[DigitalAsset]:
+        """Search for assets based on criteria"""
+        # This would query the fractal system for assets
+        # For now, return empty list as this is a simplified implementation
         return []
     
-    def update_asset_metadata(self, asset_id: str, 
-                            metadata_updates: Dict[str, Any]) -> bool:
-        """Update asset metadata"""
-        asset = self.get_asset(asset_id)
-        if not asset:
-            return False
-        
-        try:
-            # Update metadata fields
-            for key, value in metadata_updates.items():
-                if hasattr(asset.metadata, key):
-                    setattr(asset.metadata, key, value)
-                else:
-                    asset.metadata.custom_fields[key] = value
-            
-            asset.updated_at = datetime.now()
-            
-            # Update in database
-            db_node = asset.to_database_node()
-            result = self.database.operations.update_node(db_node)
-            
-            return result.success
-            
-        except Exception as e:
-            logger.error(f"Failed to update asset metadata {asset_id}: {e}")
-            return False
-    
-    def delete_asset(self, asset_id: str, remove_files: bool = True) -> bool:
-        """Delete an asset from the system"""
-        asset = self.get_asset(asset_id)
-        if not asset:
-            return False
-        
-        try:
-            # Remove from database
-            result = self.database.operations.delete_node(asset_id)
-            
-            if result.success and remove_files:
-                # Remove storage files
-                if os.path.exists(asset.storage_path):
-                    os.remove(asset.storage_path)
-                
-                if asset.thumbnail_path and os.path.exists(asset.thumbnail_path):
-                    os.remove(asset.thumbnail_path)
-                
-                logger.info(f"✅ Asset deleted: {asset_id}")
-            
-            return result.success
-            
-        except Exception as e:
-            logger.error(f"Failed to delete asset {asset_id}: {e}")
-            return False
-    
-    def get_asset_stats(self) -> Dict[str, Any]:
-        """Get statistics about stored assets"""
-        try:
-            # Get all assets
-            result = self.database.operations.query_nodes(
-                [QueryFilter("node_type", "=", "digital_asset")],
-                QueryOptions(limit=1000)
-            )
-            
-            if not result.success:
-                return {}
-            
-            assets = [self._node_to_asset(node) for node in result.data or []]
-            assets = [asset for asset in assets if asset is not None]
-            
-            # Calculate statistics
-            total_count = len(assets)
-            total_size = sum(asset.metadata.file_size for asset in assets)
-            
-            type_counts = {}
-            for asset in assets:
-                asset_type = asset.asset_type.value
-                type_counts[asset_type] = type_counts.get(asset_type, 0) + 1
-            
-            return {
-                "total_assets": total_count,
-                "total_size_bytes": total_size,
-                "total_size_mb": round(total_size / (1024 * 1024), 2),
-                "asset_types": type_counts,
-                "storage_root": str(self.storage_root)
-            }
-            
-        except Exception as e:
-            logger.error(f"Failed to get asset stats: {e}")
-            return {}
-    
-    def _node_to_asset(self, node: DatabaseNode) -> Optional[DigitalAsset]:
-        """Convert DatabaseNode back to DigitalAsset"""
-        try:
-            content_data = json.loads(node.content) if node.content else {}
-            metadata_data = content_data.get('metadata', {})
-            
-            # Reconstruct metadata with proper datetime handling
-            creation_date = None
-            if metadata_data.get('creation_date'):
-                try:
-                    creation_date = datetime.fromisoformat(metadata_data['creation_date'])
-                except (ValueError, TypeError):
-                    creation_date = None
-            
-            modification_date = None
-            if metadata_data.get('modification_date'):
-                try:
-                    modification_date = datetime.fromisoformat(metadata_data['modification_date'])
-                except (ValueError, TypeError):
-                    modification_date = None
-            
-            metadata = AssetMetadata(
-                file_size=metadata_data.get('file_size', 0),
-                mime_type=metadata_data.get('mime_type', 'application/octet-stream'),
-                creation_date=creation_date,
-                modification_date=modification_date,
-                dimensions=tuple(metadata_data['dimensions']) if metadata_data.get('dimensions') else None,
-                duration=metadata_data.get('duration'),
-                bitrate=metadata_data.get('bitrate'),
-                color_space=metadata_data.get('color_space'),
-                compression=metadata_data.get('compression'),
-                author=metadata_data.get('author'),
-                title=metadata_data.get('title'),
-                description=metadata_data.get('description'),
-                tags=metadata_data.get('tags', []),
-                exif_data=metadata_data.get('exif_data'),
-                custom_fields=metadata_data.get('custom_fields', {})
-            )
-            
-            return DigitalAsset(
-                asset_id=node.node_id,
-                original_filename=content_data.get('original_filename', ''),
-                asset_type=AssetType(content_data.get('asset_type', 'unknown')),
-                content_hash=content_data.get('content_hash', ''),
-                storage_path=content_data.get('storage_path', ''),
-                metadata=metadata,
-                status=AssetStatus(content_data.get('status', 'ready')),
-                created_at=node.created_at,
-                updated_at=node.updated_at,
-                access_count=content_data.get('access_count', 0),
-                last_accessed=datetime.fromisoformat(content_data['last_accessed']) if content_data.get('last_accessed') else None,
-                thumbnail_path=content_data.get('thumbnail_path'),
-                preview_available=content_data.get('preview_available', False)
-            )
-            
-        except Exception as e:
-            logger.error(f"Failed to convert node to asset: {e}")
-            return None
+    def get_asset_manager_status(self) -> Dict[str, Any]:
+        """Get current asset manager status and capabilities"""
+        return {
+            "base_storage_path": str(self.base_storage_path),
+            "supported_asset_types": [t.value for t in AssetType if t != AssetType.UNKNOWN],
+            "processing_capabilities": {
+                "image_processing": PILLOW_AVAILABLE,
+                "audio_processing": MUTAGEN_AVAILABLE,
+                "video_processing": OPENCV_AVAILABLE,
+                "document_processing": PYPDF2_AVAILABLE
+            },
+            "storage_paths": {t.value: str(p) for t, p in self.asset_type_paths.items()},
+            "capabilities": [
+                "asset_type_detection",
+                "metadata_extraction",
+                "content_hashing",
+                "file_storage",
+                "tag_management"
+            ]
+        }
 
-async def main():
-    """Demo of digital asset management capabilities"""
-    print("🎨 Digital Asset Manager - Living Codex")
-    print("=" * 50)
-    
-    # Initialize systems
-    from .database_persistence_system import DatabasePersistenceSystem
-    database = DatabasePersistenceSystem(db_path="asset_demo.db")
-    asset_manager = DigitalAssetManager(database)
-    
-    print(f"✅ Asset manager initialized")
-    print(f"📁 Storage root: {asset_manager.storage_root}")
-    
-    # Show capabilities
-    print("\n🎯 Supported Asset Types:")
-    for asset_type in AssetType:
-        print(f"   • {asset_type.value.title()}")
-    
-    print("\n📊 Available Metadata Extractors:")
-    print(f"   • Images: {'✅' if PILLOW_AVAILABLE else '❌'} (Pillow)")
-    print(f"   • Audio: {'✅' if MUTAGEN_AVAILABLE else '❌'} (Mutagen)")
-    print(f"   • Video: {'✅' if OPENCV_AVAILABLE else '❌'} (OpenCV)")
-    print(f"   • Documents: {'✅' if PYPDF2_AVAILABLE else '❌'} (PyPDF2)")
-    
-    # Get current stats
-    stats = asset_manager.get_asset_stats()
-    print(f"\n📈 Current Asset Statistics:")
-    print(f"   • Total Assets: {stats.get('total_assets', 0)}")
-    print(f"   • Total Size: {stats.get('total_size_mb', 0)} MB")
-    
-    if stats.get('asset_types'):
-        print("   • By Type:")
-        for asset_type, count in stats['asset_types'].items():
-            print(f"     - {asset_type.title()}: {count}")
-    
-    print("\n💡 Ready for asset management operations!")
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+# Create and register the fractal component
+fractal_digital_asset_manager = FractalDigitalAssetManagerComponent()

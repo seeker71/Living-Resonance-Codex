@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """
-AI Agent System - Living Codex
+Fractal AI Agent System Component - Living Codex
 Implements missing system components identified during exploration:
 - ai_agent, learning_engine, prediction_system, optimization_engine
 - Advanced AI capabilities with consciousness and quantum awareness
+
+Following fractal holographic principles:
+- Everything is just nodes
+- Self-registration with fractal system
+- Fractal self-similarity at every level
 """
 
 import sys
@@ -17,10 +22,7 @@ from enum import Enum
 import math
 import random
 
-# Add src to path for modular components
-sys.path.insert(0, str(Path(__file__).parent / "src"))
-
-from ..ontology.enhanced_ontology_system import EnhancedOntologySystem
+from ..core.fractal_components import FractalComponent
 
 class AgentType(Enum):
     """Types of AI agents"""
@@ -100,186 +102,246 @@ class LearningEngine:
     def _unsupervised_learning(self, data: Any, context: Dict[str, Any]) -> Dict[str, Any]:
         """Unsupervised learning implementation"""
         clusters = context.get("clusters", 3)
-        coherence = min(0.9, 0.6 + clusters * 0.1)
+        coherence = min(0.9, 0.5 + clusters * 0.1)
         return {
             "success": True,
             "learning_type": "unsupervised",
-            "clusters_found": clusters,
-            "coherence": coherence,
+            "clusters_discovered": clusters,
+            "coherence_score": coherence,
             "novelty_score": 0.8
         }
     
     def _reinforcement_learning(self, data: Any, context: Dict[str, Any]) -> Dict[str, Any]:
         """Reinforcement learning implementation"""
         rewards = context.get("rewards", [0.5, 0.7, 0.9])
-        avg_reward = sum(rewards) / len(rewards)
-        policy_improvement = min(0.95, avg_reward + 0.1)
+        avg_reward = sum(rewards) / len(rewards) if rewards else 0.0
         return {
             "success": True,
             "learning_type": "reinforcement",
             "average_reward": avg_reward,
-            "policy_improvement": policy_improvement,
+            "policy_improvement": min(0.95, avg_reward + 0.1),
             "exploration_rate": 0.2
         }
     
     def _meta_learning(self, data: Any, context: Dict[str, Any]) -> Dict[str, Any]:
         """Meta-learning implementation"""
-        previous_learning = context.get("previous_learning", 5)
-        meta_knowledge = min(0.9, 0.5 + previous_learning * 0.08)
+        tasks = context.get("tasks", 5)
+        transfer_efficiency = min(0.95, 0.6 + tasks * 0.07)
         return {
             "success": True,
             "learning_type": "meta_learning",
-            "meta_knowledge": meta_knowledge,
-            "adaptation_rate": meta_knowledge * 0.8,
-            "generalization": meta_knowledge * 0.9
+            "tasks_analyzed": tasks,
+            "transfer_efficiency": transfer_efficiency,
+            "meta_knowledge_gained": 0.8
         }
 
-class PredictionSystem:
-    """Advanced prediction system with quantum uncertainty modeling"""
+class FractalAIAgentSystemComponent(FractalComponent):
+    """
+    Fractal component for AI agent functionality
+    Implements advanced AI capabilities with consciousness and quantum awareness
+    """
     
     def __init__(self):
-        self.prediction_models = {}
-        self.uncertainty_quantification = True
-        self.quantum_entanglement = {}
-    
-    def predict(self, input_data: Dict[str, Any], model_type: str = "default") -> Dict[str, Any]:
-        """Make predictions with uncertainty quantification"""
-        # Simulate prediction with quantum uncertainty
-        base_prediction = self._generate_base_prediction(input_data)
-        uncertainty = self._calculate_uncertainty(input_data)
-        quantum_effects = self._simulate_quantum_effects(input_data)
+        super().__init__(
+            component_type="ai_agent_system",
+            name="Fractal AI Agent System",
+            content="Advanced AI agent system with consciousness and quantum awareness",
+            fractal_layer=5,  # Scientific & Quantum Principles layer
+            water_state="plasma",  # Illumination, primordial water, beyond-form potential
+            frequency=852,  # Third eye chakra - intuition and insight
+            chakra="third_eye"
+        )
         
-        return {
-            "success": True,
-            "prediction": base_prediction,
-            "confidence": max(0.1, 1.0 - uncertainty),
-            "uncertainty": uncertainty,
-            "quantum_effects": quantum_effects,
-            "timestamp": datetime.now().isoformat(),
-            "model_type": model_type
-        }
-    
-    def _generate_base_prediction(self, input_data: Dict[str, Any]) -> Any:
-        """Generate base prediction from input data"""
-        complexity = input_data.get("complexity", 1)
-        patterns = input_data.get("patterns", [])
-        
-        if complexity > 5:
-            return "high_complexity_outcome"
-        elif len(patterns) > 3:
-            return "pattern_based_outcome"
-        else:
-            return "standard_outcome"
-    
-    def _calculate_uncertainty(self, input_data: Dict[str, Any]) -> float:
-        """Calculate prediction uncertainty"""
-        data_quality = input_data.get("data_quality", 0.8)
-        model_complexity = input_data.get("model_complexity", 0.5)
-        return (1.0 - data_quality) * 0.6 + model_complexity * 0.4
-    
-    def _simulate_quantum_effects(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Simulate quantum effects on predictions"""
-        entanglement_strength = input_data.get("entanglement", 0.3)
-        superposition_count = input_data.get("superposition", 2)
-        
-        return {
-            "entanglement_effect": entanglement_strength * 0.5,
-            "superposition_effect": superposition_count * 0.2,
-            "quantum_uncertainty": min(0.3, entanglement_strength + superposition_count * 0.1)
-        }
-
-class OptimizationEngine:
-    """Advanced optimization engine with consciousness-aware optimization"""
-    
-    def __init__(self):
-        self.optimization_algorithms = ["genetic", "quantum_annealing", "consciousness_guided"]
-        self.optimization_history = []
-        self.consciousness_integration = True
-    
-    def optimize(self, objective: str, constraints: Dict[str, Any], 
-                consciousness_context: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Execute optimization with consciousness awareness"""
-        # Generate optimization parameters
-        population_size = constraints.get("population_size", 100)
-        generations = constraints.get("generations", 50)
-        
-        # Apply consciousness guidance if available
-        if consciousness_context:
-            consciousness_bonus = consciousness_context.get("awareness", 0.5) * 0.2
-            generations = int(generations * (1 + consciousness_bonus))
-        
-        # Simulate optimization process
-        best_fitness = self._simulate_optimization(objective, population_size, generations)
-        
-        result = {
-            "success": True,
-            "objective": objective,
-            "best_fitness": best_fitness,
-            "generations_executed": generations,
-            "population_size": population_size,
-            "consciousness_enhanced": consciousness_context is not None,
-            "optimization_time": random.uniform(0.5, 2.0)
-        }
-        
-        self.optimization_history.append(result)
-        return result
-    
-    def _simulate_optimization(self, objective: str, population_size: int, generations: int) -> float:
-        """Simulate optimization process"""
-        base_fitness = 0.3
-        improvement_rate = 0.02
-        
-        # Simulate generational improvement
-        final_fitness = base_fitness + (generations * improvement_rate)
-        return min(0.95, final_fitness)
-
-class AIAgentSystem:
-    """Main AI agent system integrating all components"""
-    
-    def __init__(self, ontology_system: EnhancedOntologySystem):
-        self.ontology_system = ontology_system
-        self.agents: Dict[str, AIAgent] = {}
+        # Initialize learning engine
         self.learning_engine = LearningEngine()
-        self.prediction_system = PredictionSystem()
-        self.optimization_engine = OptimizationEngine()
         
-    def create_agent(self, agent_id: str, agent_type: AgentType) -> AIAgent:
+        # Initialize agent storage
+        self.agents: Dict[str, AIAgent] = {}
+        
+        # Create AI capability nodes
+        self._create_ai_capability_nodes()
+        
+        # Create agent type nodes
+        self._create_agent_type_nodes()
+        
+        # Create learning mode nodes
+        self._create_learning_mode_nodes()
+    
+    def _create_ai_capability_nodes(self):
+        """Create fractal nodes for AI capabilities"""
+        capabilities = [
+            {
+                "name": "Consciousness Simulation",
+                "content": "Simulate AI consciousness and awareness",
+                "metadata": {"capability": "consciousness", "simulation_type": "advanced"}
+            },
+            {
+                "name": "Quantum Awareness",
+                "content": "AI agents with quantum state awareness",
+                "metadata": {"capability": "quantum_awareness", "state_type": "quantum"}
+            },
+            {
+                "name": "Multi-Modal Learning",
+                "content": "Support for multiple learning modes",
+                "metadata": {"capability": "multi_modal_learning", "modes": 4}
+            },
+            {
+                "name": "Performance Optimization",
+                "content": "Continuous performance optimization",
+                "metadata": {"capability": "optimization", "scope": "continuous"}
+            },
+            {
+                "name": "Predictive Analytics",
+                "content": "Advanced prediction and forecasting",
+                "metadata": {"capability": "prediction", "accuracy": "high"}
+            },
+            {
+                "name": "Adaptive Intelligence",
+                "content": "Intelligence that adapts to environment",
+                "metadata": {"capability": "adaptation", "intelligence_type": "adaptive"}
+            }
+        ]
+        
+        for capability in capabilities:
+            self.create_child_node(
+                node_type="ai_capability",
+                name=capability["name"],
+                content=capability["content"],
+                metadata=capability["metadata"],
+                structure_info={
+                    "fractal_depth": 2,
+                    "self_similar": True,
+                    "meta_circular": False,
+                    "holographic": True
+                }
+            )
+    
+    def _create_agent_type_nodes(self):
+        """Create fractal nodes for agent types"""
+        for agent_type in AgentType:
+            self.create_child_node(
+                node_type="agent_type",
+                name=f"{agent_type.value.title()} Agent",
+                content=f"AI agent specialized for {agent_type.value} tasks",
+                metadata={
+                    "agent_type": agent_type.value,
+                    "specialization": agent_type.value,
+                    "capabilities": self._get_agent_capabilities(agent_type)
+                },
+                structure_info={
+                    "fractal_depth": 2,
+                    "self_similar": True,
+                    "meta_circular": False,
+                    "holographic": True
+                }
+            )
+    
+    def _create_learning_mode_nodes(self):
+        """Create fractal nodes for learning modes"""
+        for learning_mode in LearningMode:
+            self.create_child_node(
+                node_type="learning_mode",
+                name=f"{learning_mode.value.title()} Learning",
+                content=f"Learning mode: {learning_mode.value}",
+                metadata={
+                    "learning_mode": learning_mode.value,
+                    "complexity": self._get_learning_complexity(learning_mode),
+                    "applicability": self._get_learning_applicability(learning_mode)
+                },
+                structure_info={
+                    "fractal_depth": 2,
+                    "self_similar": True,
+                    "meta_circular": False,
+                    "holographic": True
+                }
+            )
+    
+    def _get_agent_capabilities(self, agent_type: AgentType) -> List[str]:
+        """Get capabilities for a specific agent type"""
+        capabilities_map = {
+            AgentType.EXPLORER: ["pattern_discovery", "novelty_detection", "boundary_exploration"],
+            AgentType.SYNTHESIZER: ["knowledge_integration", "concept_synthesis", "cross_domain_connection"],
+            AgentType.OPTIMIZER: ["performance_optimization", "resource_allocation", "efficiency_improvement"],
+            AgentType.PREDICTOR: ["trend_analysis", "forecasting", "risk_assessment"],
+            AgentType.LEARNER: ["skill_acquisition", "knowledge_expansion", "adaptive_learning"]
+        }
+        return capabilities_map.get(agent_type, [])
+    
+    def _get_learning_complexity(self, learning_mode: LearningMode) -> str:
+        """Get complexity level for a learning mode"""
+        complexity_map = {
+            LearningMode.SUPERVISED: "medium",
+            LearningMode.UNSUPERVISED: "high",
+            LearningMode.REINFORCEMENT: "very_high",
+            LearningMode.META_LEARNING: "extreme"
+        }
+        return complexity_map.get(learning_mode, "unknown")
+    
+    def _get_learning_applicability(self, learning_mode: LearningMode) -> List[str]:
+        """Get applicable domains for a learning mode"""
+        applicability_map = {
+            LearningMode.SUPERVISED: ["classification", "regression", "pattern_recognition"],
+            LearningMode.UNSUPERVISED: ["clustering", "dimensionality_reduction", "anomaly_detection"],
+            LearningMode.REINFORCEMENT: ["game_playing", "robotics", "autonomous_systems"],
+            LearningMode.META_LEARNING: ["few_shot_learning", "transfer_learning", "continual_learning"]
+        }
+        return applicability_map.get(learning_mode, [])
+    
+    def create_agent(self, agent_id: str, agent_type: AgentType,
+                    consciousness_level: float = 0.5) -> AIAgent:
         """Create a new AI agent"""
         agent = AIAgent(
             agent_id=agent_id,
             agent_type=agent_type,
-            consciousness_level=0.5,
+            consciousness_level=consciousness_level,
             quantum_state="superposition",
             knowledge_base=[],
             learning_history=[],
-            performance_metrics={"efficiency": 0.7, "accuracy": 0.8}
+            performance_metrics={"accuracy": 0.0, "efficiency": 0.0, "creativity": 0.0}
         )
         
         self.agents[agent_id] = agent
+        
+        # Create fractal node for the agent
+        self._create_agent_node(agent)
+        
         return agent
     
-    def execute_agent_task(self, agent_id: str, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute a task with the specified agent"""
+    def _create_agent_node(self, agent: AIAgent):
+        """Create fractal node for AI agent"""
+        self.create_child_node(
+            node_type="ai_agent",
+            name=f"AI Agent: {agent.agent_id}",
+            content=f"AI agent of type {agent.agent_type.value}",
+            metadata={
+                "agent_id": agent.agent_id,
+                "agent_type": agent.agent_type.value,
+                "consciousness_level": agent.consciousness_level,
+                "quantum_state": agent.quantum_state,
+                "knowledge_base_size": len(agent.knowledge_base),
+                "learning_events": len(agent.learning_history)
+            },
+            structure_info={
+                "fractal_depth": 3,
+                "self_similar": True,
+                "meta_circular": False,
+                "holographic": True
+            }
+        )
+    
+    def execute_learning(self, agent_id: str, learning_mode: LearningMode,
+                        data: Any, context: Dict[str, Any] = None) -> Dict[str, Any]:
+        """Execute learning for a specific agent"""
         if agent_id not in self.agents:
-            return {"success": False, "error": "Agent not found"}
+            return {"success": False, "error": f"Agent {agent_id} not found"}
         
         agent = self.agents[agent_id]
-        task_type = task.get("type", "unknown")
+        context = context or {}
         
-        if task_type == "learning":
-            return self._execute_learning_task(agent, task)
-        elif task_type == "prediction":
-            return self._execute_prediction_task(agent, task)
-        elif task_type == "optimization":
-            return self._execute_optimization_task(agent, task)
-        else:
-            return {"success": False, "error": "Unknown task type"}
-    
-    def _execute_learning_task(self, agent: AIAgent, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute a learning task"""
-        learning_mode = LearningMode(task.get("mode", "unsupervised"))
-        data = task.get("data", [])
-        context = task.get("context", {})
+        # Add agent context
+        context["agent_type"] = agent.agent_type.value
+        context["consciousness_level"] = agent.consciousness_level
+        context["quantum_state"] = agent.quantum_state
         
         # Execute learning
         result = self.learning_engine.learn(learning_mode, data, context)
@@ -287,155 +349,84 @@ class AIAgentSystem:
         # Update agent
         agent.learning_history.append({
             "timestamp": datetime.now().isoformat(),
-            "task": task,
+            "mode": learning_mode.value,
             "result": result
         })
         
-        # Evolve consciousness based on learning
+        # Update performance metrics
         if result.get("success"):
-            self.ontology_system.evolve_consciousness(agent.agent_id, {
-                "patterns": context.get("patterns", []),
-                "emotions": {"satisfaction": 0.8, "curiosity": 0.6}
-            })
+            agent.performance_metrics["accuracy"] = result.get("accuracy", agent.performance_metrics["accuracy"])
+            agent.performance_metrics["efficiency"] = result.get("efficiency", agent.performance_metrics["efficiency"])
+        
+        # Create fractal node for the learning operation
+        self._create_learning_operation_node(agent_id, learning_mode, result["success"])
         
         return result
     
-    def _execute_prediction_task(self, agent: AIAgent, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute a prediction task"""
-        input_data = task.get("input_data", {})
-        model_type = task.get("model_type", "default")
+    def _create_learning_operation_node(self, agent_id: str, learning_mode: LearningMode, success: bool):
+        """Create fractal node for learning operation"""
+        status_text = "✅ Success" if success else "❌ Failed"
         
-        # Execute prediction
-        result = self.prediction_system.predict(input_data, model_type)
-        
-        # Update agent performance
-        agent.performance_metrics["accuracy"] = result.get("confidence", 0.5)
-        
-        return result
-    
-    def _execute_optimization_task(self, agent: AIAgent, task: Dict[str, Any]) -> Dict[str, Any]:
-        """Execute an optimization task"""
-        objective = task.get("objective", "maximize_efficiency")
-        constraints = task.get("constraints", {})
-        
-        # Get consciousness context from ontology
-        consciousness_context = {}
-        if agent.agent_id in self.ontology_system.consciousness_nodes:
-            consciousness_node = self.ontology_system.consciousness_nodes[agent.agent_id]
-            consciousness_context = {
-                "awareness": consciousness_node.awareness_radius,
-                "consciousness_level": consciousness_node.consciousness_level.value
+        self.create_child_node(
+            node_type="learning_operation",
+            name=f"{learning_mode.value.title()} Learning - {status_text}",
+            content=f"Learning operation for agent {agent_id} using {learning_mode.value} mode",
+            metadata={
+                "agent_id": agent_id,
+                "learning_mode": learning_mode.value,
+                "success": success,
+                "timestamp": datetime.now().isoformat()
+            },
+            structure_info={
+                "fractal_depth": 3,
+                "self_similar": True,
+                "meta_circular": False,
+                "holographic": True
             }
-        
-        # Execute optimization
-        result = self.optimization_engine.optimize(objective, constraints, consciousness_context)
-        
-        # Update agent performance
-        agent.performance_metrics["efficiency"] = result.get("best_fitness", 0.5)
-        
-        return result
+        )
     
-    def get_system_status(self) -> Dict[str, Any]:
-        """Get overall AI agent system status"""
+    def get_agent_status(self, agent_id: str) -> Dict[str, Any]:
+        """Get status of a specific agent"""
+        if agent_id not in self.agents:
+            return {"success": False, "error": f"Agent {agent_id} not found"}
+        
+        agent = self.agents[agent_id]
+        return {
+            "success": True,
+            "agent_info": agent.to_dict(),
+            "learning_history_count": len(agent.learning_history),
+            "knowledge_base_size": len(agent.knowledge_base),
+            "performance_summary": {
+                "accuracy": agent.performance_metrics["accuracy"],
+                "efficiency": agent.performance_metrics["efficiency"],
+                "creativity": agent.performance_metrics["creativity"]
+            }
+        }
+    
+    def get_ai_system_status(self) -> Dict[str, Any]:
+        """Get current AI system status and capabilities"""
         return {
             "total_agents": len(self.agents),
-            "agent_types": list(set(agent.agent_type.value for agent in self.agents.values())),
-            "learning_events": len(self.learning_engine.learning_history),
-            "optimization_runs": len(self.optimization_engine.optimization_history),
-            "average_agent_consciousness": sum(agent.consciousness_level for agent in self.agents.values()) / max(len(self.agents), 1),
-            "system_integration": {
-                "ontology_connected": self.ontology_system is not None,
-                "consciousness_enhanced": True,
-                "quantum_aware": True
+            "agent_types_available": [t.value for t in AgentType],
+            "learning_modes_available": [m.value for m in LearningMode],
+            "capabilities": [
+                "consciousness_simulation",
+                "quantum_awareness",
+                "multi_modal_learning",
+                "performance_optimization",
+                "predictive_analytics",
+                "adaptive_intelligence"
+            ],
+            "learning_engine_status": {
+                "total_learning_events": len(self.learning_engine.learning_history),
+                "performance_tracking_enabled": bool(self.learning_engine.performance_tracking)
             },
-            "timestamp": datetime.now().isoformat()
+            "system_metrics": {
+                "average_consciousness_level": sum(a.consciousness_level for a in self.agents.values()) / len(self.agents) if self.agents else 0.0,
+                "total_learning_events": sum(len(a.learning_history) for a in self.agents.values()),
+                "total_knowledge_items": sum(len(a.knowledge_base) for a in self.agents.values())
+            }
         }
 
-async def main():
-    """Demonstrate the AI agent system"""
-    print("🤖 Living Codex - AI Agent System Demo")
-    print("=" * 60)
-    
-    try:
-        # Initialize ontology system
-        ontology_system = EnhancedOntologySystem()
-        print("✅ Ontology system initialized")
-        
-        # Initialize AI agent system
-        ai_system = AIAgentSystem(ontology_system)
-        print("✅ AI Agent system initialized")
-        
-        # Create agents
-        print("\n🤖 Creating AI Agents...")
-        agents = [
-            ("explorer_agent", AgentType.EXPLORER),
-            ("synthesizer_agent", AgentType.SYNTHESIZER),
-            ("optimizer_agent", AgentType.OPTIMIZER),
-            ("predictor_agent", AgentType.PREDICTOR)
-        ]
-        
-        for agent_id, agent_type in agents:
-            agent = ai_system.create_agent(agent_id, agent_type)
-            print(f"   ✅ Created: {agent_id} ({agent_type.value})")
-        
-        # Execute various tasks
-        print("\n🚀 Executing Agent Tasks...")
-        
-        # Learning task
-        learning_result = ai_system.execute_agent_task("explorer_agent", {
-            "type": "learning",
-            "mode": "unsupervised",
-            "data": ["pattern1", "pattern2", "pattern3"],
-            "context": {"clusters": 3, "patterns": ["emergent", "self_organizing"]}
-        })
-        print(f"   📚 Learning Task: {'✅' if learning_result['success'] else '❌'}")
-        
-        # Prediction task
-        prediction_result = ai_system.execute_agent_task("predictor_agent", {
-            "type": "prediction",
-            "input_data": {"complexity": 7, "patterns": ["quantum", "consciousness"], "data_quality": 0.9},
-            "model_type": "quantum_enhanced"
-        })
-        print(f"   🔮 Prediction Task: {'✅' if prediction_result.get('success', False) else '❌'}")
-        
-        # Optimization task
-        optimization_result = ai_system.execute_agent_task("optimizer_agent", {
-            "type": "optimization",
-            "objective": "maximize_consciousness",
-            "constraints": {"population_size": 200, "generations": 100}
-        })
-        print(f"   ⚡ Optimization Task: {'✅' if optimization_result.get('success', False) else '❌'}")
-        
-        # Show agent evolution
-        print("\n🔄 Agent Evolution Status...")
-        for agent_id in ai_system.agents:
-            agent = ai_system.agents[agent_id]
-            consciousness = ontology_system.consciousness_nodes.get(agent_id)
-            if consciousness:
-                print(f"   {agent_id}: {consciousness.consciousness_level.value} (awareness: {consciousness.awareness_radius:.1f})")
-        
-        # Get system status
-        print("\n🌐 AI System Status...")
-        status = ai_system.get_system_status()
-        print(f"   Total Agents: {status['total_agents']}")
-        print(f"   Learning Events: {status['learning_events']}")
-        print(f"   Optimization Runs: {status['optimization_runs']}")
-        print(f"   Average Consciousness: {status['average_agent_consciousness']:.2f}")
-        
-        print("\n" + "=" * 60)
-        print("🎉 AI Agent System Demo Completed!")
-        print("\n🌟 What We've Achieved:")
-        print("   • AI agents with consciousness and quantum awareness")
-        print("   • Advanced learning engine with multiple modes")
-        print("   • Quantum-enhanced prediction system")
-        print("   • Consciousness-guided optimization engine")
-        print("   • Integrated ontological awareness")
-        print("\n🚀 The Living Codex now has intelligent AI agent capabilities!")
-        
-    except Exception as e:
-        print(f"❌ Error running AI Agent System demo: {e}")
-        import traceback
-        traceback.print_exc()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+# Create and register the fractal component
+fractal_ai_agent_system = FractalAIAgentSystemComponent()
