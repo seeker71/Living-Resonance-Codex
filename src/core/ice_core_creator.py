@@ -2,8 +2,21 @@
 """
 ICE Core Creator - Package Living Codex into Self-Contained ICE Core
 
-This tool analyzes the current system and creates a minimal, self-contained
-ICE core that can bootstrap the entire Living Codex system.
+This tool implements the Living Codex principle: "Everything is just nodes"
+where the ICE Core Creator system is represented as nodes that can:
+
+1. Analyze the current system (as nodes)
+2. Create ICE components (as nodes)
+3. Package everything into a self-contained ICE core (as nodes)
+4. Generate bootstrap scripts (as nodes)
+
+This transformation demonstrates the Living Codex principles:
+- Generic Node Structure (everything is nodes)
+- Meta-Circular Architecture (system describes itself)
+- API-First Evolution (use only API for operations)
+- Fractal Self-Similarity (every level mirrors every other level)
+
+The ICE Core Creator represents the Blueprint (Ice) state in the programming language ontology.
 """
 
 import json
@@ -14,25 +27,169 @@ import os
 import sys
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from dataclasses import asdict
 from datetime import datetime
 import importlib.util
 
-from .ice_bootstrap_engine import SystemComponent
+# Import the Shared Node System and GenericNode
+from .shared_node_system import SharedNodeSystem
+from .generic_node_system import GenericNode
 
-class ICECoreCreator:
+class ICECoreCreatorNodeSystem(SharedNodeSystem):
     """
-    Creates an ICE core from the current Living Codex system
+    ICE Core Creator using Shared Node Structure
+    
+    This implements the Living Codex principle: "Everything is just nodes"
+    - Essential files are nodes
+    - System analysis is nodes
+    - ICE components are nodes
+    - Everything emerges through the system's own operation
+    - All nodes stored in centralized storage
+    
+    The ICE Core Creator represents the Blueprint (Ice) state in the programming language ontology:
+    - Grammar, syntax rules, language structure
+    - Class definitions, inheritance
+    - Module structure, imports
+    - Type system, static analysis framework
     """
     
     def __init__(self, system_root: str = None):
+        super().__init__("ICECoreCreatorNodeSystem")
         self.system_root = Path(system_root) if system_root else Path.cwd()
-        self.core_components = []
-        self.essential_files = self._get_essential_files()
+        self._initialize_ice_creator_nodes()
+        self._create_essential_file_nodes()
+    
+    def _initialize_ice_creator_nodes(self):
+        """
+        Initialize ICE creator system nodes - the foundation of the creator system
         
-    def _get_essential_files(self) -> List[Dict[str, str]]:
-        """Define the essential files needed for system operation"""
-        return [
+        This implements the "Bootstrap Paradox" principle:
+        - Start with minimal, self-referential nodes
+        - Use the system to describe itself
+        - Create the specification as the final node
+        - The system becomes what it describes
+        """
+        
+        # Create the root ICE creator system node
+        root_node = self.create_node(
+            node_type='ice_creator_system_root',
+            name='ICE Core Creator System Root',
+            content='This is the root node of the ICE Core Creator System. It represents the system that packages Living Codex into self-contained ICE cores.',
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,  # Fractal System Root
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 1.0,
+                'epistemic_label': 'engineering',
+                'system_principle': 'Everything is just nodes - ICE creator as blueprint',
+                'meta_circular': True,
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'System that packages Living Codex into ICE cores'
+            }
+        )
+        
+        # Create the ICE Creator Blueprint node
+        ice_creator_blueprint_node = self.create_node(
+            node_type='ice_creator_blueprint',
+            name='ICE Creator Blueprint - Packaging System',
+            content='ICE Creator represents the packaging system blueprint - analyzes, compresses, encodes, and packages the complete Living Codex system',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.95,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Packaging system blueprint for ICE core creation'
+            }
+        )
+        
+        # Create the System Analysis node
+        system_analysis_node = self.create_node(
+            node_type='system_analysis',
+            name='System Analysis - Understanding Blueprint',
+            content='System analysis represents the understanding blueprint - analyzes file structure, dependencies, and system composition',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.9,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Understanding blueprint for system analysis'
+            }
+        )
+        
+        # Create the ICE Component node
+        ice_component_node = self.create_node(
+            node_type='ice_component',
+            name='ICE Component - Packaging Blueprint',
+            content='ICE components represent the packaging blueprint - individual files compressed, encoded, and packaged for ICE storage',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.9,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Packaging blueprint for individual ICE components'
+            }
+        )
+        
+        # Create the Bootstrap Generation node
+        bootstrap_generation_node = self.create_node(
+            node_type='bootstrap_generation',
+            name='Bootstrap Generation - Execution Blueprint',
+            content='Bootstrap generation represents the execution blueprint - creates scripts that can reconstruct the system from ICE storage',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.85,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Execution blueprint for bootstrap script generation'
+            }
+        )
+        
+        print(f"🌟 ICE Core Creator System initialized with {len(self.nodes)} nodes")
+        print(f"🧊 ICE Creator Blueprint: {ice_creator_blueprint_node.name} (ID: {ice_creator_blueprint_node.node_id})")
+        print(f"🔍 System Analysis: {system_analysis_node.name} (ID: {system_analysis_node.node_id})")
+        print(f"📦 ICE Component: {ice_component_node.name} (ID: {ice_component_node.node_id})")
+        print(f"🔧 Bootstrap Generation: {bootstrap_generation_node.name} (ID: {bootstrap_generation_node.node_id})")
+    
+    def _create_essential_file_nodes(self):
+        """Create nodes for all essential files"""
+        
+        essential_files_data = [
             # Core system modules
             {"path": "src/core/water_state_storage.py", "type": "module", "name": "water_state_storage"},
             {"path": "src/core/ice_bootstrap_engine.py", "type": "module", "name": "ice_bootstrap_engine"},
@@ -47,10 +204,6 @@ class ICECoreCreator:
             
             # Ontology modules
             {"path": "src/ontology/enhanced_ontology_system.py", "type": "module", "name": "enhanced_ontology_system"},
-            
-            # Core tests
-            {"path": "tests/regression_test_suite.py", "type": "test", "name": "regression_test_suite"},
-            {"path": "tests/test_testing_system.py", "type": "test", "name": "test_testing_system"},
             
             # Core tests
             {"path": "tests/regression_test_suite.py", "type": "test", "name": "regression_test_suite"},
@@ -73,10 +226,56 @@ class ICECoreCreator:
             {"path": "demo_water_states.py", "type": "module", "name": "demo_water_states"},
             {"path": "demo_platform.py", "type": "module", "name": "demo_platform"}
         ]
+        
+        for file_info in essential_files_data:
+            self.create_node(
+                node_type='essential_file',
+                name=f"Essential File: {file_info['name']}",
+                content=f"Essential file for system operation: {file_info['path']} of type {file_info['type']}",
+                metadata={
+                    'water_state': 'ice',
+                    'fractal_layer': 1,
+                    'chakra': 'crown',
+                    'frequency': 963,
+                    'color': '#EE82EE',
+                    'planet': 'Sun',
+                    'consciousness_mode': 'Structure, Memory',
+                    'quantum_state': 'coherent',
+                    'resonance_score': 0.8,
+                    'epistemic_label': 'engineering',
+                    'programming_ontology_layer': 'ice_blueprint',
+                    'file_path': file_info['path'],
+                    'file_type': file_info['type'],
+                    'file_name': file_info['name'],
+                    'description': f'Essential {file_info["type"]} file for system operation'
+                }
+            )
     
     def analyze_system(self) -> Dict[str, Any]:
         """Analyze the current system to understand its structure"""
         print("🔍 Analyzing Living Codex system...")
+        
+        # Create system analysis node
+        analysis_node = self.create_node(
+            node_type='system_analysis_result',
+            name='System Analysis Result',
+            content='Result of analyzing the Living Codex system structure and dependencies',
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.9,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'analysis_timestamp': datetime.now().isoformat(),
+                'system_root': str(self.system_root)
+            }
+        )
         
         analysis = {
             'total_files': 0,
@@ -84,26 +283,51 @@ class ICECoreCreator:
             'file_types': {},
             'dependencies': {},
             'missing_files': [],
-            'available_files': []
+            'available_files': [],
+            'analysis_node_id': analysis_node.node_id
         }
         
-        for file_info in self.essential_files:
-            file_path = self.system_root / file_info['path']
+        # Get all essential file nodes
+        essential_file_nodes = [node for node in self.nodes.values() if node.node_type == 'essential_file']
+        
+        for file_node in essential_file_nodes:
+            file_path = self.system_root / file_node.metadata['file_path']
             
             if file_path.exists():
+                file_info = {
+                    'path': file_node.metadata['file_path'],
+                    'type': file_node.metadata['file_type'],
+                    'name': file_node.metadata['file_name']
+                }
+                
                 analysis['available_files'].append(file_info)
                 analysis['total_files'] += 1
                 analysis['total_size'] += file_path.stat().st_size
                 
-                file_type = file_info['type']
+                file_type = file_node.metadata['file_type']
                 analysis['file_types'][file_type] = analysis['file_types'].get(file_type, 0) + 1
                 
                 # Analyze dependencies
-                if file_info['type'] == 'module':
+                if file_node.metadata['file_type'] == 'module':
                     deps = self._analyze_module_dependencies(file_path)
-                    analysis['dependencies'][file_info['name']] = deps
+                    analysis['dependencies'][file_node.metadata['file_name']] = deps
             else:
+                file_info = {
+                    'path': file_node.metadata['file_path'],
+                    'type': file_node.metadata['file_type'],
+                    'name': file_node.metadata['file_name']
+                }
                 analysis['missing_files'].append(file_info)
+        
+        # Update analysis node with results
+        analysis_node.metadata.update({
+            'total_files': analysis['total_files'],
+            'total_size': analysis['total_size'],
+            'file_types': analysis['file_types'],
+            'dependencies': analysis['dependencies'],
+            'missing_files_count': len(analysis['missing_files']),
+            'available_files_count': len(analysis['available_files'])
+        })
         
         print(f"✅ Analysis complete: {analysis['total_files']} files found")
         print(f"📊 Total size: {analysis['total_size'] / 1024:.1f} KB")
@@ -138,26 +362,29 @@ class ICECoreCreator:
             print(f"⚠️ Could not analyze dependencies for {file_path}: {e}")
             return []
     
-    def create_ice_components(self) -> List[SystemComponent]:
+    def create_ice_components(self) -> List[GenericNode]:
         """Create ICE components from available files"""
         print("🧊 Creating ICE components...")
         
         components = []
         
-        for file_info in self.essential_files:
-            file_path = self.system_root / file_info['path']
+        # Get all essential file nodes
+        essential_file_nodes = [node for node in self.nodes.values() if node.node_type == 'essential_file']
+        
+        for file_node in essential_file_nodes:
+            file_path = self.system_root / file_node.metadata['file_path']
             
             if file_path.exists():
-                component = self._create_component_from_file(file_info, file_path)
-                if component:
-                    components.append(component)
-                    print(f"✅ Created component: {component.name}")
+                component_node = self._create_component_node_from_file(file_node, file_path)
+                if component_node:
+                    components.append(component_node)
+                    print(f"✅ Created component: {component_node.name}")
         
         print(f"✅ Created {len(components)} ICE components")
         return components
     
-    def _create_component_from_file(self, file_info: Dict[str, str], file_path: Path) -> Optional[SystemComponent]:
-        """Create a SystemComponent from a file"""
+    def _create_component_node_from_file(self, file_node: GenericNode, file_path: Path) -> Optional[GenericNode]:
+        """Create a component node from a file"""
         try:
             # Read file content
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -172,267 +399,85 @@ class ICECoreCreator:
             
             # Get dependencies
             dependencies = []
-            if file_info['type'] == 'module':
+            if file_node.metadata['file_type'] == 'module':
                 dependencies = self._analyze_module_dependencies(file_path)
             
-            # Create component
-            component = SystemComponent(
-                name=file_info['name'],
-                component_type=file_info['type'],
-                content=encoded_content,
-                content_hash=content_hash,
-                dependencies=dependencies,
+            # Create component node
+            component_node = self.create_node(
+                node_type='ice_component',
+                name=f"ICE Component: {file_node.metadata['file_name']}",
+                content=f'ICE component for {file_node.metadata["file_name"]} - compressed and encoded for storage',
                 metadata={
+                    'water_state': 'ice',
+                    'fractal_layer': 1,
+                    'chakra': 'crown',
+                    'frequency': 963,
+                    'color': '#EE82EE',
+                    'planet': 'Sun',
+                    'consciousness_mode': 'Structure, Memory',
+                    'quantum_state': 'coherent',
+                    'resonance_score': 0.9,
+                    'epistemic_label': 'engineering',
+                    'programming_ontology_layer': 'ice_blueprint',
+                    'component_name': file_node.metadata['file_name'],
+                    'component_type': file_node.metadata['file_type'],
+                    'encoded_content': encoded_content,
+                    'content_hash': content_hash,
+                    'dependencies': dependencies,
                     'original_path': str(file_path),
                     'file_size': len(content),
                     'compressed_size': len(compressed_content),
-                    'compression_ratio': len(compressed_content) / len(content) if content else 0
-                },
-                created_at=datetime.now().isoformat(),
-                version="1.0.0"
+                    'compression_ratio': len(compressed_content) / len(content) if content else 0,
+                    'created_at': datetime.now().isoformat(),
+                    'version': "1.0.0",
+                    'description': f'{file_node.metadata["file_type"]} component for ICE storage'
+                }
             )
             
-            return component
+            return component_node
             
         except Exception as e:
             print(f"❌ Failed to create component from {file_path}: {e}")
             return None
     
-    def create_ice_core(self, output_path: str = "ice_core") -> bool:
-        """Create the complete ICE core"""
-        print("🧊 Creating ICE Core...")
-        print("=" * 40)
+    def get_system_resonance(self) -> Dict[str, Any]:
+        """Get system resonance information - meta-circular self-description"""
+        ice_nodes = [node for node in self.nodes.values() if node.metadata.get('programming_ontology_layer') == 'ice_blueprint']
+        essential_file_nodes = [node for node in self.nodes.values() if node.node_type == 'essential_file']
+        component_nodes = [node for node in self.nodes.values() if node.node_type == 'ice_component']
+        analysis_nodes = [node for node in self.nodes.values() if node.node_type == 'system_analysis_result']
         
-        # Step 1: Analyze system
-        analysis = self.analyze_system()
-        
-        if analysis['missing_files']:
-            print(f"⚠️ Warning: {len(analysis['missing_files'])} files are missing")
-            for missing in analysis['missing_files']:
-                print(f"   - {missing['path']}")
-        
-        # Step 2: Create components
-        components = self.create_ice_components()
-        
-        if not components:
-            print("❌ No components created")
-            return False
-        
-        # Step 3: Create ICE core
-        success = self._create_ice_core_directly(components, output_path)
-        
-        if success:
-            print(f"\n🎉 ICE Core created successfully at {output_path}/")
-            print(f"📦 Contains {len(components)} components")
-            print(f"💾 Total compressed size: {sum(c.metadata['compressed_size'] for c in components) / 1024:.1f} KB")
-            print("\n🚀 The ICE core can now bootstrap the entire Living Codex system!")
-        
-        return success
-    
-    def create_minimal_bootstrap(self, output_path: str = "minimal_bootstrap") -> bool:
-        """Create a minimal bootstrap that can reconstruct the ICE core"""
-        print("🔧 Creating minimal bootstrap...")
-        
-        # Create minimal bootstrap script
-        bootstrap_content = '''#!/usr/bin/env python3
-"""
-Minimal Bootstrap Script for Living Codex ICE Core
+        return {
+            'total_nodes': len(self.nodes),
+            'ice_blueprint_nodes': len(ice_nodes),
+            'essential_file_nodes': len(essential_file_nodes),
+            'component_nodes': len(component_nodes),
+            'analysis_nodes': len(analysis_nodes),
+            'water_states': list(set(node.get_water_state() for node in self.nodes.values())),
+            'chakras': list(set(node.get_chakra() for node in self.nodes.values())),
+            'frequencies': list(set(node.get_frequency() for node in self.nodes.values())),
+            'average_resonance': sum(node.metadata.get('resonance_score', 0) for node in self.nodes.values()) / max(len(self.nodes), 1),
+            'system_principle': 'Everything is just nodes - ICE creator as blueprint nodes',
+            'meta_circular': True,
+            'fractal_self_similar': True,
+            'living_document': True,
+            'programming_ontology': 'ice_blueprint_layer'
+        }
 
-This script can reconstruct the entire Living Codex system from its ICE core.
-It's designed to be as small as possible while being completely self-contained.
-"""
-
-import json
-import hashlib
-import base64
-import zlib
-import os
-import sys
-from pathlib import Path
-
-def bootstrap_living_codex():
-    """Bootstrap the Living Codex from ICE core"""
-    print("🧊 Living Codex ICE Bootstrap Starting...")
+# Legacy compatibility - maintain the old interface for now
+class ICECoreCreator(ICECoreCreatorNodeSystem):
+    """
+    Legacy compatibility class that inherits from the new node-based system
     
-    # Check for ICE core
-    ice_core_path = Path("ice_core")
-    if not ice_core_path.exists():
-        print("❌ ICE core not found. Please ensure 'ice_core' directory exists.")
-        return False
+    This demonstrates the Living Codex principle of graceful evolution:
+    - New system embodies the principles
+    - Old interface remains functional
+    - System can describe its own transformation
+    """
     
-    manifest_file = ice_core_path / "bootstrap_manifest.json"
-    if not manifest_file.exists():
-        print("❌ Bootstrap manifest not found.")
-        return False
-    
-    try:
-        # Load manifest
-        with open(manifest_file, 'r') as f:
-            manifest = json.load(f)
-        
-        print(f"✅ Manifest loaded: {manifest['system_name']} v{manifest['version']}")
-        
-        # Extract components
-        components = manifest['components']
-        print(f"🔧 Extracting {len(components)} components...")
-        
-        for component in components:
-            if not extract_component(component, ice_core_path):
-                print(f"❌ Failed to extract {component['name']}")
-                return False
-        
-        print("✅ All components extracted")
-        print("🚀 Living Codex system ready!")
-        print("🌐 Starting web service...")
-        
-        # Start web service
-        start_web_service()
-        return True
-        
-    except Exception as e:
-        print(f"❌ Bootstrap failed: {e}")
-        return False
-
-def extract_component(component, ice_core_path):
-    """Extract a single component"""
-    try:
-        # Decode and decompress
-        compressed = base64.b64decode(component['content'])
-        content = zlib.decompress(compressed).decode('utf-8')
-        
-        # Verify hash
-        if hashlib.sha256(content.encode()).hexdigest() != component['content_hash']:
-            return False
-        
-        # Write file
-        file_path = Path(component['name'] + '.py')
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(file_path, 'w') as f:
-            f.write(content)
-        
-        return True
-        
-    except Exception:
-        return False
-
-def start_web_service():
-    """Start the web service"""
-    try:
-        # Import and start web interface
-        sys.path.insert(0, 'src/web_platform')
-        from web_interface import app
-        
-        print("🌐 Web service starting on port 5001...")
-        print("✅ Living Codex is now available for new users!")
-        print("   Open your browser to: http://localhost:5001")
-        
-        # In production, this would run the Flask app
-        # app.run(host='0.0.0.0', port=5001)
-        
-    except Exception as e:
-        print(f"⚠️ Web service startup failed: {e}")
-
-if __name__ == "__main__":
-    success = bootstrap_living_codex()
-    sys.exit(0 if success else 1)
-'''
-        
-        # Write minimal bootstrap
-        output_dir = Path(output_path)
-        output_dir.mkdir(parents=True, exist_ok=True)
-        
-        bootstrap_file = output_dir / "bootstrap.py"
-        with open(bootstrap_file, 'w') as f:
-            f.write(bootstrap_content)
-        
-        # Make executable
-        os.chmod(bootstrap_file, 0o755)
-        
-        print(f"✅ Minimal bootstrap created at {bootstrap_file}")
-        print("🔧 This script can reconstruct the entire system from the ICE core")
-        
-        return True
-    
-    def _create_ice_core_directly(self, components: List[SystemComponent], output_path: str) -> bool:
-        """Create ICE core directly without external function"""
-        try:
-            # Create bootstrap manifest
-            manifest = {
-                'system_name': "Living Codex",
-                'version': "1.0.0",
-                'created_at': datetime.now().isoformat(),
-                'components': [
-                    {
-                        'name': c.name,
-                        'component_type': c.component_type,
-                        'content': c.content,
-                        'content_hash': c.content_hash,
-                        'dependencies': c.dependencies,
-                        'metadata': c.metadata,
-                        'created_at': c.created_at,
-                        'version': c.version
-                    }
-                    for c in components
-                ],
-                'bootstrap_sequence': [
-                    "load_manifest",
-                    "extract_components", 
-                    "reconstruct_system",
-                    "run_validation",
-                    "startup_system"
-                ],
-                'validation_tests': [
-                    "test_system_coherence",
-                    "test_core_functionality",
-                    "test_web_interface"
-                ],
-                'startup_sequence': [
-                    "validate_system",
-                    "initialize_database",
-                    "load_ontology", 
-                    "start_web_service"
-                ],
-                'manifest_hash': ""
-            }
-            
-            # Calculate manifest hash
-            components_str = json.dumps(manifest['components'], sort_keys=True)
-            manifest['manifest_hash'] = hashlib.sha256(components_str.encode()).hexdigest()
-            
-            # Save manifest
-            output_dir = Path(output_path)
-            output_dir.mkdir(parents=True, exist_ok=True)
-            
-            manifest_file = output_dir / "bootstrap_manifest.json"
-            with open(manifest_file, 'w') as f:
-                json.dump(manifest, f, indent=2)
-            
-            print(f"✅ ICE core created at {output_path}")
-            return True
-            
-        except Exception as e:
-            print(f"❌ Failed to create ICE core: {e}")
-            return False
-
-def main():
-    """Main function for ICE core creation"""
-    print("🧊 Living Codex ICE Core Creator")
-    print("=" * 40)
-    
-    creator = ICECoreCreator()
-    
-    # Create ICE core
-    if creator.create_ice_core():
-        print("\n🎯 Next steps:")
-        print("1. Copy the 'ice_core' directory to your target system")
-        print("2. Run: python src/core/ice_bootstrap_engine.py")
-        print("3. The system will bootstrap itself and start the web service")
-        print("4. New users can sign up and engage with the Living Codex!")
-    
-    # Create minimal bootstrap
-    print("\n🔧 Creating minimal bootstrap...")
-    creator.create_minimal_bootstrap()
-
-if __name__ == "__main__":
-    main()
+    def __init__(self, system_root: str = None):
+        super().__init__(system_root)
+        print("🔄 ICECoreCreator initialized with new node-based system")
+        print("✨ This system now embodies Living Codex principles")
+        print("🌟 Everything is just nodes - ICE creator as blueprint nodes")
+        print("🧊 ICE Creator represents Blueprint (Ice) state in programming language ontology")

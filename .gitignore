@@ -23,53 +23,12 @@ __pycache__
 /dist
 
 # ============================================================================
-# RUST - Comprehensive exclusions for Rust projects
-# ============================================================================
-
-# Rust build artifacts
-**/target/
-**/Cargo.lock
-
-# Rust generated files
-**/*.rs.bk
-**/*.pdb
-
-# Rust IDE and editor files
-**/.rustc_info.json
-**/rust-project.json
-
-# Rust profiling and debugging
-**/*.prof
-**/*.pgo
-
-# Rust documentation
-**/doc/
-
-# Rust test artifacts
-**/tests/target/
-
-# Rust coverage
-**/coverage/
-**/*.profraw
-
-# Rust dependencies (if using vendored dependencies)
-**/vendor/
-
-# Rust cache
-**/.cargo/
-**/.rustup/
-
-# Rust generated storage directories
-**/rust-fractal-storage/
-**/fractal-storage/
-**/fractal-storage/nodes/
-
-# ============================================================================
 # LIVING CODEX SPECIFIC
 # ============================================================================
 
 # Generated storage and data files
 **/*.log
+**/*.db
 **/storage/
 **/data/
 **/logs/

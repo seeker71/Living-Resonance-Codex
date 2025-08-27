@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from ontology.enhanced_ontology_system import EnhancedOntologySystem
-from ai_agents.ai_agent_system import AIAgentSystem, AgentType
+from ai_agents.ai_agent_system import AIAgentSystem
 
 class AutonomousDecisionDemo:
     """Demonstrates autonomous decision-making process"""

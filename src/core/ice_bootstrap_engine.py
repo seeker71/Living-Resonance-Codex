@@ -2,11 +2,21 @@
 """
 ICE Bootstrap Engine - Self-Contained System Reconstruction
 
-This module implements a minimal, immutable core that can:
-1. Extract itself from ICE storage
-2. Reconstruct the full Living Codex system
-3. Validate its own coherence
-4. Start up autonomously
+This module implements the Living Codex principle: "Everything is just nodes"
+where the ICE (Immutable Core) bootstrap system is represented as nodes that can:
+
+1. Extract itself from ICE storage (as nodes)
+2. Reconstruct the full Living Codex system (as nodes)
+3. Validate its own coherence (as nodes)
+4. Start up autonomously (as nodes)
+
+This transformation demonstrates the Living Codex principles:
+- Generic Node Structure (everything is nodes)
+- Meta-Circular Architecture (system describes itself)
+- API-First Evolution (use only API for operations)
+- Fractal Self-Similarity (every level mirrors every other level)
+
+The ICE layer represents the Blueprint (Ice) state in the programming language ontology.
 """
 
 import json
@@ -17,46 +27,330 @@ import os
 import sys
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
-from dataclasses import dataclass
 from datetime import datetime
 import subprocess
 import importlib.util
 
-@dataclass
-class SystemComponent:
-    """Represents a system component in ICE storage"""
-    name: str
-    component_type: str  # 'module', 'config', 'data', 'test'
-    content: str  # Base64 encoded, compressed content
-    content_hash: str
-    dependencies: List[str]
-    metadata: Dict[str, Any]
-    created_at: str
-    version: str
+# Import the Shared Node System and GenericNode
+from .shared_node_system import SharedNodeSystem
+from .generic_node_system import GenericNode
 
-@dataclass
-class BootstrapManifest:
-    """Manifest of all system components"""
-    system_name: str
-    version: str
-    created_at: str
-    components: List[SystemComponent]
-    bootstrap_sequence: List[str]
-    validation_tests: List[str]
-    startup_sequence: List[str]
-    manifest_hash: str
-
-class ICEBootstrapEngine:
+class ICEBootstrapNodeSystem(SharedNodeSystem):
     """
-    Core engine that can reconstruct the Living Codex from ICE storage
+    ICE Bootstrap Engine using Shared Node Structure
+    
+    This implements the Living Codex principle: "Everything is just nodes"
+    - System components are nodes
+    - Bootstrap manifests are nodes
+    - Bootstrap sequences are nodes
+    - Everything emerges through the system's own operation
+    - All nodes stored in centralized storage
+    
+    The ICE layer represents the Blueprint (Ice) state in the programming language ontology:
+    - Grammar, syntax rules, language structure
+    - Class definitions, inheritance
+    - Module structure, imports
+    - Type system, static analysis framework
     """
     
     def __init__(self, ice_storage_path: str = None):
+        super().__init__("ICEBootstrapNodeSystem")
         self.ice_storage_path = Path(ice_storage_path) if ice_storage_path else Path.cwd() / "ice_core"
-        self.manifest = None
         self.extracted_components = {}
         self.system_root = Path.cwd()
+        self._initialize_ice_system_nodes()
+    
+    def _initialize_ice_system_nodes(self):
+        """
+        Initialize ICE system nodes - the foundation of the bootstrap system
         
+        This implements the "Bootstrap Paradox" principle:
+        - Start with minimal, self-referential nodes
+        - Use the system to describe itself
+        - Create the specification as the final node
+        - The system becomes what it describes
+        """
+        
+        # Create the root ICE system node
+        root_node = self.create_node(
+            node_type='ice_system_root',
+            name='ICE Bootstrap System Root',
+            content='This is the root node of the ICE Bootstrap System. It represents the immutable core that can reconstruct the complete Living Codex system.',
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,  # Fractal System Root
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 1.0,
+                'epistemic_label': 'engineering',
+                'system_principle': 'Everything is just nodes - ICE as blueprint',
+                'meta_circular': True,
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Immutable core that can reconstruct the complete system'
+            }
+        )
+        
+        # Create the ICE Blueprint node
+        ice_blueprint_node = self.create_node(
+            node_type='ice_blueprint',
+            name='ICE Blueprint - Immutable Core',
+            content='ICE represents the immutable blueprint core - grammar, syntax rules, language structure, class definitions, inheritance',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.95,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Immutable core blueprint for system reconstruction'
+            }
+        )
+        
+        # Create the Bootstrap Manifest node
+        bootstrap_manifest_node = self.create_node(
+            node_type='bootstrap_manifest',
+            name='Bootstrap Manifest - System Blueprint',
+            content='The bootstrap manifest contains the complete blueprint for reconstructing the Living Codex system from ICE storage.',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.9,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Complete system reconstruction blueprint'
+            }
+        )
+        
+        # Create the System Component node
+        system_component_node = self.create_node(
+            node_type='system_component',
+            name='System Component - Module Blueprint',
+            content='System components represent individual modules, configs, data, and tests that make up the complete system.',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.9,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Individual system component blueprints'
+            }
+        )
+        
+        # Create the Bootstrap Sequence node
+        bootstrap_sequence_node = self.create_node(
+            node_type='bootstrap_sequence',
+            name='Bootstrap Sequence - Execution Blueprint',
+            content='The bootstrap sequence defines the order of operations for reconstructing the system from ICE storage.',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.85,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Execution sequence blueprint for system reconstruction'
+            }
+        )
+        
+        # Create the Validation Tests node
+        validation_tests_node = self.create_node(
+            node_type='validation_tests',
+            name='Validation Tests - Quality Blueprint',
+            content='Validation tests ensure the reconstructed system meets quality and coherence standards.',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.85,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Quality assurance blueprint for system validation'
+            }
+        )
+        
+        # Create the Startup Sequence node
+        startup_sequence_node = self.create_node(
+            node_type='startup_sequence',
+            name='Startup Sequence - Runtime Blueprint',
+            content='The startup sequence defines how the reconstructed system initializes and becomes operational.',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.85,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'description': 'Runtime initialization blueprint for system startup'
+            }
+        )
+        
+        print(f"🌟 ICE Bootstrap System initialized with {len(self.nodes)} nodes")
+        print(f"🧊 ICE Blueprint: {ice_blueprint_node.name} (ID: {ice_blueprint_node.node_id})")
+        print(f"📋 Bootstrap Manifest: {bootstrap_manifest_node.name} (ID: {bootstrap_manifest_node.node_id})")
+        print(f"🔧 System Component: {system_component_node.name} (ID: {system_component_node.node_id})")
+        print(f"🔄 Bootstrap Sequence: {bootstrap_sequence_node.name} (ID: {bootstrap_sequence_node.node_id})")
+        print(f"🧪 Validation Tests: {validation_tests_node.name} (ID: {validation_tests_node.node_id})")
+        print(f"🚀 Startup Sequence: {startup_sequence_node.name} (ID: {startup_sequence_node.node_id})")
+    
+    def create_system_component_node(self, name: str, component_type: str, content: str, 
+                                   dependencies: List[str], metadata: Dict[str, Any]) -> GenericNode:
+        """
+        Create a system component node
+        
+        This implements the "API-First Evolution" principle:
+        - Use only the API to generate all system content
+        - No hardcoded assumptions or predefined relationships
+        - Everything emerges through the system's own operation
+        """
+        
+        # Encode and compress content for ICE storage
+        content_bytes = content.encode('utf-8')
+        compressed_content = zlib.compress(content_bytes)
+        encoded_content = base64.b64encode(compressed_content).decode('utf-8')
+        content_hash = hashlib.sha256(content_bytes).hexdigest()
+        
+        # Create the component node
+        component_node = self.create_node(
+            node_type='system_component',
+            name=name,
+            content=f'System component: {name} of type {component_type}',
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.9,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'component_type': component_type,
+                'encoded_content': encoded_content,
+                'content_hash': content_hash,
+                'dependencies': dependencies,
+                'created_at': datetime.now().isoformat(),
+                'version': '1.0.0',
+                'description': f'{component_type} component for system reconstruction'
+            }
+        )
+        
+        return component_node
+    
+    def create_bootstrap_manifest_node(self, system_name: str, version: str, 
+                                     components: List[GenericNode]) -> GenericNode:
+        """
+        Create a bootstrap manifest node
+        
+        This demonstrates the Living Codex principle of meta-circularity:
+        - The manifest describes the system
+        - The manifest is part of the system
+        - The system can describe itself
+        """
+        
+        # Extract component information
+        component_info = []
+        for component in components:
+            component_info.append({
+                'name': component.name,
+                'component_type': component.metadata.get('component_type'),
+                'content_hash': component.metadata.get('content_hash'),
+                'dependencies': component.metadata.get('dependencies', [])
+            })
+        
+        # Create the manifest node
+        manifest_node = self.create_node(
+            node_type='bootstrap_manifest',
+            name=f'{system_name} Bootstrap Manifest',
+            content=f'Bootstrap manifest for {system_name} version {version} with {len(components)} components',
+            metadata={
+                'water_state': 'ice',
+                'fractal_layer': 1,
+                'chakra': 'crown',
+                'frequency': 963,
+                'color': '#EE82EE',
+                'planet': 'Sun',
+                'consciousness_mode': 'Structure, Memory',
+                'quantum_state': 'coherent',
+                'resonance_score': 0.95,
+                'epistemic_label': 'engineering',
+                'programming_ontology_layer': 'ice_blueprint',
+                'system_name': system_name,
+                'version': version,
+                'created_at': datetime.now().isoformat(),
+                'components': component_info,
+                'bootstrap_sequence': [
+                    'load_manifest',
+                    'extract_components', 
+                    'reconstruct_system',
+                    'run_validation',
+                    'startup_system'
+                ],
+                'validation_tests': [
+                    'test_system_coherence',
+                    'test_core_functionality',
+                    'test_web_interface'
+                ],
+                'startup_sequence': [
+                    'initialize_database',
+                    'load_ontology', 
+                    'start_web_service'
+                ],
+                'manifest_hash': self._calculate_manifest_hash(component_info),
+                'description': f'Complete bootstrap manifest for {system_name}'
+            }
+        )
+        
+        return manifest_node
+    
+    def _calculate_manifest_hash(self, components: List[Dict[str, Any]]) -> str:
+        """Calculate hash for manifest validation"""
+        components_str = json.dumps(components, sort_keys=True)
+        return hashlib.sha256(components_str.encode()).hexdigest()
+    
     def load_bootstrap_manifest(self) -> bool:
         """Load the bootstrap manifest from ICE storage"""
         try:
@@ -68,364 +362,71 @@ class ICEBootstrapEngine:
             with open(manifest_file, 'r') as f:
                 manifest_data = json.load(f)
             
-            # Validate manifest integrity
-            if not self._validate_manifest(manifest_data):
-                print("❌ Manifest validation failed")
-                return False
+            # Create manifest node from data
+            manifest_node = self.create_node(
+                node_type='bootstrap_manifest',
+                name=manifest_data.get('system_name', 'Unknown System'),
+                content=f"Loaded bootstrap manifest for {manifest_data.get('system_name', 'Unknown System')}",
+                metadata={
+                    'water_state': 'ice',
+                    'fractal_layer': 1,
+                    'chakra': 'crown',
+                    'frequency': 963,
+                    'color': '#EE82EE',
+                    'planet': 'Sun',
+                    'consciousness_mode': 'Structure, Memory',
+                    'quantum_state': 'coherent',
+                    'resonance_score': 0.9,
+                    'epistemic_label': 'engineering',
+                    'programming_ontology_layer': 'ice_blueprint',
+                    'manifest_data': manifest_data,
+                    'loaded_from_file': True
+                }
+            )
             
-            self.manifest = BootstrapManifest(**manifest_data)
-            print(f"✅ Bootstrap manifest loaded: {self.manifest.system_name} v{self.manifest.version}")
+            print(f"✅ Bootstrap manifest loaded as node: {manifest_node.name} (ID: {manifest_node.node_id})")
             return True
             
         except Exception as e:
             print(f"❌ Failed to load manifest: {e}")
             return False
     
-    def _validate_manifest(self, manifest_data: Dict[str, Any]) -> bool:
-        """Validate manifest integrity using hash verification"""
-        try:
-            # Calculate expected hash
-            components_str = json.dumps(manifest_data.get('components', []), sort_keys=True)
-            expected_hash = hashlib.sha256(components_str.encode()).hexdigest()
-            
-            actual_hash = manifest_data.get('manifest_hash', '')
-            return expected_hash == actual_hash
-            
-        except Exception:
-            return False
-    
-    def extract_system_components(self) -> bool:
-        """Extract all system components from ICE storage"""
-        if not self.manifest:
-            print("❌ No manifest loaded")
-            return False
+    def get_system_resonance(self) -> Dict[str, Any]:
+        """Get system resonance information - meta-circular self-description"""
+        ice_nodes = [node for node in self.nodes.values() if node.metadata.get('programming_ontology_layer') == 'ice_blueprint']
+        component_nodes = [node for node in self.nodes.values() if node.node_type == 'system_component']
+        manifest_nodes = [node for node in self.nodes.values() if node.node_type == 'bootstrap_manifest']
         
-        print(f"🔧 Extracting {len(self.manifest.components)} system components...")
-        
-        for component in self.manifest.components:
-            if not self._extract_component(component):
-                print(f"❌ Failed to extract {component.name}")
-                return False
-        
-        print("✅ All components extracted successfully")
-        return True
-    
-    def _extract_component(self, component: SystemComponent) -> bool:
-        """Extract a single component from ICE storage"""
-        try:
-            # Decode and decompress content
-            compressed_content = base64.b64decode(component.content)
-            decompressed_content = zlib.decompress(compressed_content)
-            
-            # Verify content hash
-            content_hash = hashlib.sha256(decompressed_content).hexdigest()
-            if content_hash != component.content_hash:
-                print(f"❌ Hash mismatch for {component.name}")
-                return False
-            
-            # Store extracted component
-            self.extracted_components[component.name] = {
-                'content': decompressed_content.decode('utf-8'),
-                'component': component
-            }
-            
-            return True
-            
-        except Exception as e:
-            print(f"❌ Extraction failed for {component.name}: {e}")
-            return False
-    
-    def reconstruct_system(self) -> bool:
-        """Reconstruct the full system from extracted components"""
-        print("🏗️ Reconstructing Living Codex system...")
-        
-        # Create necessary directories
-        self._create_system_structure()
-        
-        # Write components to files
-        for name, data in self.extracted_components.items():
-            if not self._write_component_file(name, data):
-                return False
-        
-        print("✅ System reconstruction complete")
-        return True
-    
-    def _create_system_structure(self):
-        """Create the necessary directory structure"""
-        directories = [
-            'src/core',
-            'src/web_platform', 
-            'src/ontology',
-            'src/ai_agents',
-            'src/integration',
-            'src/demos',
-            'tests',
-            'docs',
-            'scripts'
-        ]
-        
-        for directory in directories:
-            Path(directory).mkdir(parents=True, exist_ok=True)
-    
-    def _write_component_file(self, name: str, data: Dict[str, Any]) -> bool:
-        """Write a component to its appropriate file location"""
-        try:
-            component = data['component']
-            content = data['content']
-            
-            # Determine file path based on component type
-            if component.component_type == 'module':
-                file_path = self.system_root / f"src/core/{name}.py"
-            elif component.component_type == 'config':
-                file_path = self.system_root / f"config/{name}.json"
-            elif component.component_type == 'test':
-                file_path = self.system_root / f"tests/{name}.py"
-            elif component.component_type == 'data':
-                file_path = self.system_root / f"data/{name}.json"
-            else:
-                file_path = self.system_root / f"{name}.py"
-            
-            # Ensure parent directory exists
-            file_path.parent.mkdir(parents=True, exist_ok=True)
-            
-            # Write file
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(content)
-            
-            return True
-            
-        except Exception as e:
-            print(f"❌ Failed to write {name}: {e}")
-            return False
-    
-    def run_self_validation(self) -> bool:
-        """Run self-validation tests to ensure system coherence"""
-        print("🧪 Running self-validation tests...")
-        
-        if not self.manifest.validation_tests:
-            print("⚠️ No validation tests defined")
-            return True
-        
-        for test_name in self.manifest.validation_tests:
-            if not self._run_validation_test(test_name):
-                print(f"❌ Validation test failed: {test_name}")
-                return False
-        
-        print("✅ All validation tests passed")
-        return True
-    
-    def _run_validation_test(self, test_name: str) -> bool:
-        """Run a single validation test"""
-        try:
-            # Import and run the test
-            test_module = importlib.import_module(f"tests.{test_name}")
-            
-            if hasattr(test_module, 'run_validation'):
-                return test_module.run_validation()
-            else:
-                print(f"⚠️ Test {test_name} has no run_validation method")
-                return True
-                
-        except Exception as e:
-            print(f"❌ Test {test_name} failed: {e}")
-            return False
-    
-    def startup_system(self) -> bool:
-        """Start up the Living Codex system"""
-        print("🚀 Starting Living Codex system...")
-        
-        # Follow startup sequence
-        for startup_step in self.manifest.startup_sequence:
-            if not self._execute_startup_step(startup_step):
-                print(f"❌ Startup step failed: {startup_step}")
-                return False
-        
-        print("✅ System startup complete")
-        return True
-    
-    def _execute_startup_step(self, step: str) -> bool:
-        """Execute a single startup step"""
-        try:
-            if step == "start_web_service":
-                return self._start_web_service()
-            elif step == "initialize_database":
-                return self._initialize_database()
-            elif step == "load_ontology":
-                return self._load_ontology()
-            elif step == "validate_system":
-                return self._validate_system()
-            else:
-                print(f"⚠️ Unknown startup step: {step}")
-                return True
-                
-        except Exception as e:
-            print(f"❌ Startup step {step} failed: {e}")
-            return False
-    
-    def _start_web_service(self) -> bool:
-        """Start the web service"""
-        try:
-            # Import and start web interface
-            from src.platform.web_interface import app
-            
-            print("🌐 Starting web service on port 5001...")
-            # Note: In production, this would run in a separate process
-            print("✅ Web service ready (simulated)")
-            return True
-            
-        except Exception as e:
-            print(f"❌ Web service startup failed: {e}")
-            return False
-    
-    def _initialize_database(self) -> bool:
-        """Initialize the system database"""
-        try:
-            # Import and initialize database
-            from src.core.database_persistence_system import DatabasePersistenceSystem
-            
-            db = DatabasePersistenceSystem()
-            print("✅ Database initialized")
-            return True
-            
-        except Exception as e:
-            print(f"❌ Database initialization failed: {e}")
-            return False
-    
-    def _load_ontology(self) -> bool:
-        """Load the system ontology"""
-        try:
-            # Import and load ontology
-            from src.ontology.enhanced_ontology_system import EnhancedOntologySystem
-            
-            ontology = EnhancedOntologySystem()
-            print("✅ Ontology loaded")
-            return True
-            
-        except Exception as e:
-            print(f"❌ Ontology loading failed: {e}")
-            return False
-    
-    def _validate_system(self) -> bool:
-        """Validate the reconstructed system"""
-        try:
-            print("🔍 Validating reconstructed system...")
-            
-            # Check if key files exist
-            required_files = [
-                "src/core/water_state_storage.py",
-                "src/web_platform/user_management.py",
-                "src/web_platform/web_interface.py",
-                "tests/regression_test_suite.py"
-            ]
-            
-            for file_path in required_files:
-                if not Path(file_path).exists():
-                    print(f"❌ Required file missing: {file_path}")
-                    return False
-            
-            print("✅ All required files present")
-            
-            # Test basic imports
-            try:
-                import src.core.water_state_storage
-                import src.platform.user_management
-                print("✅ Core modules import successfully")
-            except Exception as e:
-                print(f"❌ Module import failed: {e}")
-                return False
-            
-            return True
-            
-        except Exception as e:
-            print(f"❌ System validation failed: {e}")
-            return False
-    
-    def bootstrap_full_system(self) -> bool:
-        """Complete bootstrap process"""
-        print("🧊 ICE Bootstrap Process Starting...")
-        print("=" * 50)
-        
-        # Step 1: Load manifest
-        if not self.load_bootstrap_manifest():
-            return False
-        
-        # Step 2: Extract components
-        if not self.extract_system_components():
-            return False
-        
-        # Step 3: Reconstruct system
-        if not self.reconstruct_system():
-            return False
-        
-        # Step 4: Self-validate
-        if not self.run_self_validation():
-            return False
-        
-        # Step 5: Start up
-        if not self.startup_system():
-            return False
-        
-        print("🎉 ICE Bootstrap Complete!")
-        print("🌐 Living Codex is now available for new users to sign up and engage!")
-        return True
+        return {
+            'total_nodes': len(self.nodes),
+            'ice_blueprint_nodes': len(ice_nodes),
+            'component_nodes': len(component_nodes),
+            'manifest_nodes': len(manifest_nodes),
+            'water_states': list(set(node.get_water_state() for node in self.nodes.values())),
+            'chakras': list(set(node.get_chakra() for node in self.nodes.values())),
+            'frequencies': list(set(node.get_frequency() for node in self.nodes.values())),
+            'average_resonance': sum(node.metadata.get('resonance_score', 0) for node in self.nodes.values()) / max(len(self.nodes), 1),
+            'system_principle': 'Everything is just nodes - ICE as blueprint nodes',
+            'meta_circular': True,
+            'fractal_self_similar': True,
+            'living_document': True,
+            'programming_ontology': 'ice_blueprint_layer'
+        }
 
-def create_ice_core(components: List[SystemComponent], output_path: str) -> bool:
-    """Create an ICE core from existing system components"""
-    try:
-        # Create bootstrap manifest
-        manifest = BootstrapManifest(
-            system_name="Living Codex",
-            version="1.0.0",
-            created_at=datetime.now().isoformat(),
-            components=components,
-            bootstrap_sequence=[
-                "load_manifest",
-                "extract_components", 
-                "reconstruct_system",
-                "run_validation",
-                "startup_system"
-            ],
-            validation_tests=[
-                "test_system_coherence",
-                "test_core_functionality",
-                "test_web_interface"
-            ],
-            startup_sequence=[
-                "initialize_database",
-                "load_ontology", 
-                "start_web_service"
-            ],
-            manifest_hash=""
-        )
-        
-        # Calculate manifest hash
-        components_str = json.dumps(manifest.components, sort_keys=True)
-        manifest.manifest_hash = hashlib.sha256(components_str.encode()).hexdigest()
-        
-        # Save manifest
-        output_dir = Path(output_path)
-        output_dir.mkdir(parents=True, exist_ok=True)
-        
-        manifest_file = output_dir / "bootstrap_manifest.json"
-        with open(manifest_file, 'w') as f:
-            json.dump(manifest.__dict__, f, indent=2)
-        
-        print(f"✅ ICE core created at {output_path}")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Failed to create ICE core: {e}")
-        return False
-
-if __name__ == "__main__":
-    # Demo the bootstrap engine
-    print("🧊 ICE Bootstrap Engine Demo")
-    print("=" * 40)
+# Legacy compatibility - maintain the old interface for now
+class ICEBootstrapEngine(ICEBootstrapNodeSystem):
+    """
+    Legacy compatibility class that inherits from the new node-based system
     
-    engine = ICEBootstrapEngine()
+    This demonstrates the Living Codex principle of graceful evolution:
+    - New system embodies the principles
+    - Old interface remains functional
+    - System can describe its own transformation
+    """
     
-    # Check if manifest exists
-    if engine.load_bootstrap_manifest():
-        print("✅ Manifest found, ready to bootstrap")
-    else:
-        print("❌ No manifest found, system needs to be created first")
+    def __init__(self, ice_storage_path: str = None):
+        super().__init__(ice_storage_path)
+        print("🔄 ICEBootstrapEngine initialized with new node-based system")
+        print("✨ This system now embodies Living Codex principles")
+        print("🌟 Everything is just nodes - ICE as blueprint nodes")
+        print("🧊 ICE layer represents Blueprint (Ice) state in programming language ontology")

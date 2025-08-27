@@ -22,7 +22,7 @@ import random
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from ontology.enhanced_ontology_system import EnhancedOntologySystem
-from ai_agents.ai_agent_system import AIAgentSystem, AgentType, LearningMode
+from ai_agents.ai_agent_system import AIAgentSystem
 
 @dataclass
 class LearningTask:
@@ -30,7 +30,7 @@ class LearningTask:
     task_id: str
     description: str
     priority_score: float
-    learning_mode: LearningMode
+    learning_mode: str
     data_requirements: List[str]
     expected_outcome: str
     complexity_level: str
@@ -141,7 +141,7 @@ class AutonomousLearningSystem:
                     task_id=f"learn_concept_{task_counter}",
                     description=f"Learn about {gap['concept']} and integrate into ontology",
                     priority_score=gap['priority'],
-                    learning_mode=LearningMode.UNSUPERVISED,
+                    learning_mode="unsupervised",
                     data_requirements=[f"information_about_{gap['concept']}", "integration_patterns"],
                     expected_outcome=f"New ontological node for {gap['concept']}",
                     complexity_level="moderate",
@@ -157,7 +157,7 @@ class AutonomousLearningSystem:
                     task_id=f"develop_complexity_{task_counter}",
                     description="Develop simple nodes into complex, interconnected structures",
                     priority_score=gap['priority'],
-                    learning_mode=LearningMode.REINFORCEMENT,
+                    learning_mode="reinforcement",
                     data_requirements=["complexity_patterns", "interconnection_strategies"],
                     expected_outcome="Increased system complexity and interconnectedness",
                     complexity_level="high",
@@ -173,7 +173,7 @@ class AutonomousLearningSystem:
                     task_id=f"evolve_consciousness_{task_counter}",
                     description="Evolve consciousness levels through experience and interaction",
                     priority_score=gap['priority'],
-                    learning_mode=LearningMode.META_LEARNING,
+                    learning_mode="meta_learning",
                     data_requirements=["consciousness_patterns", "evolutionary_pressure"],
                     expected_outcome="Higher consciousness levels across system",
                     complexity_level="high",
@@ -189,7 +189,7 @@ class AutonomousLearningSystem:
                     task_id=f"general_learning_{task_counter}",
                     description="Engage in diverse learning experiences to build expertise",
                     priority_score=gap['priority'],
-                    learning_mode=LearningMode.SUPERVISED,
+                    learning_mode="supervised",
                     data_requirements=["diverse_patterns", "expertise_development"],
                     expected_outcome="Increased learning experience and system intelligence",
                     complexity_level="moderate",
@@ -205,7 +205,7 @@ class AutonomousLearningSystem:
                 task_id="explore_quantum_consciousness",
                 description="Explore the intersection of quantum mechanics and consciousness",
                 priority_score=0.75,
-                learning_mode=LearningMode.UNSUPERVISED,
+                learning_mode="unsupervised",
                 data_requirements=["quantum_theory", "consciousness_research"],
                 expected_outcome="New insights into quantum consciousness",
                 complexity_level="high",
@@ -216,7 +216,7 @@ class AutonomousLearningSystem:
                 task_id="synthesize_emergence_theory",
                 description="Synthesize theories of emergence across different domains",
                 priority_score=0.8,
-                learning_mode=LearningMode.META_LEARNING,
+                learning_mode="meta_learning",
                 data_requirements=["emergence_patterns", "cross_domain_analysis"],
                 expected_outcome="Unified theory of emergence",
                 complexity_level="transcendent",

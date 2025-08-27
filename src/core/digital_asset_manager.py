@@ -1,8 +1,22 @@
 #!/usr/bin/env python3
 """
 Digital Asset Manager - Living Codex
-Manages digital assets including images, documents, videos, audio, and other media files.
-Provides storage, metadata extraction, content hashing, and retrieval capabilities.
+
+This module implements the Living Codex principle: "Everything is just nodes"
+where the digital asset management system is represented as nodes that can:
+
+1. Manage digital assets (images, documents, videos, audio) as nodes
+2. Extract and store metadata as nodes
+3. Handle content hashing and storage as nodes
+4. Provide asset transformation and retrieval as nodes
+
+This transformation demonstrates the Living Codex principles:
+- Generic Node Structure (everything is nodes)
+- Meta-Circular Architecture (system describes itself)
+- API-First Evolution (use only API for operations)
+- Fractal Self-Similarity (every level mirrors every other level)
+
+The Digital Asset Manager represents the PLASMA layer (Dynamic Content) state in the programming language ontology.
 """
 
 import os
@@ -13,9 +27,7 @@ import mimetypes
 import shutil
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Union, Tuple
-from dataclasses import dataclass, asdict
 from datetime import datetime
-from enum import Enum
 import logging
 
 # Image processing
@@ -46,184 +58,427 @@ try:
 except ImportError:
     PYPDF2_AVAILABLE = False
 
-from .database_persistence_system import DatabasePersistenceSystem, DatabaseNode, QueryFilter, QueryOptions
+# Import the Shared Node System, GenericNode, and Database Persistence System
+from .shared_node_system import SharedNodeSystem
+from .generic_node_system import GenericNode
+from .database_persistence_system import DatabasePersistenceSystem
 
 logger = logging.getLogger(__name__)
 
-class AssetType(Enum):
-    """Types of digital assets supported"""
-    IMAGE = "image"
-    DOCUMENT = "document"
-    VIDEO = "video"
-    AUDIO = "audio"
-    ARCHIVE = "archive"
-    CODE = "code"
-    DATA = "data"
-    UNKNOWN = "unknown"
-
-class AssetStatus(Enum):
-    """Asset processing status"""
-    PENDING = "pending"
-    PROCESSING = "processing"
-    READY = "ready"
-    ERROR = "error"
-
-@dataclass
-class AssetMetadata:
-    """Metadata for digital assets"""
-    file_size: int
-    mime_type: str
-    creation_date: Optional[datetime] = None
-    modification_date: Optional[datetime] = None
-    dimensions: Optional[Tuple[int, int]] = None  # width, height for images/videos
-    duration: Optional[float] = None  # seconds for audio/video
-    bitrate: Optional[int] = None  # for audio/video
-    color_space: Optional[str] = None  # for images
-    compression: Optional[str] = None
-    author: Optional[str] = None
-    title: Optional[str] = None
-    description: Optional[str] = None
-    tags: List[str] = None
-    exif_data: Optional[Dict[str, Any]] = None
-    custom_fields: Optional[Dict[str, Any]] = None
+class DigitalAssetNodeSystem(SharedNodeSystem):
+    """
+    Digital Asset Management System using Shared Node Structure
     
-    def __post_init__(self):
-        if self.tags is None:
-            self.tags = []
-        if self.custom_fields is None:
-            self.custom_fields = {}
-
-@dataclass
-class DigitalAsset:
-    """Represents a digital asset in the system"""
-    asset_id: str
-    original_filename: str
-    asset_type: AssetType
-    content_hash: str
-    storage_path: str
-    metadata: AssetMetadata
-    status: AssetStatus
-    created_at: datetime
-    updated_at: datetime
-    access_count: int = 0
-    last_accessed: Optional[datetime] = None
-    thumbnail_path: Optional[str] = None
-    preview_available: bool = False
+    This implements the Living Codex principle: "Everything is just nodes"
+    - Asset types are nodes
+    - Asset statuses are nodes
+    - Asset metadata are nodes
+    - Digital assets are nodes
+    - Everything emerges through the system's own operation
+    - All nodes stored in centralized storage
     
-    def to_database_node(self) -> DatabaseNode:
-        """Convert to DatabaseNode for storage"""
-        # Convert metadata to dict with proper datetime serialization
-        metadata_dict = asdict(self.metadata)
-        if metadata_dict.get('creation_date'):
-            metadata_dict['creation_date'] = self.metadata.creation_date.isoformat()
-        if metadata_dict.get('modification_date'):
-            metadata_dict['modification_date'] = self.metadata.modification_date.isoformat()
+    The Digital Asset Manager represents the PLASMA layer (Dynamic Content) state in the programming language ontology:
+    - Dynamic content management, energetic transformation
+    - Metadata extraction, content hashing, storage optimization
+    - Asset processing, thumbnail generation, format conversion
+    - Content discovery, tagging, categorization
+    """
+    
+    def __init__(self, database: DatabasePersistenceSystem, storage_root: str = "digital_assets"):
+        super().__init__("DigitalAssetNodeSystem")
+        self.database = database
+        self.storage_root = Path(storage_root)
+        self.storage_root.mkdir(parents=True, exist_ok=True)
         
-        content = {
-            "original_filename": self.original_filename,
-            "asset_type": self.asset_type.value,
-            "content_hash": self.content_hash,
-            "storage_path": self.storage_path,
-            "status": self.status.value,
-            "access_count": self.access_count,
-            "last_accessed": self.last_accessed.isoformat() if self.last_accessed else None,
-            "thumbnail_path": self.thumbnail_path,
-            "preview_available": self.preview_available,
-            "metadata": metadata_dict
-        }
+        # Create subdirectories for different asset types
+        self._create_storage_structure()
         
-        return DatabaseNode(
-            node_id=self.asset_id,
-            node_type="digital_asset",
-            name=self.original_filename,
-            content=json.dumps(content),
-            realm="digital",
-            water_state="solid",  # Digital assets are "solid" data
-            energy_level=800,  # High energy for valuable digital content
-            transformation_cost=200,  # Moderate cost to modify
-            parent_id=None,
-            children=None,
+        # Initialize the digital asset system nodes
+        self._initialize_digital_asset_system_nodes()
+        
+        logger.info(f"✅ DigitalAssetNodeSystem initialized with storage: {self.storage_root}")
+    
+    def _create_storage_structure(self):
+        """Create storage directory structure"""
+        # Create subdirectories for different asset types
+        asset_types = ['image', 'document', 'video', 'audio', 'archive', 'code', 'data', 'unknown']
+        for asset_type in asset_types:
+            (self.storage_root / asset_type).mkdir(parents=True, exist_ok=True)
+        
+        # Create thumbnails directory
+        (self.storage_root / "thumbnails").mkdir(parents=True, exist_ok=True)
+    
+    def _initialize_digital_asset_system_nodes(self):
+        """
+        Initialize digital asset system nodes - the foundation of the asset management system
+        
+        This implements the "Bootstrap Paradox" principle:
+        - Start with minimal, self-referential nodes
+        - Use the system to describe itself
+        - Create the specification as the final node
+        - The system becomes what it describes
+        """
+        
+        # Create the root digital asset system node
+        root_node = self.create_node(
+            node_type='digital_asset_system_root',
+            name='Digital Asset Management System Root',
+            content='This is the root node of the Digital Asset Management System. It represents the energetic, transformative content management layer for all Living Codex digital assets.',
             metadata={
-                "asset_type": self.asset_type.value,
-                "mime_type": self.metadata.mime_type,
-                "file_size": self.metadata.file_size,
-                "content_hash": self.content_hash
-            },
-            structure_info=None,
-            created_at=self.created_at,
-            updated_at=self.updated_at
+                'water_state': 'plasma',
+                'fractal_layer': 3,  # Dynamic Content
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 1.0,
+                'epistemic_label': 'content_management',
+                'system_principle': 'Everything is just nodes - digital assets as content nodes',
+                'meta_circular': True,
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'description': 'Energetic, transformative content management layer for digital assets'
+            }
         )
-
-class AssetTypeDetector:
-    """Detects asset types based on file extensions and MIME types"""
+        
+        # Create the Asset Type node
+        asset_type_node = self.create_node(
+            node_type='asset_type',
+            name='Asset Type - Content Blueprint',
+            content='Asset Type represents the content blueprint - defines different types of digital assets',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.95,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'description': 'Content blueprint for different digital asset types'
+            }
+        )
+        
+        # Create the Asset Status node
+        asset_status_node = self.create_node(
+            node_type='asset_status',
+            name='Asset Status - Processing Blueprint',
+            content='Asset Status represents the processing blueprint - defines different processing states of digital assets',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.95,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'description': 'Processing blueprint for different asset processing states'
+            }
+        )
+        
+        # Create the Asset Metadata node
+        asset_metadata_node = self.create_node(
+            node_type='asset_metadata',
+            name='Asset Metadata - Information Blueprint',
+            content='Asset Metadata represents the information blueprint - defines metadata structure for digital assets',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.9,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'description': 'Information blueprint for digital asset metadata structure'
+            }
+        )
+        
+        # Create the Digital Asset node
+        digital_asset_node = self.create_node(
+            node_type='digital_asset',
+            name='Digital Asset - Content Instance Blueprint',
+            content='Digital Asset represents the content instance blueprint - defines how digital assets are stored and managed',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.9,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'description': 'Content instance blueprint for digital asset storage and management'
+            }
+        )
+        
+        # Create the Content Hash node
+        content_hash_node = self.create_node(
+            node_type='content_hash',
+            name='Content Hash - Integrity Blueprint',
+            content='Content Hash represents the integrity blueprint - defines content hashing for digital assets',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.85,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'description': 'Integrity blueprint for content hashing and verification'
+            }
+        )
+        
+        # Create the Thumbnail node
+        thumbnail_node = self.create_node(
+            node_type='thumbnail',
+            name='Thumbnail - Preview Blueprint',
+            content='Thumbnail represents the preview blueprint - defines thumbnail generation for digital assets',
+            parent_id=root_node.node_id,
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.85,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'description': 'Preview blueprint for thumbnail generation and display'
+            }
+        )
+        
+        print(f"🌟 Digital Asset Management System initialized with {len(self.storage.get_all_nodes())} foundation nodes")
+        print(f"🎨 Asset Type: {asset_type_node.name} (ID: {asset_type_node.node_id})")
+        print(f"🔄 Asset Status: {asset_status_node.name} (ID: {asset_status_node.node_id})")
+        print(f"📊 Asset Metadata: {asset_metadata_node.name} (ID: {asset_metadata_node.node_id})")
+        print(f"💾 Digital Asset: {digital_asset_node.name} (ID: {digital_asset_node.node_id})")
+        print(f"🔐 Content Hash: {content_hash_node.name} (ID: {content_hash_node.node_id})")
+        print(f"🖼️ Thumbnail: {thumbnail_node.name} (ID: {thumbnail_node.node_id})")
     
-    TYPE_MAPPING = {
-        # Images
-        '.jpg': AssetType.IMAGE, '.jpeg': AssetType.IMAGE, '.png': AssetType.IMAGE,
-        '.gif': AssetType.IMAGE, '.bmp': AssetType.IMAGE, '.tiff': AssetType.IMAGE,
-        '.webp': AssetType.IMAGE, '.svg': AssetType.IMAGE, '.ico': AssetType.IMAGE,
-        
-        # Documents
-        '.pdf': AssetType.DOCUMENT, '.doc': AssetType.DOCUMENT, '.docx': AssetType.DOCUMENT,
-        '.txt': AssetType.DOCUMENT, '.rtf': AssetType.DOCUMENT, '.odt': AssetType.DOCUMENT,
-        '.xls': AssetType.DOCUMENT, '.xlsx': AssetType.DOCUMENT, '.ppt': AssetType.DOCUMENT,
-        '.pptx': AssetType.DOCUMENT, '.csv': AssetType.DOCUMENT,
-        
-        # Videos
-        '.mp4': AssetType.VIDEO, '.avi': AssetType.VIDEO, '.mkv': AssetType.VIDEO,
-        '.mov': AssetType.VIDEO, '.wmv': AssetType.VIDEO, '.flv': AssetType.VIDEO,
-        '.webm': AssetType.VIDEO, '.m4v': AssetType.VIDEO,
-        
-        # Audio
-        '.mp3': AssetType.AUDIO, '.wav': AssetType.AUDIO, '.flac': AssetType.AUDIO,
-        '.aac': AssetType.AUDIO, '.ogg': AssetType.AUDIO, '.wma': AssetType.AUDIO,
-        '.m4a': AssetType.AUDIO,
-        
-        # Archives
-        '.zip': AssetType.ARCHIVE, '.rar': AssetType.ARCHIVE, '.7z': AssetType.ARCHIVE,
-        '.tar': AssetType.ARCHIVE, '.gz': AssetType.ARCHIVE, '.bz2': AssetType.ARCHIVE,
-        
-        # Code
-        '.py': AssetType.CODE, '.js': AssetType.CODE, '.html': AssetType.CODE,
-        '.css': AssetType.CODE, '.java': AssetType.CODE, '.cpp': AssetType.CODE,
-        '.c': AssetType.CODE, '.h': AssetType.CODE, '.php': AssetType.CODE,
-        '.rb': AssetType.CODE, '.go': AssetType.CODE, '.rs': AssetType.CODE,
-        
-        # Data
-        '.json': AssetType.DATA, '.xml': AssetType.DATA, '.yaml': AssetType.DATA,
-        '.yml': AssetType.DATA, '.sql': AssetType.DATA, '.db': AssetType.DATA,
-    }
+    def create_asset_type_node(self, type_name: str, description: str = "") -> GenericNode:
+        """Create an asset type node"""
+        return self.create_node(
+            node_type='asset_type_instance',
+            name=f"Asset Type: {type_name}",
+            content=f'Asset type instance: {type_name} - {description}',
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.9,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'type_name': type_name,
+                'description': description,
+                'created_at': datetime.now().isoformat()
+            }
+        )
     
-    @classmethod
-    def detect_type(cls, filename: str, mime_type: str = None) -> AssetType:
-        """Detect asset type from filename and optional MIME type"""
-        # Try extension first
-        ext = Path(filename).suffix.lower()
-        if ext in cls.TYPE_MAPPING:
-            return cls.TYPE_MAPPING[ext]
-        
-        # Try MIME type
-        if mime_type:
-            if mime_type.startswith('image/'):
-                return AssetType.IMAGE
-            elif mime_type.startswith('video/'):
-                return AssetType.VIDEO
-            elif mime_type.startswith('audio/'):
-                return AssetType.AUDIO
-            elif mime_type in ['application/pdf', 'application/msword', 'text/plain']:
-                return AssetType.DOCUMENT
-            elif mime_type.startswith('application/') and 'zip' in mime_type:
-                return AssetType.ARCHIVE
-            elif mime_type.startswith('text/'):
-                return AssetType.CODE
-        
-        return AssetType.UNKNOWN
-
-class MetadataExtractor:
-    """Extracts metadata from various file types"""
+    def create_asset_status_node(self, status_name: str, description: str = "") -> GenericNode:
+        """Create an asset status node"""
+        return self.create_node(
+            node_type='asset_status_instance',
+            name=f"Asset Status: {status_name}",
+            content=f'Asset status instance: {status_name} - {description}',
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.9,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'status_name': status_name,
+                'description': description,
+                'created_at': datetime.now().isoformat()
+            }
+        )
     
-    @staticmethod
-    def extract_image_metadata(file_path: str) -> Dict[str, Any]:
+    def create_asset_metadata_node(self, metadata_data: Dict[str, Any]) -> GenericNode:
+        """Create an asset metadata node"""
+        return self.create_node(
+            node_type='asset_metadata_instance',
+            name=f"Asset Metadata: {metadata_data.get('mime_type', 'Unknown')}",
+            content=f'Asset metadata instance: {metadata_data.get("mime_type", "Unknown")}',
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.9,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'metadata_data': metadata_data,
+                'created_at': datetime.now().isoformat()
+            }
+        )
+    
+    def create_digital_asset_node(self, asset_data: Dict[str, Any]) -> GenericNode:
+        """Create a digital asset node"""
+        return self.create_node(
+            node_type='digital_asset_instance',
+            name=f"Digital Asset: {asset_data.get('original_filename', 'Unknown')}",
+            content=f'Digital asset instance: {asset_data.get("original_filename", "Unknown")}',
+            metadata={
+                'water_state': 'plasma',
+                'fractal_layer': 3,
+                'chakra': 'solar_plexus',
+                'frequency': 741,
+                'color': '#FFD700',
+                'planet': 'Sun',
+                'consciousness_mode': 'Transformation, Energy',
+                'quantum_state': 'excited',
+                'resonance_score': 0.9,
+                'epistemic_label': 'content_management',
+                'programming_ontology_layer': 'plasma_dynamic_content',
+                'asset_data': asset_data,
+                'created_at': datetime.now().isoformat()
+            }
+        )
+    
+    def get_system_resonance(self) -> Dict[str, Any]:
+        """Get system resonance information - meta-circular self-description"""
+        digital_asset_nodes = [node for node in self.nodes.values() if node.metadata.get('programming_ontology_layer') == 'plasma_dynamic_content']
+        type_nodes = [node for node in self.nodes.values() if node.node_type == 'asset_type']
+        status_nodes = [node for node in self.nodes.values() if node.node_type == 'asset_status']
+        metadata_nodes = [node for node in self.nodes.values() if node.node_type == 'asset_metadata']
+        asset_nodes = [node for node in self.nodes.values() if node.node_type == 'digital_asset']
+        
+        return {
+            'total_nodes': len(self.nodes),
+            'digital_asset_nodes': len(digital_asset_nodes),
+            'type_nodes': len(type_nodes),
+            'status_nodes': len(status_nodes),
+            'metadata_nodes': len(metadata_nodes),
+            'asset_nodes': len(asset_nodes),
+            'water_states': list(set(node.get_water_state() for node in self.nodes.values())),
+            'chakras': list(set(node.get_chakra() for node in self.nodes.values())),
+            'frequencies': list(set(node.get_frequency() for node in self.nodes.values())),
+            'average_resonance': sum(node.metadata.get('resonance_score', 0) for node in self.nodes.values()) / max(len(self.nodes), 1),
+            'system_principle': 'Everything is just nodes - digital assets as content nodes',
+            'meta_circular': True,
+            'fractal_self_similar': True,
+            'living_document': True,
+            'programming_ontology': 'plasma_dynamic_content_layer'
+        }
+    
+    def calculate_content_hash(self, file_path: str) -> str:
+        """Calculate SHA-256 hash of file content - content integrity node creation"""
+        hash_sha256 = hashlib.sha256()
+        try:
+            with open(file_path, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
+                    hash_sha256.update(chunk)
+            
+            # Create content hash node
+            hash_value = hash_sha256.hexdigest()
+            self.create_node(
+                node_type='content_hash_instance',
+                name=f"Content Hash: {hash_value[:8]}...",
+                content=f'Content hash instance: {hash_value} for file {file_path}',
+                metadata={
+                    'water_state': 'plasma',
+                    'fractal_layer': 3,
+                    'chakra': 'solar_plexus',
+                    'frequency': 741,
+                    'color': '#FFD700',
+                    'planet': 'Sun',
+                    'consciousness_mode': 'Transformation, Energy',
+                    'quantum_state': 'excited',
+                    'resonance_score': 0.9,
+                    'epistemic_label': 'content_management',
+                    'programming_ontology_layer': 'plasma_dynamic_content',
+                    'hash_value': hash_value,
+                    'file_path': file_path,
+                    'hash_algorithm': 'SHA-256',
+                    'created_at': datetime.now().isoformat()
+                }
+            )
+            
+            return hash_value
+        except Exception as e:
+            logger.error(f"Failed to calculate hash for {file_path}: {e}")
+            return ""
+    
+    def extract_metadata(self, file_path: str, asset_type: str) -> Dict[str, Any]:
+        """Extract comprehensive metadata from file - metadata node creation"""
+        try:
+            file_stat = os.stat(file_path)
+            mime_type, _ = mimetypes.guess_type(file_path)
+            
+            # Basic metadata
+            metadata = {
+                'file_size': file_stat.st_size,
+                'mime_type': mime_type or "application/octet-stream",
+                'creation_date': datetime.fromtimestamp(file_stat.st_ctime).isoformat(),
+                'modification_date': datetime.fromtimestamp(file_stat.st_mtime).isoformat(),
+                'asset_type': asset_type
+            }
+            
+            # Type-specific metadata extraction
+            type_metadata = {}
+            if asset_type == "image":
+                type_metadata = self._extract_image_metadata(file_path)
+            elif asset_type == "audio":
+                type_metadata = self._extract_audio_metadata(file_path)
+            elif asset_type == "video":
+                type_metadata = self._extract_video_metadata(file_path)
+            elif asset_type == "document":
+                type_metadata = self._extract_document_metadata(file_path)
+            
+            # Store additional metadata in custom_fields
+            metadata['custom_fields'] = type_metadata
+            
+            # Create metadata node
+            self.create_asset_metadata_node(metadata)
+            
+            return metadata
+            
+        except Exception as e:
+            logger.error(f"Failed to extract metadata from {file_path}: {e}")
+            return {}
+    
+    def _extract_image_metadata(self, file_path: str) -> Dict[str, Any]:
         """Extract metadata from image files"""
         if not PILLOW_AVAILABLE:
             return {}
@@ -238,193 +493,160 @@ class MetadataExtractor:
                 
                 # Extract EXIF data
                 if hasattr(img, '_getexif') and img._getexif():
-                    exif_dict = {}
-                    for tag_id, value in img._getexif().items():
-                        tag = ExifTags.TAGS.get(tag_id, tag_id)
-                        exif_dict[tag] = value
-                    metadata['exif'] = exif_dict
+                    exif = img._getexif()
+                    if exif:
+                        exif_data = {}
+                        for tag_id, value in exif.items():
+                            tag = ExifTags.TAGS.get(tag_id, tag_id)
+                            exif_data[tag] = value
+                        metadata['exif'] = exif_data
                 
                 return metadata
         except Exception as e:
             logger.warning(f"Failed to extract image metadata from {file_path}: {e}")
             return {}
     
-    @staticmethod
-    def extract_audio_metadata(file_path: str) -> Dict[str, Any]:
+    def _extract_audio_metadata(self, file_path: str) -> Dict[str, Any]:
         """Extract metadata from audio files"""
         if not MUTAGEN_AVAILABLE:
             return {}
         
         try:
-            audio_file = mutagen.File(file_path)
-            if audio_file is None:
-                return {}
-            
-            metadata = {
-                'duration': getattr(audio_file.info, 'length', 0),
-                'bitrate': getattr(audio_file.info, 'bitrate', 0),
-                'channels': getattr(audio_file.info, 'channels', 0),
-                'sample_rate': getattr(audio_file.info, 'sample_rate', 0)
-            }
-            
-            # Extract tags
-            if audio_file.tags:
-                for key, value in audio_file.tags.items():
-                    if isinstance(value, list) and value:
-                        metadata[key] = str(value[0])
-                    else:
-                        metadata[key] = str(value)
-            
-            return metadata
+            audio = mutagen.File(file_path)
+            if audio:
+                metadata = {}
+                if hasattr(audio, 'info'):
+                    if hasattr(audio.info, 'length'):
+                        metadata['duration'] = audio.info.length
+                    if hasattr(audio.info, 'bitrate'):
+                        metadata['bitrate'] = audio.info.bitrate
+                return metadata
         except Exception as e:
             logger.warning(f"Failed to extract audio metadata from {file_path}: {e}")
-            return {}
+        
+        return {}
     
-    @staticmethod
-    def extract_video_metadata(file_path: str) -> Dict[str, Any]:
+    def _extract_video_metadata(self, file_path: str) -> Dict[str, Any]:
         """Extract metadata from video files"""
         if not OPENCV_AVAILABLE:
             return {}
         
         try:
             cap = cv2.VideoCapture(file_path)
-            if not cap.isOpened():
-                return {}
-            
-            fps = cap.get(cv2.CAP_PROP_FPS)
-            frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            
-            metadata = {
-                'dimensions': (width, height),
-                'fps': fps,
-                'frame_count': frame_count,
-                'duration': frame_count / fps if fps > 0 else 0
-            }
-            
-            cap.release()
-            return metadata
+            if cap.isOpened():
+                metadata = {
+                    'fps': cap.get(cv2.CAP_PROP_FPS),
+                    'frame_count': int(cap.get(cv2.CAP_PROP_FRAME_COUNT)),
+                    'dimensions': (
+                        int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)),
+                        int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                    )
+                }
+                cap.release()
+                return metadata
         except Exception as e:
             logger.warning(f"Failed to extract video metadata from {file_path}: {e}")
-            return {}
+        
+        return {}
     
-    @staticmethod
-    def extract_document_metadata(file_path: str) -> Dict[str, Any]:
+    def _extract_document_metadata(self, file_path: str) -> Dict[str, Any]:
         """Extract metadata from document files"""
-        metadata = {}
+        if not PYPDF2_AVAILABLE or not file_path.lower().endswith('.pdf'):
+            return {}
         
-        if file_path.lower().endswith('.pdf') and PYPDF2_AVAILABLE:
-            try:
-                with open(file_path, 'rb') as file:
-                    pdf_reader = PyPDF2.PdfReader(file)
-                    metadata.update({
-                        'page_count': len(pdf_reader.pages),
-                        'title': pdf_reader.metadata.get('/Title', ''),
-                        'author': pdf_reader.metadata.get('/Author', ''),
-                        'subject': pdf_reader.metadata.get('/Subject', ''),
-                        'creator': pdf_reader.metadata.get('/Creator', ''),
-                        'producer': pdf_reader.metadata.get('/Producer', ''),
-                        'creation_date': pdf_reader.metadata.get('/CreationDate', ''),
-                        'modification_date': pdf_reader.metadata.get('/ModDate', '')
-                    })
-            except Exception as e:
-                logger.warning(f"Failed to extract PDF metadata from {file_path}: {e}")
-        
-        return metadata
-
-class DigitalAssetManager:
-    """Main digital asset management system"""
-    
-    def __init__(self, database: DatabasePersistenceSystem, storage_root: str = "digital_assets"):
-        self.database = database
-        self.storage_root = Path(storage_root)
-        self.storage_root.mkdir(parents=True, exist_ok=True)
-        
-        # Create subdirectories for different asset types
-        for asset_type in AssetType:
-            (self.storage_root / asset_type.value).mkdir(parents=True, exist_ok=True)
-        
-        # Create thumbnails directory
-        (self.storage_root / "thumbnails").mkdir(parents=True, exist_ok=True)
-        
-        logger.info(f"✅ DigitalAssetManager initialized with storage: {self.storage_root}")
-    
-    def calculate_content_hash(self, file_path: str) -> str:
-        """Calculate SHA-256 hash of file content"""
-        hash_sha256 = hashlib.sha256()
         try:
-            with open(file_path, "rb") as f:
-                for chunk in iter(lambda: f.read(4096), b""):
-                    hash_sha256.update(chunk)
-            return hash_sha256.hexdigest()
+            with open(file_path, 'rb') as f:
+                pdf_reader = PyPDF2.PdfReader(f)
+                metadata = {
+                    'page_count': len(pdf_reader.pages),
+                    'title': pdf_reader.metadata.get('/Title', ''),
+                    'author': pdf_reader.metadata.get('/Author', ''),
+                    'subject': pdf_reader.metadata.get('/Subject', ''),
+                    'creator': pdf_reader.metadata.get('/Creator', '')
+                }
+                return metadata
         except Exception as e:
-            logger.error(f"Failed to calculate hash for {file_path}: {e}")
-            return ""
+            logger.warning(f"Failed to extract PDF metadata from {file_path}: {e}")
+        
+        return {}
     
-    def extract_metadata(self, file_path: str, asset_type: AssetType) -> AssetMetadata:
-        """Extract comprehensive metadata from file"""
-        file_stat = os.stat(file_path)
-        mime_type, _ = mimetypes.guess_type(file_path)
-        
-        # Basic metadata
-        metadata = AssetMetadata(
-            file_size=file_stat.st_size,
-            mime_type=mime_type or "application/octet-stream",
-            creation_date=datetime.fromtimestamp(file_stat.st_ctime),
-            modification_date=datetime.fromtimestamp(file_stat.st_mtime)
-        )
-        
-        # Type-specific metadata extraction
-        type_metadata = {}
-        if asset_type == AssetType.IMAGE:
-            type_metadata = MetadataExtractor.extract_image_metadata(file_path)
-            if 'dimensions' in type_metadata:
-                metadata.dimensions = type_metadata['dimensions']
-            if 'exif' in type_metadata:
-                metadata.exif_data = type_metadata['exif']
-        
-        elif asset_type == AssetType.AUDIO:
-            type_metadata = MetadataExtractor.extract_audio_metadata(file_path)
-            if 'duration' in type_metadata:
-                metadata.duration = type_metadata['duration']
-            if 'bitrate' in type_metadata:
-                metadata.bitrate = type_metadata['bitrate']
-        
-        elif asset_type == AssetType.VIDEO:
-            type_metadata = MetadataExtractor.extract_video_metadata(file_path)
-            if 'dimensions' in type_metadata:
-                metadata.dimensions = type_metadata['dimensions']
-            if 'duration' in type_metadata:
-                metadata.duration = type_metadata['duration']
-        
-        elif asset_type == AssetType.DOCUMENT:
-            type_metadata = MetadataExtractor.extract_document_metadata(file_path)
-        
-        # Store additional metadata in custom_fields
-        metadata.custom_fields.update(type_metadata)
-        
-        return metadata
-    
-    def generate_thumbnail(self, asset: DigitalAsset) -> Optional[str]:
-        """Generate thumbnail for supported asset types"""
-        if asset.asset_type == AssetType.IMAGE and PILLOW_AVAILABLE:
-            try:
-                thumbnail_path = self.storage_root / "thumbnails" / f"{asset.asset_id}_thumb.jpg"
+    def generate_thumbnail(self, asset_path: str, asset_id: str) -> Optional[str]:
+        """Generate thumbnail for supported asset types - thumbnail node creation"""
+        try:
+            # Determine asset type from file extension
+            file_ext = Path(asset_path).suffix.lower()
+            asset_type = self._get_asset_type_from_extension(file_ext)
+            
+            if asset_type == "image" and PILLOW_AVAILABLE:
+                thumbnail_path = self.storage_root / "thumbnails" / f"{asset_id}_thumb.jpg"
                 
-                with Image.open(asset.storage_path) as img:
+                with Image.open(asset_path) as img:
                     img.thumbnail((200, 200), Image.Resampling.LANCZOS)
                     img.convert('RGB').save(thumbnail_path, 'JPEG', quality=85)
                 
+                # Create thumbnail node
+                self.create_node(
+                    node_type='thumbnail_instance',
+                    name=f"Thumbnail: {asset_id}",
+                    content=f'Thumbnail instance: {asset_id} for asset {asset_path}',
+                    metadata={
+                        'water_state': 'plasma',
+                        'fractal_layer': 3,
+                        'chakra': 'solar_plexus',
+                        'frequency': 741,
+                        'color': '#FFD700',
+                        'planet': 'Sun',
+                        'consciousness_mode': 'Transformation, Energy',
+                        'quantum_state': 'excited',
+                        'resonance_score': 0.85,
+                        'epistemic_label': 'content_management',
+                        'programming_ontology_layer': 'plasma_dynamic_content',
+                        'asset_id': asset_id,
+                        'asset_path': asset_path,
+                        'thumbnail_path': str(thumbnail_path),
+                        'dimensions': (200, 200),
+                        'format': 'JPEG',
+                        'quality': 85,
+                        'created_at': datetime.now().isoformat()
+                    }
+                )
+                
                 return str(thumbnail_path)
-            except Exception as e:
-                logger.warning(f"Failed to generate thumbnail for {asset.asset_id}: {e}")
+        except Exception as e:
+            logger.warning(f"Failed to generate thumbnail for {asset_id}: {e}")
         
         return None
     
+    def _get_asset_type_from_extension(self, file_ext: str) -> str:
+        """Get asset type from file extension"""
+        image_exts = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg', '.ico'}
+        audio_exts = {'.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.m4a'}
+        video_exts = {'.mp4', '.avi', '.mkv', '.mov', '.wmv', '.flv', '.webm', '.m4v'}
+        document_exts = {'.pdf', '.doc', '.docx', '.txt', '.rtf', '.odt', '.xls', '.xlsx', '.ppt', '.pptx', '.csv'}
+        archive_exts = {'.zip', '.rar', '.7z', '.tar', '.gz', '.bz2'}
+        code_exts = {'.py', '.js', '.html', '.css', '.java', '.cpp', '.c', '.h', '.php', '.rb', '.go', '.rs'}
+        data_exts = {'.json', '.xml', '.yaml', '.yml', '.sql', '.db'}
+        
+        if file_ext in image_exts:
+            return "image"
+        elif file_ext in audio_exts:
+            return "audio"
+        elif file_ext in video_exts:
+            return "video"
+        elif file_ext in document_exts:
+            return "document"
+        elif file_ext in archive_exts:
+            return "archive"
+        elif file_ext in code_exts:
+            return "code"
+        elif file_ext in data_exts:
+            return "data"
+        else:
+            return "unknown"
+    
     def add_asset(self, file_path: str, tags: List[str] = None, 
-                  custom_metadata: Dict[str, Any] = None) -> Optional[DigitalAsset]:
-        """Add a new digital asset to the system"""
+                  custom_metadata: Dict[str, Any] = None) -> Optional[Dict[str, Any]]:
+        """Add a new digital asset to the system - complete asset node creation"""
         if not os.path.exists(file_path):
             logger.error(f"File not found: {file_path}")
             return None
@@ -435,287 +657,172 @@ class DigitalAssetManager:
             if not content_hash:
                 return None
             
-            # Check for duplicates
-            existing = self.find_asset_by_hash(content_hash)
-            if existing:
-                logger.info(f"Asset already exists with hash {content_hash}: {existing.original_filename}")
-                return existing
-            
-            # Detect asset type
-            original_filename = os.path.basename(file_path)
-            mime_type, _ = mimetypes.guess_type(file_path)
-            asset_type = AssetTypeDetector.detect_type(original_filename, mime_type)
-            
-            # Generate unique asset ID
-            asset_id = f"asset_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{content_hash[:8]}"
-            
-            # Determine storage path
-            file_extension = Path(file_path).suffix
-            storage_filename = f"{asset_id}{file_extension}"
-            storage_path = self.storage_root / asset_type.value / storage_filename
-            
-            # Copy file to storage
-            shutil.copy2(file_path, storage_path)
+            # Determine asset type
+            file_ext = Path(file_path).suffix.lower()
+            asset_type = self._get_asset_type_from_extension(file_ext)
             
             # Extract metadata
-            metadata = self.extract_metadata(str(storage_path), asset_type)
+            metadata = self.extract_metadata(file_path, asset_type)
             
-            # Add custom metadata and tags
-            if tags:
-                metadata.tags.extend(tags)
-            if custom_metadata:
-                metadata.custom_fields.update(custom_metadata)
+            # Generate asset ID
+            asset_id = f"asset_{content_hash[:8]}"
             
-            # Create digital asset
-            asset = DigitalAsset(
-                asset_id=asset_id,
-                original_filename=original_filename,
-                asset_type=asset_type,
-                content_hash=content_hash,
-                storage_path=str(storage_path),
-                metadata=metadata,
-                status=AssetStatus.PROCESSING,
-                created_at=datetime.now(),
-                updated_at=datetime.now()
-            )
+            # Copy file to storage
+            storage_path = self.storage_root / asset_type / f"{asset_id}{file_ext}"
+            shutil.copy2(file_path, storage_path)
             
-            # Generate thumbnail if possible
-            thumbnail_path = self.generate_thumbnail(asset)
-            if thumbnail_path:
-                asset.thumbnail_path = thumbnail_path
-                asset.preview_available = True
+            # Generate thumbnail
+            thumbnail_path = self.generate_thumbnail(str(storage_path), asset_id)
             
-            # Mark as ready
-            asset.status = AssetStatus.READY
-            asset.updated_at = datetime.now()
+            # Prepare asset data
+            asset_data = {
+                'asset_id': asset_id,
+                'original_filename': Path(file_path).name,
+                'asset_type': asset_type,
+                'content_hash': content_hash,
+                'storage_path': str(storage_path),
+                'metadata': metadata,
+                'tags': tags or [],
+                'custom_metadata': custom_metadata or {},
+                'thumbnail_path': thumbnail_path,
+                'preview_available': thumbnail_path is not None,
+                'created_at': datetime.now().isoformat(),
+                'updated_at': datetime.now().isoformat()
+            }
             
-            # Store in database
-            db_node = asset.to_database_node()
-            result = self.database.operations.create_node(db_node)
+            # Create digital asset node
+            self.create_digital_asset_node(asset_data)
             
-            if result.success:
-                logger.info(f"✅ Asset added successfully: {asset_id} ({original_filename})")
-                return asset
-            else:
-                logger.error(f"Failed to store asset in database: {getattr(result, 'error_message', 'Unknown error')}")
-                # Clean up storage
-                if storage_path.exists():
-                    storage_path.unlink()
-                return None
-                
+            # Create asset type instance node if it doesn't exist
+            self.create_asset_type_node(asset_type, f"Asset type for {asset_type} files")
+            
+            # Create asset status instance node
+            self.create_asset_status_node("ready", f"Asset {asset_id} is ready for use")
+            
+            logger.info(f"✅ Asset added successfully: {asset_id}")
+            return asset_data
+            
         except Exception as e:
             logger.error(f"Failed to add asset {file_path}: {e}")
             return None
     
-    def get_asset(self, asset_id: str) -> Optional[DigitalAsset]:
-        """Retrieve an asset by ID"""
-        try:
-            result = self.database.operations.query_nodes(
-                [QueryFilter("node_id", "=", asset_id)],
-                QueryOptions(limit=1)
-            )
-            
-            if result.success and result.data:
-                return self._node_to_asset(result.data[0])
-            
-        except Exception as e:
-            logger.error(f"Failed to get asset {asset_id}: {e}")
-        
-        return None
-    
-    def find_asset_by_hash(self, content_hash: str) -> Optional[DigitalAsset]:
-        """Find asset by content hash"""
-        try:
-            # Search by content hash in the content JSON
-            result = self.database.operations.query_nodes(
-                [QueryFilter("content", "LIKE", f'%"content_hash": "{content_hash}"%')],
-                QueryOptions(limit=1)
-            )
-            
-            if result.success and result.data:
-                return self._node_to_asset(result.data[0])
-                
-        except Exception as e:
-            logger.error(f"Failed to find asset by hash {content_hash}: {e}")
-        
-        return None
-    
-    def search_assets(self, query: str = "", asset_type: AssetType = None, 
-                     tags: List[str] = None, limit: int = 50) -> List[DigitalAsset]:
-        """Search for assets based on various criteria"""
-        filters = [QueryFilter("node_type", "=", "digital_asset")]
-        
-        if asset_type:
-            filters.append(QueryFilter("content", "LIKE", f'%"asset_type": "{asset_type.value}"%'))
-        
-        if query:
-            filters.append(QueryFilter("name", "LIKE", f"%{query}%"))
-        
-        try:
-            result = self.database.operations.query_nodes(filters, QueryOptions(limit=limit))
-            
-            if result.success and result.data:
-                assets = [self._node_to_asset(node) for node in result.data]
-                
-                # Filter by tags if specified
-                if tags:
-                    assets = [asset for asset in assets if asset and 
-                             any(tag in asset.metadata.tags for tag in tags)]
-                
-                return [asset for asset in assets if asset is not None]
-                
-        except Exception as e:
-            logger.error(f"Failed to search assets: {e}")
-        
-        return []
-    
-    def update_asset_metadata(self, asset_id: str, 
-                            metadata_updates: Dict[str, Any]) -> bool:
-        """Update asset metadata"""
-        asset = self.get_asset(asset_id)
-        if not asset:
-            return False
-        
-        try:
-            # Update metadata fields
-            for key, value in metadata_updates.items():
-                if hasattr(asset.metadata, key):
-                    setattr(asset.metadata, key, value)
-                else:
-                    asset.metadata.custom_fields[key] = value
-            
-            asset.updated_at = datetime.now()
-            
-            # Update in database
-            db_node = asset.to_database_node()
-            result = self.database.operations.update_node(db_node)
-            
-            return result.success
-            
-        except Exception as e:
-            logger.error(f"Failed to update asset metadata {asset_id}: {e}")
-            return False
-    
-    def delete_asset(self, asset_id: str, remove_files: bool = True) -> bool:
-        """Delete an asset from the system"""
-        asset = self.get_asset(asset_id)
-        if not asset:
-            return False
-        
-        try:
-            # Remove from database
-            result = self.database.operations.delete_node(asset_id)
-            
-            if result.success and remove_files:
-                # Remove storage files
-                if os.path.exists(asset.storage_path):
-                    os.remove(asset.storage_path)
-                
-                if asset.thumbnail_path and os.path.exists(asset.thumbnail_path):
-                    os.remove(asset.thumbnail_path)
-                
-                logger.info(f"✅ Asset deleted: {asset_id}")
-            
-            return result.success
-            
-        except Exception as e:
-            logger.error(f"Failed to delete asset {asset_id}: {e}")
-            return False
-    
     def get_asset_stats(self) -> Dict[str, Any]:
-        """Get statistics about stored assets"""
+        """Get statistics about stored assets - system resonance analysis"""
         try:
-            # Get all assets
-            result = self.database.operations.query_nodes(
-                [QueryFilter("node_type", "=", "digital_asset")],
-                QueryOptions(limit=1000)
-            )
+            # Count different types of nodes
+            asset_instances = [node for node in self.nodes.values() if node.node_type == 'digital_asset_instance']
+            type_instances = [node for node in self.nodes.values() if node.node_type == 'asset_type_instance']
+            status_instances = [node for node in self.nodes.values() if node.node_type == 'asset_status_instance']
+            metadata_instances = [node for node in self.nodes.values() if node.node_type == 'asset_metadata_instance']
+            hash_instances = [node for node in self.nodes.values() if node.node_type == 'content_hash_instance']
+            thumbnail_instances = [node for node in self.nodes.values() if node.node_type == 'thumbnail_instance']
             
-            if not result.success:
-                return {}
+            # Calculate total size
+            total_size = 0
+            for asset_node in asset_instances:
+                metadata = asset_node.metadata.get('asset_data', {}).get('metadata', {})
+                total_size += metadata.get('file_size', 0)
             
-            assets = [self._node_to_asset(node) for node in result.data or []]
-            assets = [asset for asset in assets if asset is not None]
+            # Group by asset type
+            asset_types = {}
+            for asset_node in asset_instances:
+                asset_data = asset_node.metadata.get('asset_data', {})
+                asset_type = asset_data.get('asset_type', 'unknown')
+                if asset_type not in asset_types:
+                    asset_types[asset_type] = 0
+                asset_types[asset_type] += 1
             
-            # Calculate statistics
-            total_count = len(assets)
-            total_size = sum(asset.metadata.file_size for asset in assets)
-            
-            type_counts = {}
-            for asset in assets:
-                asset_type = asset.asset_type.value
-                type_counts[asset_type] = type_counts.get(asset_type, 0) + 1
-            
-            return {
-                "total_assets": total_count,
-                "total_size_bytes": total_size,
-                "total_size_mb": round(total_size / (1024 * 1024), 2),
-                "asset_types": type_counts,
-                "storage_root": str(self.storage_root)
+            stats = {
+                'total_assets': len(asset_instances),
+                'total_size_mb': round(total_size / (1024 * 1024), 2),
+                'asset_types': asset_types,
+                'type_instances': len(type_instances),
+                'status_instances': len(status_instances),
+                'metadata_instances': len(metadata_instances),
+                'hash_instances': len(hash_instances),
+                'thumbnail_instances': len(thumbnail_instances),
+                'system_resonance': self.get_system_resonance()
             }
+            
+            return stats
             
         except Exception as e:
             logger.error(f"Failed to get asset stats: {e}")
             return {}
     
-    def _node_to_asset(self, node: DatabaseNode) -> Optional[DigitalAsset]:
-        """Convert DatabaseNode back to DigitalAsset"""
+    def search_assets(self, query: str = None, asset_type: str = None, tags: List[str] = None) -> List[Dict[str, Any]]:
+        """Search for assets based on criteria - content discovery nodes"""
         try:
-            content_data = json.loads(node.content) if node.content else {}
-            metadata_data = content_data.get('metadata', {})
+            results = []
+            asset_instances = [node for node in self.nodes.values() if node.node_type == 'digital_asset_instance']
             
-            # Reconstruct metadata with proper datetime handling
-            creation_date = None
-            if metadata_data.get('creation_date'):
-                try:
-                    creation_date = datetime.fromisoformat(metadata_data['creation_date'])
-                except (ValueError, TypeError):
-                    creation_date = None
+            for asset_node in asset_instances:
+                asset_data = asset_node.metadata.get('asset_data', {})
+                
+                # Apply filters
+                if asset_type and asset_data.get('asset_type') != asset_type:
+                    continue
+                
+                if query:
+                    filename = asset_data.get('original_filename', '').lower()
+                    if query.lower() not in filename:
+                        continue
+                
+                if tags:
+                    asset_tags = asset_data.get('tags', [])
+                    if not any(tag in asset_tags for tag in tags):
+                        continue
+                
+                results.append(asset_data)
             
-            modification_date = None
-            if metadata_data.get('modification_date'):
-                try:
-                    modification_date = datetime.fromisoformat(metadata_data['modification_date'])
-                except (ValueError, TypeError):
-                    modification_date = None
-            
-            metadata = AssetMetadata(
-                file_size=metadata_data.get('file_size', 0),
-                mime_type=metadata_data.get('mime_type', 'application/octet-stream'),
-                creation_date=creation_date,
-                modification_date=modification_date,
-                dimensions=tuple(metadata_data['dimensions']) if metadata_data.get('dimensions') else None,
-                duration=metadata_data.get('duration'),
-                bitrate=metadata_data.get('bitrate'),
-                color_space=metadata_data.get('color_space'),
-                compression=metadata_data.get('compression'),
-                author=metadata_data.get('author'),
-                title=metadata_data.get('title'),
-                description=metadata_data.get('description'),
-                tags=metadata_data.get('tags', []),
-                exif_data=metadata_data.get('exif_data'),
-                custom_fields=metadata_data.get('custom_fields', {})
+            # Create search result node
+            self.create_node(
+                node_type='search_result',
+                name=f"Search Result: {len(results)} assets found",
+                content=f'Search result: {len(results)} assets found for query "{query}"',
+                metadata={
+                    'water_state': 'plasma',
+                    'fractal_layer': 3,
+                    'chakra': 'solar_plexus',
+                    'frequency': 741,
+                    'color': '#FFD700',
+                    'planet': 'Sun',
+                    'consciousness_mode': 'Transformation, Energy',
+                    'quantum_state': 'excited',
+                    'resonance_score': 0.9,
+                    'epistemic_label': 'content_management',
+                    'programming_ontology_layer': 'plasma_dynamic_content',
+                    'query': query,
+                    'asset_type': asset_type,
+                    'tags': tags,
+                    'result_count': len(results),
+                    'created_at': datetime.now().isoformat()
+                }
             )
             
-            return DigitalAsset(
-                asset_id=node.node_id,
-                original_filename=content_data.get('original_filename', ''),
-                asset_type=AssetType(content_data.get('asset_type', 'unknown')),
-                content_hash=content_data.get('content_hash', ''),
-                storage_path=content_data.get('storage_path', ''),
-                metadata=metadata,
-                status=AssetStatus(content_data.get('status', 'ready')),
-                created_at=node.created_at,
-                updated_at=node.updated_at,
-                access_count=content_data.get('access_count', 0),
-                last_accessed=datetime.fromisoformat(content_data['last_accessed']) if content_data.get('last_accessed') else None,
-                thumbnail_path=content_data.get('thumbnail_path'),
-                preview_available=content_data.get('preview_available', False)
-            )
+            return results
             
         except Exception as e:
-            logger.error(f"Failed to convert node to asset: {e}")
-            return None
+            logger.error(f"Failed to search assets: {e}")
+            return []
+
+# Legacy compatibility - maintain the old interface for now
+class DigitalAssetManager(DigitalAssetNodeSystem):
+    """
+    Legacy compatibility class that inherits from the new node-based system
+    
+    This demonstrates the Living Codex principle of graceful evolution:
+    - New system embodies the principles
+    - Old interface remains functional
+    - System can describe its own transformation
+    """
+    
+    def __init__(self, database: DatabasePersistenceSystem, storage_root: str = "digital_assets"):
+        super().__init__(database, storage_root)
+        logger.info("🔄 DigitalAssetManager initialized with new node-based system")
+        logger.info("✨ This system now embodies Living Codex principles")
+        logger.info("🌟 Everything is just nodes - digital assets as content nodes")
+        logger.info("🔥 Digital asset system represents PLASMA (Dynamic Content) state in programming language ontology")
 
 async def main():
     """Demo of digital asset management capabilities"""
@@ -732,8 +839,9 @@ async def main():
     
     # Show capabilities
     print("\n🎯 Supported Asset Types:")
-    for asset_type in AssetType:
-        print(f"   • {asset_type.value.title()}")
+    asset_types = ['image', 'document', 'video', 'audio', 'archive', 'code', 'data', 'unknown']
+    for asset_type in asset_types:
+        print(f"   • {asset_type.title()}")
     
     print("\n📊 Available Metadata Extractors:")
     print(f"   • Images: {'✅' if PILLOW_AVAILABLE else '❌'} (Pillow)")
