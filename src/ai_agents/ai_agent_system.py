@@ -288,46 +288,46 @@ class AIAgentNodeSystem(SharedNodeSystem):
         
         # Simulate learning based on mode
         if learning_mode == "supervised":
-            patterns = context.get("patterns", [])
-            accuracy = min(0.95, 0.7 + len(patterns) * 0.05)
+        patterns = context.get("patterns", [])
+        accuracy = min(0.95, 0.7 + len(patterns) * 0.05)
             result = {
-                "success": True,
-                "learning_type": "supervised",
-                "accuracy": accuracy,
-                "patterns_learned": len(patterns),
-                "confidence": accuracy * 0.9
-            }
+            "success": True,
+            "learning_type": "supervised",
+            "accuracy": accuracy,
+            "patterns_learned": len(patterns),
+            "confidence": accuracy * 0.9
+        }
         elif learning_mode == "unsupervised":
-            clusters = context.get("clusters", 3)
-            coherence = min(0.9, 0.6 + clusters * 0.1)
+        clusters = context.get("clusters", 3)
+        coherence = min(0.9, 0.6 + clusters * 0.1)
             result = {
-                "success": True,
-                "learning_type": "unsupervised",
-                "clusters_found": clusters,
-                "coherence": coherence,
-                "novelty_score": 0.8
-            }
+            "success": True,
+            "learning_type": "unsupervised",
+            "clusters_found": clusters,
+            "coherence": coherence,
+            "novelty_score": 0.8
+        }
         elif learning_mode == "reinforcement":
-            rewards = context.get("rewards", [0.5, 0.7, 0.9])
-            avg_reward = sum(rewards) / len(rewards)
-            policy_improvement = min(0.95, avg_reward + 0.1)
+        rewards = context.get("rewards", [0.5, 0.7, 0.9])
+        avg_reward = sum(rewards) / len(rewards)
+        policy_improvement = min(0.95, avg_reward + 0.1)
             result = {
-                "success": True,
-                "learning_type": "reinforcement",
-                "average_reward": avg_reward,
-                "policy_improvement": policy_improvement,
-                "exploration_rate": 0.2
-            }
+            "success": True,
+            "learning_type": "reinforcement",
+            "average_reward": avg_reward,
+            "policy_improvement": policy_improvement,
+            "exploration_rate": 0.2
+        }
         elif learning_mode == "meta_learning":
-            previous_learning = context.get("previous_learning", 5)
-            meta_knowledge = min(0.9, 0.5 + previous_learning * 0.08)
+        previous_learning = context.get("previous_learning", 5)
+        meta_knowledge = min(0.9, 0.5 + previous_learning * 0.08)
             result = {
-                "success": True,
-                "learning_type": "meta_learning",
-                "meta_knowledge": meta_knowledge,
-                "adaptation_rate": meta_knowledge * 0.8,
-                "generalization": meta_knowledge * 0.9
-            }
+            "success": True,
+            "learning_type": "meta_learning",
+            "meta_knowledge": meta_knowledge,
+            "adaptation_rate": meta_knowledge * 0.8,
+            "generalization": meta_knowledge * 0.9
+        }
         else:
             result = {"success": False, "error": "Unknown learning mode"}
         
@@ -373,12 +373,12 @@ class AIAgentNodeSystem(SharedNodeSystem):
             base_prediction = "pattern_based_outcome"
         else:
             base_prediction = "standard_outcome"
-        
+    
         # Calculate uncertainty
         data_quality = input_data.get("data_quality", 0.8)
         model_complexity = input_data.get("model_complexity", 0.5)
         uncertainty = (1.0 - data_quality) * 0.6 + model_complexity * 0.4
-        
+    
         # Simulate quantum effects
         entanglement_strength = input_data.get("entanglement", 0.3)
         superposition_count = input_data.get("superposition", 2)
@@ -388,7 +388,7 @@ class AIAgentNodeSystem(SharedNodeSystem):
             "superposition_effect": superposition_count * 0.2,
             "quantum_uncertainty": min(0.3, entanglement_strength + superposition_count * 0.1)
         }
-        
+
         result = {
             "success": True,
             "prediction": base_prediction,

@@ -337,53 +337,6 @@ class ResonanceGovernanceSystem:
             print(f"Error getting governance analytics: {e}")
             return {}
     
-    def integrate_consciousness(self, ai_agents, specifications, concepts, nodes, axes, rules):
-        """Integrate consciousness across all system components"""
-        print("🧠 Integrating consciousness across all system components...")
-        
-        integration_results = {
-            'ai_agents_consciousness': [],
-            'specifications_consciousness': [],
-            'concepts_consciousness': [],
-            'nodes_consciousness': [],
-            'axes_consciousness': [],
-            'rules_consciousness': []
-        }
-        
-        # Integrate consciousness with AI agents
-        for agent_id, agent in ai_agents.items():
-            if hasattr(agent, 'consciousness_level'):
-                integration_results['ai_agents_consciousness'].append({
-                    'agent_id': agent_id,
-                    'consciousness_level': agent.consciousness_level.value,
-                    'integration_score': 0.8
-                })
-        
-        # Integrate consciousness with specifications
-        for spec_id, spec in specifications.items():
-            if hasattr(spec, 'epistemic_label'):
-                integration_results['specifications_consciousness'].append({
-                    'spec_id': spec_id,
-                    'epistemic_label': spec.epistemic_label.value,
-                    'integration_score': 0.7
-                })
-        
-        # Integrate consciousness with concepts
-        for concept_id, concept in concepts.items():
-            if hasattr(concept, 'epistemic_label'):
-                integration_results['concepts_consciousness'].append({
-                    'concept_id': concept_id,
-                    'epistemic_label': concept.epistemic_label.value,
-                    'integration_score': 0.6
-                })
-        
-        print(f"✅ Consciousness integration completed:")
-        print(f"   🤖 AI Agents: {len(integration_results['ai_agents_consciousness'])}")
-        print(f"   📋 Specifications: {len(integration_results['specifications_consciousness'])}")
-        print(f"   🧠 Concepts: {len(integration_results['concepts_consciousness'])}")
-        
-        return integration_results
-    
     # ============================================================================
     # PRIVATE IMPLEMENTATION METHODS
     # ============================================================================
